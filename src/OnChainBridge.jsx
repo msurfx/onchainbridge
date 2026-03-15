@@ -520,7 +520,7 @@ export default function OnChainBridge() {
           <div style={{fontSize:15,fontWeight:700,marginBottom:6,color:C.text}}>🎯 Identified Gaps — <span style={{color:C.accent}}>{d.company}</span></div>
           <div style={{fontSize:13,color:C.textSub,marginBottom:12}}>Activate any gap instantly via connected wallet. Fee captured onchain.</div>
           {!walletConnected
-            ? <button onClick={connectWallet} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer"}}>🔗 Connect Wallet to Activate</button>
+            ? <button onClick={connectWallet} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer"}}>Connect to Activate</button>
             : <div style={{display:"flex",alignItems:"center",gap:8}}><span style={{width:8,height:8,borderRadius:"50%",background:C.accent,display:"inline-block",boxShadow:`0 0 6px ${C.accent}`}}/><span style={{fontSize:12,color:C.accent,fontFamily:"var(--mono)"}}>{walletAddress?.slice(0,8)}...{walletAddress?.slice(-4)}</span></div>
           }
         </div>
@@ -797,7 +797,7 @@ export default function OnChainBridge() {
                 {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}`}
               </button>
             : <button onClick={connectWallet} style={{width:"100%",padding:collapsed?"9px":"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:6,justifyContent:collapsed?"center":"flex-start"}}>
-                <span>🔗</span>{!collapsed&&"Connect Wallet"}
+                <span>{!collapsed?"Connect":"◆"}</span>
               </button>
           }
           <div style={{display:"flex",gap:6}}>
