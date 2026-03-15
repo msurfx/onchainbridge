@@ -349,7 +349,12 @@ export default function OnChainBridge() {
   const [shareModal, setShareModal] = useState(false);
   const [gapActivating, setGapActivating] = useState({});
   const [collapsed, setCollapsed] = useState(false);
-  const [searchHistory, setSearchHistory] = useState([]);
+  const [searchHistory, setSearchHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('ocb_history')||'[]'); } catch(_) { return []; }
+  });
+  const [leadModal, setLeadModal] = useState(null);
+  const [leadForm, setLeadForm] = useState({name:'',company:'',email:''});
+  const [leadSent, setLeadSent] = useState(false);
 
   useEffect(() => { const i = setInterval(() => setTick(t => t-0.4), 30); return () => clearInterval(i); }, []);
   useEffect(() => {
@@ -388,8 +393,24 @@ export default function OnChainBridge() {
     } catch(_) { setVerified({name:target,address:"Unverified"}); runAnalysis(target,"Unverified"); }
   }, [input]); // eslint-disable-line
 
+  const saveHistory = (name, data) => {
+    const entry = {
+      name,
+      ts: Date.now(),
+      sector: data?.sector||'',
+      description: data?.description||'',
+      savings: data?.financial?.projectedSavings||'',
+      fit: data?.ticker?.onchainPotential||0,
+      recommended: data?.recommendedSectors||[],
+    };
+    setSearchHistory(h => {
+      const next = [entry, ...h.filter(x=>x.name!==name)].slice(0,5);
+      try { localStorage.setItem('ocb_history', JSON.stringify(next)); } catch(_){}
+      return next;
+    });
+  };
+
   const confirmCompany = (opt) => {
-    setSearchHistory(h => [opt.name, ...h.filter(x=>x!==opt.name)].slice(0,5));
     setVerified(opt); runAnalysis(opt.name, opt.address);
   };
 
@@ -406,7 +427,7 @@ export default function OnChainBridge() {
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
       const core = mode==="onchain" ? ["financial","payments","collaborations","openclaw","policy","gaps"] : [...FIXED_SECTORS,...rec];
-      setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setPhase("dashboard");
+      setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setPhase("dashboard"); saveHistory(name, parsed);
     } catch(e) { console.error(e); setError("Analysis failed: "+e.message); setPhase("search"); }
     finally { clearInterval(iv); }
   }, [mode]);
@@ -429,6 +450,19 @@ export default function OnChainBridge() {
   }, [tab,d,coreSectors,lazyData,lazyLoading,loadLazy]);
 
   const tryBridge = (c) => { if(authed){setBridgeModal(c);setBridgeStep(0);}else{setPendingBridge(c);setAuthModal(true);} };
+
+  const openLead = (sector, protocol, value) => {
+    setLeadForm({name:"",company:d?.company||"",email:""});
+    setLeadSent(false);
+    setLeadModal({sector, protocol, value});
+  };
+
+  const submitLead = async () => {
+    if (!leadForm.email) return;
+    setLeadSent(true);
+    // In production this would call an API to log the lead and trigger OpenClaw
+    console.log("Lead captured:", {company: d?.company, ...leadForm, ...leadModal});
+  };
   const completeAuth = () => { setAuthed(true); setAuthModal(false); if(pendingBridge){setBridgeModal(pendingBridge);setBridgeStep(0);setPendingBridge(null);} };
 
   // ─── Sector Renderers ─────────────────────────────────────────────
@@ -581,7 +615,10 @@ export default function OnChainBridge() {
                   <div key={j} style={{padding:"10px 12px",borderRadius:8,background:`${clr}10`,border:`1px solid ${clr}20`}}><div style={{fontSize:11,color:C.dim,marginBottom:3,textTransform:"uppercase"}}>{l}</div><div style={{fontSize:14,fontWeight:700,color:clr,fontFamily:"var(--mono)"}}>{v}</div></div>
                 ))}
               </div>
-              <button onClick={() => tryBridge(c)} style={{marginTop:14,width:"100%",padding:"11px",borderRadius:8,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,boxShadow:`0 0 20px ${C.accent}30`}}>Activate Bridge →</button>
+              <div style={{display:"flex",gap:8,marginTop:14}}>
+                <button onClick={() => tryBridge(c)} style={{flex:1,padding:"11px",borderRadius:8,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,boxShadow:`0 0 20px ${C.accent}30`}}>Activate Bridge →</button>
+                <button onClick={() => openLead(c.type||"Collaboration",c.name,c.value)} style={{padding:"11px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+              </div>
             </div></Crd>))}
           </div>
         </div>
@@ -592,7 +629,10 @@ export default function OnChainBridge() {
           {d.depin?.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)",textShadow:`0 0 12px ${C.accent}60`}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
-            <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
+              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+            </div>
           </div></Crd>))}
         </div>
       );
@@ -697,15 +737,25 @@ export default function OnChainBridge() {
         {/* Search History */}
         {!collapsed && searchHistory.length > 0 && <div style={{padding:"6px 10px 4px",borderTop:`1px solid ${C.border}`}}>
           <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"6px 4px 5px",textTransform:"uppercase"}}>Recent</div>
-          {searchHistory.map((name,i) => (
-            <button key={i} onClick={() => {setInput(name);searchCompany(name);}}
-              style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:7,border:"none",background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",textAlign:"left",transition:"all .15s",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}
-              onMouseEnter={e=>{e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.color=C.accent;}}
-              onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color=C.dim;}}>
-              <span style={{fontSize:11,opacity:0.5}}>↺</span>
-              <span style={{overflow:"hidden",textOverflow:"ellipsis"}}>{name}</span>
-            </button>
-          ))}
+          {searchHistory.map((entry,i) => {
+            const name = typeof entry === "string" ? entry : entry.name;
+            const snap = typeof entry === "object" ? entry : null;
+            return (
+              <button key={i} onClick={() => {setInput(name);searchCompany(name);}}
+                style={{width:"100%",display:"flex",flexDirection:"column",padding:"8px 10px",borderRadius:8,border:`1px solid transparent`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",textAlign:"left",transition:"all .15s",marginBottom:3}}
+                onMouseEnter={e=>{e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.borderColor=C.borderStrong;}}
+                onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor="transparent";}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:snap?3:0}}>
+                  <span style={{fontSize:10,color:C.accent,opacity:0.7}}>↺</span>
+                  <span style={{fontWeight:600,color:C.textSub,fontSize:12,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name}</span>
+                </div>
+                {snap && snap.savings && <div style={{display:"flex",gap:8,fontSize:10,fontFamily:"var(--mono)",paddingLeft:16}}>
+                  <span style={{color:C.accent}}>{snap.savings}</span>
+                  {snap.fit>0 && <span style={{color:C.dim}}>{snap.fit}% fit</span>}
+                </div>}
+              </button>
+            );
+          })}
         </div>}
 
         {/* Nav */}
@@ -959,6 +1009,7 @@ export default function OnChainBridge() {
                         <div style={{fontSize:14,fontWeight:700,color:C.text,display:"flex",alignItems:"center",gap:8}}><span>{meta.icon}</span>{meta.label}</div>
                         <div style={{display:"flex",gap:8,alignItems:"center"}}>
                           <Bdg color={clr} C={C}>{secId==="depin"?sData.totalMonthlyRevenue+"/mo":secId==="rwa"?sData.totalTokenisable:secId==="yield"?`${Math.max(...(sData.map?.(y=>y.apy)||[0]))}% peak`:secId==="treasury"?sData.annualGain:secId==="carbon"?sData.saving:secId==="loyalty"?sData.engagementLift:secId==="impact"?sData.totalBeneficiaryValue:secId==="employee"?`${sData.reputationOnchain} trust`:sData.fraudReduction||sData.onchainSaving||null}</Bdg>
+                          <button onClick={e=>{e.stopPropagation();openLead(SECTOR_META[secId]?.label||secId, secId==="depin"?sData.opportunities?.[0]?.network:secId==="yield"?sData[0]?.protocol:secId==="rwa"?sData.primaryProtocol:"Protocol Partner", secId==="depin"?sData.totalMonthlyRevenue:secId==="rwa"?sData.totalTokenisable:secId==="yield"?`${Math.max(...(sData.map?.(y=>y.apy)||[0]))}% APY`:sData.annualGain||sData.onchainSaving||"TBD");}} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:11,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
                           <span style={{fontSize:12,color:C.dim}}>View →</span>
                         </div>
                       </div>
@@ -1038,6 +1089,41 @@ export default function OnChainBridge() {
       </div>}
 
       {shareModal && d && <ShareCard d={d} mode={mode} onClose={() => setShareModal(false)} C={C}/>}
+
+      {/* LEAD MODAL */}
+      {leadModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000}} onClick={() => setLeadModal(null)}>
+        <div style={{width:"90%",maxWidth:440,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}25`}} onClick={e=>e.stopPropagation()}>
+          {!leadSent ? (<>
+            <div style={{fontSize:17,fontWeight:800,marginBottom:4,color:C.text}}>🚀 Follow Up on {leadModal.sector}</div>
+            <div style={{fontSize:13,color:C.dim,marginBottom:6,lineHeight:1.5}}>We will connect you with <span style={{color:C.accent,fontWeight:600}}>{leadModal.protocol}</span> and have an OpenClaw agent compose a personalised intro on your behalf.</div>
+            <div style={{padding:"10px 14px",borderRadius:9,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,marginBottom:18,fontSize:13}}>
+              <span style={{color:C.dim}}>Opportunity value: </span><span style={{color:C.accent,fontWeight:700,fontFamily:"var(--mono)"}}>{leadModal.value}</span>
+            </div>
+            <input value={leadForm.name} onChange={e=>setLeadForm(f=>({...f,name:e.target.value}))} placeholder="Your full name" style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:14,marginBottom:10,outline:"none"}}/>
+            <input value={leadForm.company} onChange={e=>setLeadForm(f=>({...f,company:e.target.value}))} placeholder="Company name" style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:14,marginBottom:10,outline:"none"}}/>
+            <input value={leadForm.email} onChange={e=>setLeadForm(f=>({...f,email:e.target.value}))} placeholder="Work email *" style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${leadForm.email?C.borderStrong:C.border}`,background:C.bg,color:C.text,fontSize:14,marginBottom:18,outline:"none"}}/>
+            <div style={{display:"flex",gap:10}}>
+              <button onClick={submitLead} disabled={!leadForm.email} style={{flex:1,padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:leadForm.email?"pointer":"not-allowed",opacity:leadForm.email?1:0.5,boxShadow:`0 0 20px ${C.accent}35`}}>
+                🦞 Send via OpenClaw →
+              </button>
+              <button onClick={() => setLeadModal(null)} style={{padding:"12px 18px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>Cancel</button>
+            </div>
+            <div style={{fontSize:11,color:C.muted,marginTop:12,textAlign:"center"}}>OpenClaw will draft a personalised intro email to {leadModal.protocol} and cc you within minutes.</div>
+          </>) : (<>
+            <div style={{textAlign:"center",padding:"20px 0"}}>
+              <div style={{fontSize:36,marginBottom:14}}>🦞</div>
+              <div style={{fontSize:18,fontWeight:800,color:C.accent,marginBottom:8}}>Lead Sent!</div>
+              <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:20}}>OpenClaw is composing your personalised introduction to <strong style={{color:C.accent}}>{leadModal.protocol}</strong>. You will receive a copy at <strong>{leadForm.email}</strong> within minutes.</div>
+              <div style={{padding:"12px 16px",borderRadius:10,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,fontSize:13,color:C.textSub,marginBottom:20}}>
+                <div style={{marginBottom:4}}>📡 Sector: <span style={{color:C.accent}}>{leadModal.sector}</span></div>
+                <div style={{marginBottom:4}}>🔗 Protocol: <span style={{color:C.accent}}>{leadModal.protocol}</span></div>
+                <div>💰 Value: <span style={{color:C.accent,fontFamily:"var(--mono)"}}>{leadModal.value}</span></div>
+              </div>
+              <button onClick={() => setLeadModal(null)} style={{padding:"11px 28px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Done ✓</button>
+            </div>
+          </>)}
+        </div>
+      </div>}
     </div>
   );
 }
