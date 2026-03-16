@@ -14,7 +14,7 @@ const DARK = {
   accentGlow: "#00d4c812", purple: "#7b35ff", purpleGlow: "#7b35ff12",
   green: "#00d4c8", red: "#ff4d6a", yellow: "#ffd93d",
   orange: "#ff7a3d", cyan: "#00d4c8", pink: "#d46faa",
-  text: "#d8eaf2", textSub: "#92b8cc", dim: "#5a8099", muted: "#324f63",
+  text: "#e8f2f8", textSub: "#aac8dc", dim: "#7090a8", muted: "#4a6880",
 };
 const LIGHT = {
   bg: "#eef5f8", bg2: "#ddeaf0", surface: "#ffffff", card: "#ffffff",
@@ -340,7 +340,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
 
 /* ═══ MAIN ═══ */
 export default function OnChainBridge() {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(() => window.innerWidth > 768);
   const C = dark ? DARK : LIGHT;
 
   const [mode, setMode] = useState("web2");
@@ -367,6 +367,7 @@ export default function OnChainBridge() {
   const [shareModal, setShareModal] = useState(false);
   const [gapActivating, setGapActivating] = useState({});
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const [searchHistory, setSearchHistory] = useState(() => {
     try { return JSON.parse(localStorage.getItem('ocb_history')||'[]'); } catch(_) { return []; }
   });
@@ -690,7 +691,20 @@ export default function OnChainBridge() {
           </div></Crd>))}
         </div>
       );
-      case "rwa": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><Met label="Total Tokenisable" value={d.rwa?.totalTokenisable} sub={d.rwa?.primaryProtocol} color={C.orange} C={C}/>{d.rwa?.tokenisableAssets?.map((a,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{a.asset}</span><Bdg color={C.orange} C={C}>{a.estimatedValue}</Bdg></div><div style={{fontSize:13,color:C.textSub,marginBottom:5}}>{a.description}</div><div style={{fontSize:12,color:C.accent}}>Protocol: {a.protocol} · Unlock: {a.liquidityUnlock}</div></div></Crd>))}</div>);
+      case "rwa": return (<div style={{display:"flex",flexDirection:"column",gap:10}}>
+        <Crd C={C}><div style={{padding:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div><div style={{fontSize:11,color:C.dim,textTransform:"uppercase",letterSpacing:1,marginBottom:4,fontFamily:"var(--mono)"}}>Total Tokenisable</div><div style={{fontSize:22,fontWeight:800,color:C.orange,fontFamily:"var(--mono)"}}>{d.rwa?.totalTokenisable}</div></div>
+          <div style={{textAlign:"right"}}><div style={{fontSize:11,color:C.dim,marginBottom:4}}>Primary Protocol</div><PLink name={d.rwa?.primaryProtocol} C={C}/></div>
+        </div></Crd>
+        {d.rwa?.tokenisableAssets?.map((a,i) => (<Crd key={i} C={C}><div style={{padding:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{a.asset}</span><Bdg color={C.orange} C={C}>{a.estimatedValue}</Bdg></div>
+          <div style={{fontSize:13,color:C.textSub,marginBottom:10}}>{a.description}</div>
+          <div style={{display:"flex",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+            <PLink name={a.protocol} C={C}/>
+            <span style={{fontSize:12,color:C.dim}}>Liquidity unlock: <span style={{color:C.orange,fontWeight:600}}>{a.liquidityUnlock}</span></span>
+          </div>
+        </div></Crd>))}
+      </div>);
       case "openclaw": return (
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>🦞 OpenClaw Agents — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>Autonomous agents via WhatsApp/Telegram/Slack. No crypto team needed.</div><div style={{display:"flex",gap:10,marginTop:12}}><Met label="Total Saving" value={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/><Met label="Agents" value={d.openclaw?.agents?.length||0} color={C.accent} C={C}/></div></div>
@@ -770,19 +784,22 @@ export default function OnChainBridge() {
         a{text-decoration:none}
         @media(max-width:768px){
           .ocb-sidebar{display:none!important}
-          .ocb-main{padding:12px 10px 80px!important}
-          .ocb-topbar{padding:8px 10px!important;flex-wrap:wrap;gap:6px}
-          .ocb-search{max-width:100%!important;width:100%!important}
+          .ocb-main{padding:12px 10px 90px!important}
+          .ocb-topbar{padding:8px 10px!important;flex-wrap:wrap;gap:6px;align-items:center}
+          .ocb-search{max-width:100%!important;width:100%!important;flex:1!important}
           .ocb-grid2{grid-template-columns:1fr!important}
-          .ocb-metrics{flex-direction:column}
+          .ocb-metrics{flex-wrap:wrap}
           .ocb-hero{grid-template-columns:1fr!important}
           .ocb-ticker{display:none!important}
           .ocb-tabs{display:none!important}
           .ocb-mobile-nav{display:flex!important}
-          .ocb-topbar > div:last-child{display:none!important}
           .ocb-company-info{display:none!important}
-          .ocb-search{order:-1}
+          .ocb-hide-mobile{display:none!important}
+          .ocb-burger{display:flex!important}
         }
+        .ocb-burger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;cursor:pointer;flex-shrink:0;flex-direction:column;gap:4px;padding:8px;border:1px solid rgba(50,128,148,0.3);background:transparent}
+        .ocb-burger span{display:block;width:16px;height:2px;background:#7090a8;border-radius:1px}
+        @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
         .ocb-mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:${C?.surface||"#243245"};border-top:1px solid rgba(0,212,200,0.2);z-index:100;padding:8px 4px;gap:2px}
       `}</style>
 
@@ -889,8 +906,79 @@ export default function OnChainBridge() {
       {/* MAIN CONTENT */}
       <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,paddingBottom:"env(safe-area-inset-bottom)"}}>
 
+        {/* Mobile Drawer */}
+        {mobileMenu && <div style={{position:"fixed",inset:0,zIndex:200,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(4px)"}} onClick={() => setMobileMenu(false)}>
+          <div style={{width:280,height:"100%",background:C.surface,borderRight:`1px solid ${C.borderStrong}`,overflowY:"auto",animation:"slideIn .25s ease"}} onClick={e => e.stopPropagation()}>
+            <div style={{padding:"16px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{width:30,height:30,borderRadius:8,background:`linear-gradient(135deg,${C.accent},${C.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:900,color:"#fff"}}>◆</div>
+                <span style={{fontSize:14,fontWeight:800,color:C.text}}>OnChain<span style={{color:C.accent}}>Bridge</span></span>
+              </div>
+              <button onClick={() => setMobileMenu(false)} style={{border:"none",background:"transparent",color:C.dim,fontSize:18,cursor:"pointer"}}>✕</button>
+            </div>
+            {/* Mode toggle */}
+            <div style={{padding:"12px 12px 6px"}}>
+              {[{id:"web2",icon:"🌉",label:"Web2 Analysis"},{id:"onchain",icon:"🔗",label:"Onchain Gaps"}].map(m => (
+                <button key={m.id} onClick={() => {setMode(m.id);setPhase("search");setD(null);setInput("");setMobileMenu(false);}}
+                  style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"9px 10px",borderRadius:8,border:`1px solid ${mode===m.id?C.borderStrong:C.border}`,background:mode===m.id?C.accentGlow:"transparent",color:mode===m.id?C.accent:C.dim,fontSize:13,fontWeight:mode===m.id?700:400,cursor:"pointer",marginBottom:4,textAlign:"left"}}>
+                  {m.icon} {m.label}
+                </button>
+              ))}
+            </div>
+            {/* Recent searches */}
+            {searchHistory.length > 0 && <div style={{padding:"6px 12px 4px",borderTop:`1px solid ${C.border}`}}>
+              <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 2px 6px",textTransform:"uppercase"}}>Recent</div>
+              {searchHistory.map((entry,i) => {
+                const name = typeof entry === "string" ? entry : entry.name;
+                const snap = typeof entry === "object" ? entry : null;
+                return (
+                  <button key={i} onClick={() => {setInput(name);searchCompany(name);setMobileMenu(false);}}
+                    style={{width:"100%",display:"flex",flexDirection:"column",padding:"9px 10px",borderRadius:8,border:"1px solid transparent",background:"transparent",color:C.dim,fontSize:13,cursor:"pointer",textAlign:"left",marginBottom:3,transition:"all .15s"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.borderColor=C.borderStrong;}}
+                    onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor="transparent";}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6}}>
+                      <span style={{fontSize:10,color:C.accent}}>↺</span>
+                      <span style={{fontWeight:600,color:C.textSub}}>{name}</span>
+                    </div>
+                    {snap?.savings && <div style={{fontSize:11,color:C.accent,fontFamily:"var(--mono)",paddingLeft:16}}>{snap.savings}</div>}
+                  </button>
+                );
+              })}
+            </div>}
+            {/* Nav tabs if analysis done */}
+            {tabs.length > 0 && <div style={{padding:"6px 0",borderTop:`1px solid ${C.border}`}}>
+              <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 14px 4px",textTransform:"uppercase"}}>Sectors</div>
+              {tabs.map(t => (
+                <button key={t.id} onClick={() => {setTab(t.id);setMobileMenu(false);}}
+                  style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:"9px 14px",border:"none",background:tab===t.id?C.accentGlow:"transparent",color:tab===t.id?C.accent:C.dim,cursor:"pointer",fontSize:13,fontWeight:tab===t.id?700:400,borderLeft:`2px solid ${tab===t.id?C.accent:"transparent"}`,textAlign:"left"}}>
+                  <span style={{fontSize:15}}>{t.icon}</span>
+                  <span style={{flex:1}}>{t.label}</span>
+                  {t.id==="gaps"&&d?.gaps?.length>0&&<span style={{background:C.red,color:"#fff",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:700}}>{d.gaps.length}</span>}
+                </button>
+              ))}
+            </div>}
+            {/* Theme + wallet */}
+            <div style={{padding:"12px",borderTop:`1px solid ${C.border}`,marginTop:"auto"}}>
+              {walletConnected
+                ? <button onClick={disconnectWallet} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8}}>
+                    ● {walletAddress?.slice(0,6)}...{walletAddress?.slice(-4)}
+                  </button>
+                : <button onClick={() => {connectWallet();setMobileMenu(false);}} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8}}>
+                    🔗 Connect Wallet
+                  </button>
+              }
+              <button onClick={() => setDark(v=>!v)} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer"}}>
+                {dark?"☀️ Light mode":"🌙 Dark mode"}
+              </button>
+            </div>
+          </div>
+        </div>}
+
         {/* Top Bar */}
         <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
+          <button className="ocb-burger" onClick={() => setMobileMenu(true)}>
+            <span/><span/><span/>
+          </button>
           <div className="ocb-search" style={{display:"flex",gap:8,background:C.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"5px 5px 5px 16px",alignItems:"center",flex:1,maxWidth:520}}>
             <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchCompany()}
               placeholder={mode==="onchain"?"Search protocol or onchain company...":"Search any Web2 company..."}
