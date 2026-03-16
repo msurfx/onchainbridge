@@ -340,7 +340,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
 
 /* ═══ MAIN ═══ */
 export default function OnChainBridge() {
-  const [dark, setDark] = useState(() => window.innerWidth > 768);
+  const [dark, setDark] = useState(() => { try { return window.innerWidth > 768; } catch(_) { return false; } });
   const C = dark ? DARK : LIGHT;
 
   const [mode, setMode] = useState("web2");
@@ -764,7 +764,6 @@ export default function OnChainBridge() {
   };
 
   const examples = mode==="onchain" ? EX_ONCHAIN : EX_WEB2;
-  const clamp = (min, max) => `clamp(${min}px, 5vw, ${max}px)`;
 
   // ─── RENDER ──────────────────────────────────────────────────────────
   return (
@@ -977,7 +976,7 @@ export default function OnChainBridge() {
         </div>}
 
         {/* Top Bar */}
-        <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:phase==="search"&&window.innerWidth>768?"none":"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
+        <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:phase==="search"?"none":"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
           <button className="ocb-burger" onClick={() => setMobileMenu(true)}>
             <span/><span/><span/>
           </button>
@@ -1070,7 +1069,7 @@ export default function OnChainBridge() {
           {phase==="search" && !error && <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"70vh",padding:"40px 20px",animation:"fadeUp .4s"}}>
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:40}}>
-              <div style={{fontSize:clamp(32,44),fontWeight:800,color:C.text,letterSpacing:"-1px",marginBottom:12,lineHeight:1.1}}>
+              <div style={{fontSize:"clamp(32px,5vw,44px)",fontWeight:800,color:C.text,letterSpacing:"-1px",marginBottom:12,lineHeight:1.1}}>
                 {mode==="onchain"
                   ? <>Find your <span style={{color:C.accent}}>onchain gaps</span></>
                   : <>What is your company<br/><span style={{color:C.accent}}>leaving onchain?</span></>}
