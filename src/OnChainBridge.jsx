@@ -770,15 +770,18 @@ export default function OnChainBridge() {
         a{text-decoration:none}
         @media(max-width:768px){
           .ocb-sidebar{display:none!important}
-          .ocb-main{padding:12px!important}
-          .ocb-topbar{padding:10px 12px!important;flex-wrap:wrap;gap:8px}
-          .ocb-search{max-width:100%!important}
+          .ocb-main{padding:12px 10px 80px!important}
+          .ocb-topbar{padding:8px 10px!important;flex-wrap:wrap;gap:6px}
+          .ocb-search{max-width:100%!important;width:100%!important}
           .ocb-grid2{grid-template-columns:1fr!important}
           .ocb-metrics{flex-direction:column}
           .ocb-hero{grid-template-columns:1fr!important}
           .ocb-ticker{display:none!important}
           .ocb-tabs{display:none!important}
           .ocb-mobile-nav{display:flex!important}
+          .ocb-topbar > div:last-child{display:none!important}
+          .ocb-company-info{display:none!important}
+          .ocb-search{order:-1}
         }
         .ocb-mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:${C?.surface||"#243245"};border-top:1px solid rgba(0,212,200,0.2);z-index:100;padding:8px 4px;gap:2px}
       `}</style>
@@ -888,7 +891,7 @@ export default function OnChainBridge() {
 
         {/* Top Bar */}
         <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
-          <div style={{display:"flex",gap:8,background:C.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"5px 5px 5px 16px",alignItems:"center",flex:1,maxWidth:520}}>
+          <div className="ocb-search" style={{display:"flex",gap:8,background:C.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"5px 5px 5px 16px",alignItems:"center",flex:1,maxWidth:520}}>
             <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchCompany()}
               placeholder={mode==="onchain"?"Search protocol or onchain company...":"Search any Web2 company..."}
               style={{flex:1,background:"transparent",border:"none",outline:"none",color:C.text,fontSize:14,padding:"4px 0"}}/>
@@ -899,7 +902,7 @@ export default function OnChainBridge() {
           </div>
 
           {d ? (
-            <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+            <div className="ocb-company-info" style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
               <div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{d.company}</div><div style={{fontSize:11,color:C.dim}}>{d.description?.slice(0,45)}</div></div>
               <Bdg color={C.accent} C={C}>✓ {mode==="onchain"?"Scanned":"Verified"}</Bdg>
               {mode==="onchain"
@@ -979,7 +982,7 @@ export default function OnChainBridge() {
             <div style={{fontSize:28,fontWeight:800,marginBottom:10,color:C.text}}>
               {mode==="onchain"?<>Already Onchain? <span style={{color:C.accent,textShadow:`0 0 14px ${C.accent}50`}}>Find Your Gaps</span></>:<>Web2 → <span style={{color:C.accent,textShadow:`0 0 14px ${C.accent}50`}}>Onchain</span></>}
             </div>
-            <div style={{fontSize:14,color:C.dim,maxWidth:520,margin:"0 auto 32px",lineHeight:1.7}}>
+            <div style={{fontSize:14,color:C.dim,maxWidth:520,margin:"0 auto 32px",lineHeight:1.7,padding:"0 16px"}}>
               {mode==="onchain"?"Enter any protocol or onchain company. Map existing activity and surface gaps — activate instantly via wallet.":"Enter any company for a full 16-sector onchain migration analysis. Policy, yield, DePIN, RWA, impact and more."}
             </div>
             <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
