@@ -355,6 +355,7 @@ export default function OnChainBridge() {
   const [leadModal, setLeadModal] = useState(null);
   const [leadForm, setLeadForm] = useState({name:'',company:'',email:''});
   const [leadSent, setLeadSent] = useState(false);
+  const [walletModal, setWalletModal] = useState(false);
 
   useEffect(() => { const i = setInterval(() => setTick(t => t-0.4), 30); return () => clearInterval(i); }, []);
   useEffect(() => {
@@ -363,12 +364,27 @@ export default function OnChainBridge() {
     }
   }, [bridgeModal, bridgeStep]);
 
-  const connectWallet = async () => {
+  const connectWallet = () => setWalletModal(true);
+
+  const connectSpecific = async (wallet) => {
+    setWalletModal(false);
     try {
-      if (window.solana?.isPhantom) { const r=await window.solana.connect(); setWalletAddress(r.publicKey.toString()); setWalletConnected(true); }
-      else if (window.solflare?.isSolflare) { await window.solflare.connect(); setWalletAddress(window.solflare.publicKey.toString()); setWalletConnected(true); }
-      else if (window.backpack) { const r=await window.backpack.connect(); setWalletAddress(r.publicKey.toString()); setWalletConnected(true); }
-      else window.open("https://phantom.app","_blank");
+      if (wallet === "phantom") {
+        if (window.solana?.isPhantom) { const r=await window.solana.connect(); setWalletAddress(r.publicKey.toString()); setWalletConnected(true); }
+        else window.open("https://phantom.app","_blank");
+      } else if (wallet === "solflare") {
+        if (window.solflare?.isSolflare) { await window.solflare.connect(); setWalletAddress(window.solflare.publicKey.toString()); setWalletConnected(true); }
+        else window.open("https://solflare.com","_blank");
+      } else if (wallet === "backpack") {
+        if (window.backpack) { const r=await window.backpack.connect(); setWalletAddress(r.publicKey.toString()); setWalletConnected(true); }
+        else window.open("https://backpack.app","_blank");
+      } else if (wallet === "metamask") {
+        if (window.ethereum?.isMetaMask) { const accounts=await window.ethereum.request({method:"eth_requestAccounts"}); setWalletAddress(accounts[0]); setWalletConnected(true); }
+        else window.open("https://metamask.io","_blank");
+      } else if (wallet === "coinbase") {
+        if (window.coinbaseWalletExtension) { const accounts=await window.coinbaseWalletExtension.request({method:"eth_requestAccounts"}); setWalletAddress(accounts[0]); setWalletConnected(true); }
+        else window.open("https://www.coinbase.com/wallet","_blank");
+      }
     } catch(e) { console.error(e); }
   };
   const disconnectWallet = async () => { try{if(window.solana?.isPhantom)await window.solana.disconnect();}catch(_){} setWalletConnected(false); setWalletAddress(null); };
@@ -714,10 +730,23 @@ export default function OnChainBridge() {
         input,button{font-family:var(--display);font-size:14px}
         input::placeholder{color:${C.muted}}
         a{text-decoration:none}
+        @media(max-width:768px){
+          .ocb-sidebar{display:none!important}
+          .ocb-main{padding:12px!important}
+          .ocb-topbar{padding:10px 12px!important;flex-wrap:wrap;gap:8px}
+          .ocb-search{max-width:100%!important}
+          .ocb-grid2{grid-template-columns:1fr!important}
+          .ocb-metrics{flex-direction:column}
+          .ocb-hero{grid-template-columns:1fr!important}
+          .ocb-ticker{display:none!important}
+          .ocb-tabs{display:none!important}
+          .ocb-mobile-nav{display:flex!important}
+        }
+        .ocb-mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:${C?.surface||"#243245"};border-top:1px solid rgba(0,212,200,0.2);z-index:100;padding:8px 4px;gap:2px}
       `}</style>
 
       {/* SIDEBAR */}
-      <aside style={{width:collapsed?62:220,flexShrink:0,background:C.sidebar,borderRight:`1px solid ${C.border}`,display:"flex",flexDirection:"column",position:"sticky",top:0,height:"100vh",overflow:"hidden",transition:"width .25s ease",zIndex:50}}>
+      <aside className="ocb-sidebar" style={{width:collapsed?62:220,flexShrink:0,background:C.sidebar,borderRight:`1px solid ${C.border}`,display:"flex",flexDirection:"column",position:"sticky",top:0,height:"100vh",overflow:"hidden",transition:"width .25s ease",zIndex:50}}>
         {/* Logo */}
         <div style={{padding:"16px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:34,height:34,borderRadius:9,background:`linear-gradient(135deg,${C.accent},${C.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",flexShrink:0,boxShadow:`0 0 16px ${C.accent}40`}}>◆</div>
@@ -808,10 +837,10 @@ export default function OnChainBridge() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0}}>
+      <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,paddingBottom:"env(safe-area-inset-bottom)"}}>
 
         {/* Top Bar */}
-        <header style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
+        <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
           <div style={{display:"flex",gap:8,background:C.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"5px 5px 5px 16px",alignItems:"center",flex:1,maxWidth:520}}>
             <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchCompany()}
               placeholder={mode==="onchain"?"Search protocol or onchain company...":"Search any Web2 company..."}
@@ -848,7 +877,7 @@ export default function OnChainBridge() {
         </header>
 
         {/* Ticker */}
-        {d && <div style={{background:C.bg2,borderBottom:`1px solid ${C.border}`,padding:"5px 0",overflow:"hidden"}}>
+        {d && <div className="ocb-ticker" style={{background:C.bg2,borderBottom:`1px solid ${C.border}`,padding:"5px 0",overflow:"hidden"}}>
           <div style={{display:"flex",gap:32,whiteSpace:"nowrap",fontFamily:"var(--mono)",fontSize:12,transform:`translateX(${tick}px)`}}>
             {[0,1,2].map(r => <div key={r} style={{display:"flex",gap:32}}>
               {[["CO",d.company,C.accent],["REV",d.revenue,C.yellow],
@@ -862,7 +891,7 @@ export default function OnChainBridge() {
         </div>}
 
         {/* Content */}
-        <main style={{flex:1,padding:"24px",overflowY:"auto"}}>
+        <main className="ocb-main" style={{flex:1,padding:"24px",overflowY:"auto"}}>
 
           {/* Verify */}
           {phase==="verify" && <div style={{animation:"fadeUp .3s",marginBottom:20}}>
@@ -1049,9 +1078,19 @@ export default function OnChainBridge() {
             </div>}
           </div>}
         </main>
+      {/* MOBILE BOTTOM NAV */}
+      {phase==="dashboard" && d && <div className="ocb-mobile-nav" style={{background:C.surface,borderTop:`1px solid ${C.borderStrong}`}}>
+        {["overview","financial","collaborations","openclaw","policy"].map(id => (
+          <button key={id} onClick={() => setTab(id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:9,gap:2}}>
+            <span style={{fontSize:16}}>{SECTOR_META[id]?.icon}</span>
+            <span style={{fontWeight:tab===id?700:400}}>{SECTOR_META[id]?.label?.slice(0,7)}</span>
+          </button>
+        ))}
+      </div>}
+
       </div>
 
-      {/* AUTH MODAL */}
+      {/* AUTH MODAL */}}
       {authModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.8)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={() => setAuthModal(false)}>
         <div style={{width:"90%",maxWidth:420,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 40px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>🔐 Sign In to Bridge</div>
@@ -1089,6 +1128,34 @@ export default function OnChainBridge() {
       </div>}
 
       {shareModal && d && <ShareCard d={d} mode={mode} onClose={() => setShareModal(false)} C={C}/>}
+
+      {/* WALLET MODAL */}
+      {walletModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000}} onClick={() => setWalletModal(false)}>
+        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:24,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
+          <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
+          {[
+            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",icon:"👻",color:"#ab9ff2"},
+            {id:"solflare",name:"Solflare",desc:"Solana · Secure",icon:"🔥",color:"#fc7227"},
+            {id:"backpack",name:"Backpack",desc:"Solana · Multi-chain",icon:"🎒",color:"#e33e3f"},
+            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM",icon:"🦊",color:"#f6851b"},
+            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",icon:"🔵",color:"#0052ff"},
+          ].map(w => (
+            <button key={w.id} onClick={() => connectSpecific(w.id)}
+              style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:8,transition:"all .15s",textAlign:"left"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor=w.color;e.currentTarget.style.background=`${w.color}10`;}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.card;}}>
+              <span style={{fontSize:22,flexShrink:0}}>{w.icon}</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:700,color:C.text}}>{w.name}</div>
+                <div style={{fontSize:11,color:C.dim}}>{w.desc}</div>
+              </div>
+              <span style={{fontSize:12,color:C.dim}}>→</span>
+            </button>
+          ))}
+          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:8}}>New to wallets? <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" style={{color:C.accent}}>Get Phantom →</a></div>
+        </div>
+      </div>}
 
       {/* LEAD MODAL */}
       {leadModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000}} onClick={() => setLeadModal(null)}>
