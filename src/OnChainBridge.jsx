@@ -23,7 +23,7 @@ const LIGHT = {
   accentGlow: "#00d4c810", purple: "#5a20cc", purpleGlow: "#5a20cc10",
   green: "#007a78", red: "#c93d5e", yellow: "#c9890a",
   orange: "#c55d2a", cyan: "#007a78", pink: "#a8457e",
-  text: "#1f2e3d", textSub: "#3d5a70", dim: "#5a7a94", muted: "#8aafbf",
+  text: "#0f1d2c", textSub: "#1f3a50", dim: "#2d5068", muted: "#5a8099",
 };
 
 const FIXED_SECTORS = ["financial","payments","collaborations","openclaw","policy"];
@@ -883,8 +883,8 @@ export default function OnChainBridge() {
                 <span style={{width:6,height:6,borderRadius:"50%",background:C.accent,display:"inline-block",boxShadow:`0 0 6px ${C.accent}`}}/>
                 {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}`}
               </button>
-            : <button onClick={connectWallet} style={{width:"100%",padding:collapsed?"9px":"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:6,justifyContent:collapsed?"center":"flex-start"}}>
-                <span>{!collapsed?"Connect":"◆"}</span>
+            : <button onClick={connectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                <span>Connect</span>
               </button>
           }
           <div style={{display:"flex",gap:6}}>
@@ -946,7 +946,7 @@ export default function OnChainBridge() {
               })}
             </div>}
             {/* Nav tabs if analysis done */}
-            {tabs.length > 0 && <div style={{padding:"6px 0",borderTop:`1px solid ${C.border}`}}>
+            {tabs.length > 0 && phase === "dashboard" && <div style={{padding:"6px 0",borderTop:`1px solid ${C.border}`}}>
               <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 14px 4px",textTransform:"uppercase"}}>Sectors</div>
               {tabs.map(t => (
                 <button key={t.id} onClick={() => {setTab(t.id);setMobileMenu(false);}}
