@@ -764,6 +764,7 @@ export default function OnChainBridge() {
   };
 
   const examples = mode==="onchain" ? EX_ONCHAIN : EX_WEB2;
+  const clamp = (min, max) => `clamp(${min}px, 5vw, ${max}px)`;
 
   // ─── RENDER ──────────────────────────────────────────────────────────
   return (
@@ -887,8 +888,9 @@ export default function OnChainBridge() {
                 <span>Connect</span>
               </button>
           }
-          <div style={{display:"flex",gap:6}}>
-            <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
+          <div style={{display:"flex",gap:6,alignItems:"center"}}>
+            {collapsed && <button onClick={() => setCollapsed(false)} style={{width:"100%",padding:"8px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>}
+            {!collapsed && <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
               {/* Theme toggle — Jupiter style pill */}
               <button onClick={() => setDark(v=>!v)} title="Toggle theme"
                 style={{display:"flex",alignItems:"center",width:42,height:22,borderRadius:11,border:"none",background:dark?C.accentGlow:"#e0eaf0",cursor:"pointer",padding:2,position:"relative",transition:"all .25s",boxShadow:`inset 0 0 0 1px ${C.borderStrong}`}}>
@@ -975,7 +977,7 @@ export default function OnChainBridge() {
         </div>}
 
         {/* Top Bar */}
-        <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
+        <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:phase==="search"&&window.innerWidth>768?"none":"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
           <button className="ocb-burger" onClick={() => setMobileMenu(true)}>
             <span/><span/><span/>
           </button>
@@ -1064,23 +1066,80 @@ export default function OnChainBridge() {
 
           {error && <div style={{padding:16,borderRadius:10,background:`${C.red}10`,border:`1px solid ${C.red}30`,color:C.red,fontSize:13,fontFamily:"var(--mono)"}}>{error}</div>}
 
-          {/* Empty */}
-          {phase==="search" && !error && <div style={{textAlign:"center",padding:"80px 20px",animation:"fadeUp .4s"}}>
-            <div style={{width:72,height:72,borderRadius:20,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 24px",boxShadow:`0 0 40px ${C.accent}25`,animation:"neonPulse 3s ease-in-out infinite"}}>◆</div>
-            <div style={{fontSize:28,fontWeight:800,marginBottom:10,color:C.text}}>
-              {mode==="onchain"?<>Already Onchain? <span style={{color:C.accent,textShadow:`0 0 14px ${C.accent}50`}}>Find Your Gaps</span></>:<>Web2 → <span style={{color:C.accent,textShadow:`0 0 14px ${C.accent}50`}}>Onchain</span></>}
+          {/* Empty — tokens.xyz style hero search */}
+          {phase==="search" && !error && <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"70vh",padding:"40px 20px",animation:"fadeUp .4s"}}>
+            {/* Title */}
+            <div style={{textAlign:"center",marginBottom:40}}>
+              <div style={{fontSize:clamp(32,44),fontWeight:800,color:C.text,letterSpacing:"-1px",marginBottom:12,lineHeight:1.1}}>
+                {mode==="onchain"
+                  ? <>Find your <span style={{color:C.accent}}>onchain gaps</span></>
+                  : <>What is your company<br/><span style={{color:C.accent}}>leaving onchain?</span></>}
+              </div>
+              <div style={{fontSize:15,color:C.dim,maxWidth:480,margin:"0 auto",lineHeight:1.6}}>
+                {mode==="onchain"
+                  ? "Enter any protocol. Map existing activity and surface untapped opportunities."
+                  : "Free 16-sector analysis for any company. Results in 10 seconds."}
+              </div>
             </div>
-            <div style={{fontSize:14,color:C.dim,maxWidth:520,margin:"0 auto 32px",lineHeight:1.7,padding:"0 16px"}}>
-              {mode==="onchain"?"Enter any protocol or onchain company. Map existing activity and surface gaps — activate instantly via wallet.":"Enter any company for a full 16-sector onchain migration analysis. Policy, yield, DePIN, RWA, impact and more."}
+
+            {/* BIG search bar — the hero */}
+            <div style={{width:"100%",maxWidth:640,marginBottom:24}}>
+              <div style={{display:"flex",gap:0,background:C.surface,borderRadius:14,border:`1.5px solid ${C.borderStrong}`,padding:"6px 6px 6px 20px",alignItems:"center",boxShadow:`0 0 30px ${C.accent}12`,transition:"all .2s"}}
+                onFocus={e=>e.currentTarget.style.borderColor=C.accent}
+                onBlur={e=>e.currentTarget.style.borderColor=C.borderStrong}>
+                <span style={{fontSize:18,marginRight:8,opacity:0.5}}>⌘</span>
+                <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchCompany()}
+                  placeholder={mode==="onchain"?"Search any protocol or onchain company...":"Search any company — Nike, HSBC, Spotify..."}
+                  style={{flex:1,background:"transparent",border:"none",outline:"none",color:C.text,fontSize:16,padding:"8px 0",fontFamily:"var(--display)"}}
+                  autoFocus/>
+                <button onClick={() => searchCompany()} disabled={phase==="loading"}
+                  style={{padding:"11px 28px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",flexShrink:0,boxShadow:`0 0 16px ${C.accent}35`}}>
+                  {mode==="onchain"?"Scan →":"Analyse →"}
+                </button>
+              </div>
             </div>
-            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+
+            {/* Example pills */}
+            <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center",maxWidth:600}}>
+              <span style={{fontSize:12,color:C.muted,alignSelf:"center",marginRight:4,fontFamily:"var(--mono)"}}>Try:</span>
               {examples.map(c => (
                 <button key={c} onClick={() => {setInput(c);searchCompany(c);}}
-                  style={{padding:"9px 18px",borderRadius:20,border:`1px solid ${C.border}`,background:C.surface,color:C.textSub,fontSize:13,cursor:"pointer",transition:"all .15s"}}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor=C.accent;e.currentTarget.style.color=C.accent;e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.boxShadow=`0 0 12px ${C.accent}20`;}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.color=C.textSub;e.currentTarget.style.background=C.surface;e.currentTarget.style.boxShadow="";}}>
+                  style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer",transition:"all .15s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor=C.accent;e.currentTarget.style.color=C.accent;e.currentTarget.style.background=C.accentGlow;}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.color=C.dim;e.currentTarget.style.background="transparent";}}>
                   {c}
                 </button>
+              ))}
+            </div>
+
+            {/* Recent searches */}
+            {searchHistory.length > 0 && <div style={{marginTop:32,width:"100%",maxWidth:640}}>
+              <div style={{fontSize:11,color:C.muted,fontFamily:"var(--mono)",letterSpacing:1,textTransform:"uppercase",marginBottom:10}}>Recent</div>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                {searchHistory.map((entry,i) => {
+                  const name = typeof entry==="string"?entry:entry.name;
+                  const snap = typeof entry==="object"?entry:null;
+                  return (
+                    <button key={i} onClick={() => {setInput(name);searchCompany(name);}}
+                      style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:10,border:`1px solid ${C.border}`,background:C.surface,color:C.textSub,fontSize:13,cursor:"pointer",transition:"all .15s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.borderColor=C.accent;e.currentTarget.style.background=C.accentGlow;}}
+                      onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.surface;}}>
+                      <span style={{fontSize:11,color:C.accent}}>↺</span>
+                      <span style={{fontWeight:600}}>{name}</span>
+                      {snap?.savings&&<span style={{fontSize:11,color:C.accent,fontFamily:"var(--mono)"}}>{snap.savings}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>}
+
+            {/* Stats row */}
+            <div style={{display:"flex",gap:32,marginTop:48,flexWrap:"wrap",justifyContent:"center"}}>
+              {[["16","Sectors analysed"],["$0","Cost to analyse"],["10s","Time to insight"]].map(([n,l]) => (
+                <div key={n} style={{textAlign:"center"}}>
+                  <div style={{fontSize:26,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{n}</div>
+                  <div style={{fontSize:12,color:C.dim,marginTop:3}}>{l}</div>
+                </div>
               ))}
             </div>
           </div>}
