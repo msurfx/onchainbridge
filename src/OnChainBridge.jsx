@@ -795,7 +795,7 @@ export default function OnChainBridge() {
         {!collapsed && <div style={{padding:"10px 10px 6px"}}>
           {[{id:"web2",icon:"🌉",label:"Web2 Analysis"},{id:"onchain",icon:"🔗",label:"Onchain Gaps"}].map(m => (
             <button key={m.id} onClick={() => {setMode(m.id);setPhase("search");setD(null);setInput("");}}
-              style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:8,border:`1px solid ${mode===m.id?C.borderStrong:C.border}`,background:mode===m.id?C.accentGlow:"transparent",color:mode===m.id?C.accent:C.dim,fontSize:12,fontWeight:mode===m.id?700:400,cursor:"pointer",marginBottom:4,textAlign:"left",transition:"all .15s",boxShadow:mode===m.id?`0 0 12px ${C.accent}15`:""}}>
+              style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:8,border:`1px solid ${mode===m.id?C.borderStrong:C.border}`,background:mode===m.id?C.accentGlow:"transparent",color:mode===m.id?C.accent:"#7090a8",fontSize:12,fontWeight:mode===m.id?700:400,cursor:"pointer",marginBottom:4,textAlign:"left",transition:"all .15s",boxShadow:mode===m.id?`0 0 12px ${C.accent}15`:""}}>
               {m.icon} {m.label}
             </button>
           ))}
@@ -832,12 +832,12 @@ export default function OnChainBridge() {
             if (!gTabs.length) return null;
             return (
               <div key={group.label}>
-                {!collapsed && <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"10px 14px 4px",textTransform:"uppercase"}}>{group.label}</div>}
+                {!collapsed && <div style={{fontSize:10,fontWeight:700,color:"#5a8099",letterSpacing:1.5,padding:"10px 14px 4px",textTransform:"uppercase"}}>{group.label}</div>}
                 {gTabs.map(t => {
                   const active = tab===t.id;
                   return (
                     <button key={t.id} onClick={() => setTab(t.id)}
-                      style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:collapsed?"10px 14px":"8px 14px",border:"none",background:active?C.accentGlow:"transparent",color:active?C.accent:C.dim,cursor:"pointer",fontSize:13,fontWeight:active?700:400,transition:"all .15s",borderLeft:`2px solid ${active?C.accent:"transparent"}`,textAlign:"left"}}
+                      style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:collapsed?"10px 14px":"8px 14px",border:"none",background:active?C.accentGlow:"transparent",color:active?C.accent:"#a8c8dc",cursor:"pointer",fontSize:13,fontWeight:active?700:500,transition:"all .15s",borderLeft:`2px solid ${active?C.accent:"transparent"}`,textAlign:"left"}}
                       onMouseEnter={e=>{if(!active){e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.color=C.textSub;}}}
                       onMouseLeave={e=>{if(!active){e.currentTarget.style.background="transparent";e.currentTarget.style.color=C.dim;}}}>
                       <span style={{fontSize:15,flexShrink:0}}>{t.icon}</span>
@@ -876,7 +876,7 @@ export default function OnChainBridge() {
                   {dark?"●":"○"}
                 </div>
               </button>
-              <span style={{fontSize:10,color:C.muted}}>{dark?"Dark":"Light"}</span>
+              <span style={{fontSize:10,color:"#7090a8",fontWeight:500}}>{dark?"Dark":"Light"}</span>
             </div>
             <button onClick={() => setCollapsed(v=>!v)} style={{padding:"5px 8px",borderRadius:7,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer"}}>{collapsed?"›":"‹"}</button>
           </div>
@@ -1182,18 +1182,18 @@ export default function OnChainBridge() {
           <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
           {[
-            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",logo:"https://phantom.app/img/phantom-logo.png",color:"#ab9ff2"},
-            {id:"solflare",name:"Solflare",desc:"Solana · Secure",logo:"https://solflare.com/assets/logo.svg",color:"#fc7227"},
-            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",logo:"https://backpack.app/icon.png",color:"#e33e3f"},
-            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",logo:"https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",color:"#f6851b"},
-            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",logo:"https://www.coinbase.com/assets/press/coinbase-mark-600px.png",color:"#0052ff"},
+            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",emoji:"👻",color:"#ab9ff2"},
+            {id:"solflare",name:"Solflare",desc:"Solana · Secure",emoji:"🔆",color:"#fc7227"},
+            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",emoji:"🎒",color:"#e33e3f"},
+            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",emoji:"🦊",color:"#f6851b"},
+            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",emoji:"🔵",color:"#0052ff"},
           ].map(w => (
             <button key={w.id} onClick={() => connectSpecific(w.id)}
               style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"13px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:6,transition:"all .15s",textAlign:"left"}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor=w.color;e.currentTarget.style.background=`${w.color}0f`;}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.card;}}>
-              <div style={{width:36,height:36,borderRadius:10,overflow:"hidden",flexShrink:0,background:`${w.color}15`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <img src={w.logo} alt={w.name} width={28} height={28} style={{objectFit:"contain"}} onError={e=>{e.target.style.display="none";e.target.parentNode.textContent=w.name[0];}}/>
+              <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${w.color}20`,border:`1px solid ${w.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                {w.emoji}
               </div>
               <div style={{flex:1}}>
                 <div style={{fontSize:14,fontWeight:600,color:C.text}}>{w.name}</div>
