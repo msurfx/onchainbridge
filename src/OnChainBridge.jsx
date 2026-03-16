@@ -983,7 +983,7 @@ export default function OnChainBridge() {
               placeholder={mode==="onchain"?"Search protocol or onchain company...":"Search any Web2 company..."}
               style={{flex:1,background:"transparent",border:"none",outline:"none",color:C.text,fontSize:14,padding:"4px 0"}}/>
             <button onClick={() => searchCompany()} disabled={phase==="loading"}
-              style={{padding:"7px 20px",borderRadius:7,border:"none",background:phase==="loading"?C.muted:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:phase==="loading"?"wait":"pointer",flexShrink:0,boxShadow:phase!=="loading"?`0 0 14px ${C.accent}35`:""}}>
+              style={{padding:"7px 14px",borderRadius:7,border:"none",background:phase==="loading"?C.muted:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:12,cursor:phase==="loading"?"wait":"pointer",flexShrink:0,whiteSpace:"nowrap",boxShadow:phase!=="loading"?`0 0 14px ${C.accent}35`:""}}>
               {phase==="loading"?"...":mode==="onchain"?"Scan →":"Verify →"}
             </button>
           </div>
@@ -1090,8 +1090,8 @@ export default function OnChainBridge() {
                   style={{flex:1,background:"transparent",border:"none",outline:"none",color:C.text,fontSize:16,padding:"8px 0",fontFamily:"var(--display)"}}
                   autoFocus/>
                 <button onClick={() => searchCompany()} disabled={phase==="loading"}
-                  style={{padding:"11px 28px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",flexShrink:0,boxShadow:`0 0 16px ${C.accent}35`}}>
-                  {mode==="onchain"?"Scan →":"Analyse →"}
+                  style={{padding:"11px 20px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap",boxShadow:`0 0 16px ${C.accent}35`}}>
+                  {phase==="loading"?"...":mode==="onchain"?"Scan →":"Analyse →"}
                 </button>
               </div>
             </div>
