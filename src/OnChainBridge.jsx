@@ -1182,22 +1182,24 @@ export default function OnChainBridge() {
           <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
           {[
-            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",icon:"👻",color:"#ab9ff2"},
-            {id:"solflare",name:"Solflare",desc:"Solana · Secure",icon:"🔥",color:"#fc7227"},
-            {id:"backpack",name:"Backpack",desc:"Solana · Multi-chain",icon:"🎒",color:"#e33e3f"},
-            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM",icon:"🦊",color:"#f6851b"},
-            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",icon:"🔵",color:"#0052ff"},
+            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",logo:"https://phantom.app/img/phantom-logo.png",color:"#ab9ff2"},
+            {id:"solflare",name:"Solflare",desc:"Solana · Secure",logo:"https://solflare.com/assets/logo.svg",color:"#fc7227"},
+            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",logo:"https://backpack.app/icon.png",color:"#e33e3f"},
+            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",logo:"https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",color:"#f6851b"},
+            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",logo:"https://www.coinbase.com/assets/press/coinbase-mark-600px.png",color:"#0052ff"},
           ].map(w => (
             <button key={w.id} onClick={() => connectSpecific(w.id)}
-              style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:8,transition:"all .15s",textAlign:"left"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor=w.color;e.currentTarget.style.background=`${w.color}10`;}}
+              style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"13px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:6,transition:"all .15s",textAlign:"left"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor=w.color;e.currentTarget.style.background=`${w.color}0f`;}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.card;}}>
-              <span style={{fontSize:22,flexShrink:0}}>{w.icon}</span>
-              <div style={{flex:1}}>
-                <div style={{fontSize:14,fontWeight:700,color:C.text}}>{w.name}</div>
-                <div style={{fontSize:11,color:C.dim}}>{w.desc}</div>
+              <div style={{width:36,height:36,borderRadius:10,overflow:"hidden",flexShrink:0,background:`${w.color}15`,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <img src={w.logo} alt={w.name} width={28} height={28} style={{objectFit:"contain"}} onError={e=>{e.target.style.display="none";e.target.parentNode.textContent=w.name[0];}}/>
               </div>
-              <span style={{fontSize:12,color:C.dim}}>→</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:600,color:C.text}}>{w.name}</div>
+                <div style={{fontSize:11,color:C.dim,marginTop:1}}>{w.desc}</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke={C.dim} strokeWidth="1.5" strokeLinecap="round"/></svg>
             </button>
           ))}
           <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:8}}>New to wallets? <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" style={{color:C.accent}}>Get Phantom →</a></div>
