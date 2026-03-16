@@ -437,12 +437,27 @@ export default function OnChainBridge() {
       savings: data?.financial?.projectedSavings||'',
       fit: data?.ticker?.onchainPotential||0,
       recommended: data?.recommendedSectors||[],
+      fullData: data, // save full analysis
     };
     setSearchHistory(h => {
       const next = [entry, ...h.filter(x=>x.name!==name)].slice(0,5);
       try { localStorage.setItem('ocb_history', JSON.stringify(next)); } catch(_){}
       return next;
     });
+  };
+
+  // Restore from history without re-fetching
+  const restoreFromHistory = (entry) => {
+    if (!entry?.fullData) { setInput(entry.name); searchCompany(entry.name); return; }
+    const rec = (entry.fullData.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
+    const core = [...FIXED_SECTORS,...rec];
+    setInput(entry.name);
+    setVerified({name:entry.name, address:entry.fullData.location||''});
+    setCoreSectors(core);
+    setTabs(buildTabs(rec, "web2"));
+    setD(entry.fullData);
+    setTab("overview");
+    setPhase("dashboard");
   };
 
   const confirmCompany = (opt) => {
@@ -587,7 +602,7 @@ export default function OnChainBridge() {
                 <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,maxWidth:480}}>{gap.description}</div>
               </div>
               <div style={{textAlign:"right",flexShrink:0,marginLeft:20}}>
-                <div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)",textShadow:`0 0 12px ${C.accent}60`}}>{gap.estimatedAnnualValue}</div>
+                <div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{gap.estimatedAnnualValue}</div>
                 <div style={{fontSize:12,color:C.dim}}>annual value</div>
               </div>
             </div>
@@ -682,7 +697,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{d.depin?.summary}</div></div>
           {d.depin?.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)",textShadow:`0 0 12px ${C.accent}60`}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
@@ -709,7 +724,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>🦞 OpenClaw Agents — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>Autonomous agents via WhatsApp/Telegram/Slack. No crypto team needed.</div><div style={{display:"flex",gap:10,marginTop:12}}><Met label="Total Saving" value={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/><Met label="Agents" value={d.openclaw?.agents?.length||0} color={C.accent} C={C}/></div></div>
           {d.openclaw?.agents?.map((a,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:18}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}><div><div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:3}}>🦞 {a.name}</div><div style={{fontSize:13,color:C.accent}}>{a.role}</div></div><div style={{textAlign:"right"}}><Bdg color={C.accent} C={C}>{a.monthlySaving}/mo</Bdg><div style={{fontSize:12,color:C.dim,marginTop:4}}>Cost: {a.monthlyCost}/mo</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10,flexWrap:"wrap",gap:6}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:3}}>🦞 {a.name}</div><div style={{fontSize:13,color:C.accent}}>{a.role}</div></div><div style={{textAlign:"right",flexShrink:0}}><Bdg color={C.accent} C={C}>{a.monthlySaving}/mo</Bdg><div style={{fontSize:11,color:C.dim,marginTop:3}}>Cost: {a.monthlyCost}/mo</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:10}}>{a.description}</div>
             <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{a.skills?.map((sk,j) => <Bdg key={j} color={C.purple} C={C} s={{fontSize:11}}>{sk}</Bdg>)}</div>
           </div></Crd>))}
@@ -800,6 +815,10 @@ export default function OnChainBridge() {
         .ocb-burger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;cursor:pointer;flex-shrink:0;flex-direction:column;gap:4px;padding:8px;border:1px solid rgba(50,128,148,0.3);background:transparent}
         .ocb-burger span{display:block;width:16px;height:2px;background:#7090a8;border-radius:1px}
         @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+        @media(max-width:480px){
+          .ocb-search input{font-size:13px!important}
+          .ocb-verify-btn{padding:8px 10px!important;font-size:11px!important}
+        }
         .ocb-mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:${C?.surface||"#243245"};border-top:1px solid rgba(0,212,200,0.2);z-index:100;padding:8px 4px;gap:2px}
       `}</style>
 
@@ -828,7 +847,7 @@ export default function OnChainBridge() {
             const name = typeof entry === "string" ? entry : entry.name;
             const snap = typeof entry === "object" ? entry : null;
             return (
-              <button key={i} onClick={() => {setInput(name);searchCompany(name);}}
+              <button key={i} onClick={() => restoreFromHistory(entry)}
                 style={{width:"100%",display:"flex",flexDirection:"column",padding:"8px 10px",borderRadius:8,border:`1px solid transparent`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",textAlign:"left",transition:"all .15s",marginBottom:3}}
                 onMouseEnter={e=>{e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.borderColor=C.borderStrong;}}
                 onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor="transparent";}}>
@@ -906,7 +925,7 @@ export default function OnChainBridge() {
       <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,paddingBottom:"env(safe-area-inset-bottom)"}}>
 
         {/* Mobile Drawer */}
-        {mobileMenu && <div style={{position:"fixed",inset:0,zIndex:200,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(4px)"}} onClick={() => setMobileMenu(false)}>
+        {mobileMenu ? <div style={{position:"fixed",inset:0,zIndex:200,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(4px)"}} onClick={() => setMobileMenu(false)}>
           <div style={{width:280,height:"100%",background:C.surface,borderRight:`1px solid ${C.borderStrong}`,overflowY:"auto",animation:"slideIn .25s ease"}} onClick={e => e.stopPropagation()}>
             <div style={{padding:"16px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
@@ -971,7 +990,7 @@ export default function OnChainBridge() {
               </button>
             </div>
           </div>
-        </div>}
+        </div> : null}
 
         {/* Top Bar */}
         <header className="ocb-topbar" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"12px 24px",display:phase==="search"?"none":"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:40,gap:16}}>
@@ -1117,7 +1136,7 @@ export default function OnChainBridge() {
                   const name = typeof entry==="string"?entry:entry.name;
                   const snap = typeof entry==="object"?entry:null;
                   return (
-                    <button key={i} onClick={() => {setInput(name);searchCompany(name);}}
+                    <button key={i} onClick={() => restoreFromHistory(entry)}
                       style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:10,border:`1px solid ${C.border}`,background:C.surface,color:C.textSub,fontSize:13,cursor:"pointer",transition:"all .15s"}}
                       onMouseEnter={e=>{e.currentTarget.style.borderColor=C.accent;e.currentTarget.style.background=C.accentGlow;}}
                       onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.surface;}}>
@@ -1150,12 +1169,12 @@ export default function OnChainBridge() {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
                 <div style={{borderRadius:14,padding:24,background:`linear-gradient(135deg,${C.accent}20,${C.purple}15)`,border:`1px solid ${C.borderStrong}`,boxShadow:`0 0 40px ${C.accent}15`}}>
                   <div style={{fontSize:12,fontWeight:600,color:C.dim,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{mode==="onchain"?"Onchain Coverage":"Onchain Potential"}</div>
-                  <div style={{fontSize:38,fontWeight:800,fontFamily:"var(--mono)",marginBottom:4,color:C.accent,textShadow:`0 0 20px ${C.accent}60`}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</div>
+                  <div style={{fontSize:"clamp(24px,6vw,38px)",fontWeight:800,fontFamily:"var(--mono)",marginBottom:4,color:C.accent}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</div>
                   <div style={{fontSize:13,color:C.textSub}}>{d.description}</div>
                 </div>
                 <div style={{borderRadius:14,padding:24,background:C.surface,border:`1px solid ${C.border}`}}>
                   <div style={{fontSize:12,fontWeight:600,color:C.dim,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Projected Savings</div>
-                  <div style={{fontSize:38,fontWeight:800,color:C.accent,fontFamily:"var(--mono)",marginBottom:4,textShadow:`0 0 16px ${C.accent}50`}}>{d.financial?.projectedSavings}</div>
+                  <div style={{fontSize:38,fontWeight:800,color:C.accent,fontFamily:"var(--mono)",marginBottom:4}}>{d.financial?.projectedSavings}</div>
                   <div style={{fontSize:13,color:C.dim}}>3yr growth: <span style={{color:C.purple}}>{d.financial?.revenueGrowth}</span></div>
                 </div>
               </div>
@@ -1210,7 +1229,7 @@ export default function OnChainBridge() {
                   {d.collaborations?.possible?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:`${C.purple}08`,border:`1px solid ${C.border}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.fit}% fit</div></div><button onClick={() => tryBridge(c)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:11,fontWeight:700}}>Bridge</button></div>)}
                 </div></Crd>
                 <Crd accent C={C}><div style={{padding:18}}><STtl icon="🦞" title="OpenClaw" badge={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/>
-                  {d.openclaw?.agents?.slice(0,4).map((a,i) => <div key={i} style={{padding:"9px 12px",background:C.bg,borderRadius:8,marginBottom:6}}><div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontSize:13,fontWeight:700,color:C.text}}>{a.name}</span><Bdg color={"#d46faa"} C={C} s={{fontSize:11}}>{a.monthlySaving}/mo</Bdg></div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role}</div></div>)}
+                  {d.openclaw?.agents?.slice(0,4).map((a,i) => <div key={i} style={{padding:"9px 12px",background:C.bg,borderRadius:8,marginBottom:6}}><div style={{display:"flex",justifyContent:"space-between",gap:6,flexWrap:"wrap"}}><span style={{fontSize:13,fontWeight:700,color:C.text,flex:1,minWidth:0}}>{a.name}</span><Bdg color={"#d46faa"} C={C} s={{fontSize:11,flexShrink:0}}>{a.monthlySaving}/mo</Bdg></div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role}</div></div>)}
                 </div></Crd>
               </div>
 
@@ -1329,19 +1348,22 @@ export default function OnChainBridge() {
           <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
           {[
-            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",emoji:"👻",color:"#ab9ff2"},
-            {id:"solflare",name:"Solflare",desc:"Solana · Secure",emoji:"🔆",color:"#fc7227"},
-            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",emoji:"🎒",color:"#e33e3f"},
-            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",emoji:"🦊",color:"#f6851b"},
-            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",emoji:"🔵",color:"#0052ff"},
+            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",color:"#ab9ff2",
+              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23ab9ff2'/%3E%3Cpath d='M110.6 64c0 25.7-20.8 46.6-46.6 46.6S17.4 89.7 17.4 64 38.3 17.4 64 17.4 110.6 38.3 110.6 64z' fill='%23fff'/%3E%3Cpath d='M85 51.3H43.5c-2.2 0-3.5 2.4-2.3 4.3l20.6 31.2c.7 1 1.8 1.6 3 1.6h20.2c1.8 0 3.3-1.5 3.3-3.3V54.6c0-1.8-1.5-3.3-3.3-3.3z' fill='%234e44ce'/%3E%3C/svg%3E"},
+            {id:"solflare",name:"Solflare",desc:"Solana · Non-custodial",color:"#fc7227",
+              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23fc7227'/%3E%3Cpath d='M64 20l30 52H34L64 20z' fill='%23fff'/%3E%3Cpath d='M64 108l-30-52h60L64 108z' fill='%23fff' opacity='.7'/%3E%3C/svg%3E"},
+            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",color:"#e33e3f",
+              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23e33e3f'/%3E%3Crect x='36' y='44' width='56' height='52' rx='10' fill='%23fff'/%3E%3Crect x='50' y='28' width='28' height='22' rx='8' fill='none' stroke='%23fff' stroke-width='6'/%3E%3Crect x='58' y='62' width='12' height='16' rx='3' fill='%23e33e3f'/%3E%3C/svg%3E"},
+            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",color:"#f6851b",
+              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23f6851b'/%3E%3Cpolygon points='64,20 96,72 64,88 32,72' fill='%23fff' opacity='.9'/%3E%3Cpolygon points='64,88 96,72 64,108' fill='%23fff' opacity='.7'/%3E%3Cpolygon points='64,88 32,72 64,108' fill='%23fff' opacity='.5'/%3E%3C/svg%3E"},
+            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",color:"#0052ff",
+              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%230052ff'/%3E%3Ccircle cx='64' cy='64' r='32' fill='%23fff'/%3E%3Crect x='48' y='56' width='32' height='16' rx='4' fill='%230052ff'/%3E%3C/svg%3E"},
           ].map(w => (
             <button key={w.id} onClick={() => connectSpecific(w.id)}
               style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"13px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:6,transition:"all .15s",textAlign:"left"}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor=w.color;e.currentTarget.style.background=`${w.color}0f`;}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.background=C.card;}}>
-              <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${w.color}20`,border:`1px solid ${w.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
-                {w.emoji}
-              </div>
+              <img src={w.logo} alt={w.name} width={36} height={36} style={{borderRadius:10,flexShrink:0}}/>
               <div style={{flex:1}}>
                 <div style={{fontSize:14,fontWeight:600,color:C.text}}>{w.name}</div>
                 <div style={{fontSize:11,color:C.dim,marginTop:1}}>{w.desc}</div>
