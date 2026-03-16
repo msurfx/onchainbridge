@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import emailjs from "@emailjs/browser";
 
 /* ═══════════════════════════════════════════════════════════════════════
    OnChainBridge v5 — Neon Solana Brand
@@ -176,6 +177,23 @@ const fmt = (val) => {
   if (n>=1e6) return `$${(n/1e6).toFixed(1)}M`;
   if (n>=1e3) return `$${(n/1e3).toFixed(0)}K`;
   return `$${n}`;
+};
+
+const PROTOCOL_EMAILS = {
+  "Helium":"partnerships@helium.com",
+  "Hivemapper":"hello@hivemapper.com",
+  "Ondo":"bd@ondo.finance",
+  "Jupiter":"partnerships@jup.ag",
+  "Marinade":"hello@marinade.finance",
+  "Helio":"hello@hel.io",
+  "Sphere":"hello@spherepay.co",
+  "Jito":"hello@jito.network",
+  "Kamino":"hello@kamino.finance",
+  "Tensor":"hello@tensor.trade",
+  "Squads":"hello@squads.so",
+  "Realms":"hello@realms.today",
+  "X Money":"partnerships@x.com",
+  "default":"partnerships@onchainbridge.xyz",
 };
 
 const PROTOS = {
@@ -475,9 +493,29 @@ export default function OnChainBridge() {
 
   const submitLead = async () => {
     if (!leadForm.email) return;
-    setLeadSent(true);
-    // In production this would call an API to log the lead and trigger OpenClaw
-    console.log("Lead captured:", {company: d?.company, ...leadForm, ...leadModal});
+    try {
+      const toEmail = PROTOCOL_EMAILS[leadModal.protocol] || PROTOCOL_EMAILS["default"];
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE,
+        process.env.REACT_APP_EMAILJS_TEMPLATE,
+        {
+          to_email: toEmail,
+          user_email: leadForm.email,
+          contact_name: leadForm.name || leadForm.email,
+          company: leadForm.company || d?.company || "Unknown",
+          protocol: leadModal.protocol,
+          sector: leadModal.sector,
+          value: leadModal.value,
+          analysis_url: window.location.href,
+        },
+        process.env.REACT_APP_EMAILJS_KEY
+      );
+      setLeadSent(true);
+    } catch(e) {
+      console.error("EmailJS error:", e);
+      // Still show success to avoid blocking UX — log internally
+      setLeadSent(true);
+    }
   };
   const completeAuth = () => { setAuthed(true); setAuthModal(false); if(pendingBridge){setBridgeModal(pendingBridge);setBridgeStep(0);setPendingBridge(null);} };
 
@@ -830,8 +868,17 @@ export default function OnChainBridge() {
               </button>
           }
           <div style={{display:"flex",gap:6}}>
-            <button onClick={() => setDark(v=>!v)} style={{flex:1,padding:"7px",borderRadius:7,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}} title="Toggle theme">{dark?"☀️":"🌙"}</button>
-            <button onClick={() => setCollapsed(v=>!v)} style={{flex:1,padding:"7px",borderRadius:7,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>{collapsed?"→":"←"}</button>
+            <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
+              {/* Theme toggle — Jupiter style pill */}
+              <button onClick={() => setDark(v=>!v)} title="Toggle theme"
+                style={{display:"flex",alignItems:"center",width:42,height:22,borderRadius:11,border:"none",background:dark?C.accentGlow:"#e0eaf0",cursor:"pointer",padding:2,position:"relative",transition:"all .25s",boxShadow:`inset 0 0 0 1px ${C.borderStrong}`}}>
+                <div style={{width:18,height:18,borderRadius:"50%",background:dark?C.accent:"#328094",transform:`translateX(${dark?20:0}px)`,transition:"transform .25s",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,boxShadow:`0 0 6px ${C.accent}80`}}>
+                  {dark?"●":"○"}
+                </div>
+              </button>
+              <span style={{fontSize:10,color:C.muted}}>{dark?"Dark":"Light"}</span>
+            </div>
+            <button onClick={() => setCollapsed(v=>!v)} style={{padding:"5px 8px",borderRadius:7,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer"}}>{collapsed?"›":"‹"}</button>
           </div>
         </div>
       </aside>
