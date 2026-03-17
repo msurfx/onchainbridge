@@ -487,6 +487,17 @@ export default function OnChainBridge() {
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
       const core = mode==="onchain" ? ["financial","payments","collaborations","openclaw","policy","gaps"] : [...FIXED_SECTORS,...rec];
       setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setPhase("dashboard"); saveHistory(name, parsed);
+      fetch("/api/tweet", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          company: parsed.company,
+          potential: mode==="onchain" ? parsed.onchainProfile?.coverageScore : parsed.ticker?.onchainPotential,
+          savings: mode==="onchain" ? parsed.gaps?.[0]?.estimatedAnnualValue : parsed.financial?.projectedSavings,
+          sectors: parsed.recommendedSectors || parsed.onchainProfile?.activeSectors || [],
+          mode,
+        })
+      }).catch(()=>{});
     } catch(e) { console.error(e); setError("Analysis failed: "+e.message); setPhase("search"); }
     finally { clearInterval(iv); }
   }, [mode]);
