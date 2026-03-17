@@ -1,9 +1,4 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { PhantomWalletAdapter, SolflareWalletAdapter, BackpackWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import "@solana/wallet-adapter-react-ui/styles.css";
 import emailjs from "@emailjs/browser";
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -344,7 +339,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
 };
 
 /* ═══ WALLET WRAPPER ═══ */
-function OnChainBridgeApp() {
+export default function OnChainBridge() {
   const [dark, setDark] = useState(false);
   const C = dark ? DARK : LIGHT;
 
@@ -913,9 +908,15 @@ function OnChainBridgeApp() {
 
         {/* Footer */}
         <div style={{padding:"10px",borderTop:`1px solid ${C.border}`}}>
-          <div style={{marginBottom:8}}>
-            <WalletMultiButton style={{width:"100%",fontSize:12,height:36,borderRadius:8,justifyContent:collapsed?"center":"flex-start"}}/>
-          </div>
+          {walletConnected
+            ? <button onClick={disconnectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:6,justifyContent:"center"}}>
+                <span style={{width:6,height:6,borderRadius:"50%",background:C.accent,display:"inline-block"}}/>
+                {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}`}
+              </button>
+            : <button onClick={connectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                Connect
+              </button>
+          }
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
             {!collapsed && <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
               <button onClick={() => setDark(v=>!v)} title="Toggle theme"
@@ -991,7 +992,9 @@ function OnChainBridgeApp() {
                 ? <button onClick={disconnectWallet} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8}}>
                     ● {walletAddress?.slice(0,6)}...{walletAddress?.slice(-4)}
                   </button>
-                : <div style={{marginBottom:8}}><WalletMultiButton style={{width:"100%",fontSize:12,height:36,borderRadius:8}}/></div>
+                : <button onClick={() => {setMobileMenu(false);setTimeout(()=>setWalletModal(true),150);}} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8}}>
+                    Connect Wallet
+                  </button>
               }
               <button onClick={() => setDark(v=>!v)} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer"}}>
                 {dark?"☀️ Light mode":"🌙 Dark mode"}
@@ -1429,25 +1432,5 @@ function OnChainBridgeApp() {
         </div>
       </div>}
     </div>
-  );
-}
-
-/* ═══ MAIN WITH WALLET PROVIDERS ═══ */
-export default function OnChainBridge() {
-  const network = WalletAdapterNetwork.Mainnet;
-  const endpoint = "https://api.mainnet-beta.solana.com";
-  const wallets = useMemo(() => [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
-  ], []);
-  return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <OnChainBridgeApp/>
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
   );
 }
