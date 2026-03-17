@@ -322,48 +322,55 @@ const ShareCard = ({d, mode, onClose, C}) => {
   const dl = async () => {
     try {
       const {default:h2c} = await import('html2canvas');
-      const cv = await h2c(ref.current,{backgroundColor:DARK.bg,scale:2,useCORS:true});
+      const cv = await h2c(ref.current,{backgroundColor:LIGHT.bg,scale:2,useCORS:true});
       const a = document.createElement('a'); a.download=`${d.company}-onchainbridge.png`; a.href=cv.toDataURL(); a.click();
     } catch(_) { alert("Run: npm install html2canvas"); }
   };
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,flexDirection:"column",gap:14}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
-        <div ref={ref} style={{width:isMobile?"92vw":520,borderRadius:16,background:DARK.bg,border:`1px solid ${DARK.borderStrong}`,padding:28,fontFamily:"'DM Sans',sans-serif",boxShadow:`0 0 60px ${DARK.accent}20`}}>
+        <div ref={ref} style={{width:isMobile?"92vw":520,borderRadius:16,background:LIGHT.bg,border:`1px solid ${LIGHT.borderStrong}`,padding:28,fontFamily:"'DM Sans',sans-serif",boxShadow:`0 0 60px ${LIGHT.accent}20`}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${DARK.accent},${DARK.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",boxShadow:`0 0 14px ${DARK.accent}60`}}>◆</div>
-              <div><div style={{fontSize:14,fontWeight:800,color:DARK.text}}>OnChainBridge<span style={{color:DARK.accent}}>.io</span></div><div style={{fontSize:10,color:DARK.dim}}>WEB2 → ONCHAIN PROTOCOL</div></div>
+              <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${LIGHT.accent},${LIGHT.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",boxShadow:`0 0 14px ${LIGHT.accent}60`}}>◆</div>
+              <div><div style={{fontSize:14,fontWeight:800,color:LIGHT.text}}>OnChainBridge<span style={{color:LIGHT.accent}}>.xyz</span></div><div style={{fontSize:10,color:LIGHT.d}}>WEB2 → ONCHAIN PROTOCOL</div></div>
             </div>
-            <Bdg color={mode==="onchain"?DARK.purple:DARK.accent} C={DARK}>{mode==="onchain"?"🔗 ONCHAIN":"WEB2"}</Bdg>
+            <Bdg color={mode==="onchain"?LIGHT.purple:LIGHT.accent} C={LIGHT}>{mode==="onchain"?"🔗 ONCHAIN":"WEB2"}</Bdg>
           </div>
-          <div style={{marginBottom:16}}><div style={{fontSize:26,fontWeight:800,color:DARK.text}}>{d.company}</div><div style={{fontSize:13,color:DARK.dim,marginTop:3}}>{d.description}</div></div>
+          <div style={{marginBottom:16}}><div style={{fontSize:26,fontWeight:800,color:LIGHT.text}}>{d.company}</div><div style={{fontSize:13,color:LIGHT.dim,marginTop:3}}>{d.description}</div></div>
           <div style={{marginBottom:16,padding:"12px 16px",borderRadius:10,background:DARK.accentGlow,border:`1px solid ${DARK.borderStrong}`}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:11,color:DARK.dim,fontFamily:"monospace"}}>ONCHAIN {mode==="onchain"?"COVERAGE":"POTENTIAL"}</span><span style={{fontSize:15,fontWeight:800,color:DARK.accent,fontFamily:"monospace"}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</span></div>
-            <PBar v={mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential} color={DARK.accent} C={DARK} h={5}/>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:11,color:LIGHT.dim,fontFamily:"monospace"}}>ONCHAIN {mode==="onchain"?"COVERAGE":"POTENTIAL"}</span><span style={{fontSize:15,fontWeight:800,color:LIGHT.accent,fontFamily:"monospace"}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</span></div>
+            <PBar v={mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential} color={LIGHT.accent} C={LIGHT} h={5}/>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:16}}>
             {top3.map((item,i) => (
               <div key={i} style={{padding:"12px 14px",borderRadius:10,background:`${item.color}12`,border:`1px solid ${item.color}30`,textAlign:"center"}}>
                 <div style={{fontSize:16,fontWeight:800,color:item.color,fontFamily:"monospace"}}>{item.value||"—"}</div>
-                <div style={{fontSize:10,color:DARK.dim,marginTop:3,textTransform:"uppercase"}}>{item.label}</div>
+                <div style={{fontSize:10,color:LIGHT.dim,marginTop:3,textTransform:"uppercase"}}>{item.label}</div>
               </div>
             ))}
           </div>
           <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:16}}>
             {(mode==="onchain"?d.onchainProfile?.activeSectors:d.recommendedSectors)?.map((s,i) => (
-              <Bdg key={i} color={i===0?DARK.accent:i===1?DARK.purple:"#d46faa"} C={DARK} s={{fontSize:10}}>
+              <Bdg key={i} color={i===0?LIGHT.accent:i===1?LIGHT.purple:"#a8457e"} C={LIGHT} s={{fontSize:10}}>
                 {SECTOR_META[s]?.icon} {SECTOR_META[s]?.label||s}
               </Bdg>
             ))}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:14,borderTop:`1px solid ${DARK.border}`}}>
-            <div style={{fontSize:11,color:DARK.dim}}>onchainbridge.xyz</div>
-            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
+            <div style={{fontSize:11,color:LIGHT.dim}}>onchainbridge.xyz</div>
+            <Bdg color={LIGHT.accent} C={LIGHT} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
           </div>
         </div>
         <div style={{display:"flex",gap:10}}>
           <button onClick={dl} style={{padding:"10px 24px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇ Download PNG</button>
+          <button onClick={() => {
+            var co = d.company || "";
+            var sc = mode==="onchain" ? (d.onchainProfile ? d.onchainProfile.coverageScore : "") : (d.ticker ? d.ticker.onchainPotential : "");
+            var sv = mode==="onchain" ? (d.gaps && d.gaps[0] ? d.gaps[0].estimatedAnnualValue : "") : (d.financial ? d.financial.projectedSavings : "");
+            var txt = encodeURIComponent(co + " - " + sc + "% onchain\n" + sv + " opportunity\nFull analysis: app.onchainbridge.xyz\n#OnChainBridge #Solana");
+            window.open("https://twitter.com/intent/tweet?text=" + txt, "_blank");
+          }} style={{padding:"10px 20px",borderRadius:10,border:"none",background:"#000",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>𝕏 Post</button>
           <button onClick={onClose} style={{padding:"10px 20px",borderRadius:10,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>Close</button>
         </div>
         <div style={{fontSize:12,color:C.dim}}>Share on X with #OnChainBridge</div>
@@ -1097,6 +1104,7 @@ export default function OnChainBridge() {
             </button>
           </div>
 
+          {d && phase==="dashboard" && <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>𝕏 Share</button>}
           {d ? (
             <div className="ocb-company-info" style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
               <div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{d.company}</div><div style={{fontSize:11,color:C.dim}}>{d.description?.slice(0,45)}</div></div>
