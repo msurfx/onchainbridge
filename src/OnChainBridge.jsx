@@ -258,7 +258,7 @@ const Met = ({label, value, sub, color, C, spark=[]}) => {
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
           <input autoFocus id="gate-email-input" placeholder="Work email"
-            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
             onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
           <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
             style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
@@ -387,7 +387,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
           <input autoFocus id="gate-email-input" placeholder="Work email"
-            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
             onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
           <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
             style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
@@ -1577,7 +1577,7 @@ export default function OnChainBridge() {
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
           <input autoFocus id="gate-email-input" placeholder="Work email"
-            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
             onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
           <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
             style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
