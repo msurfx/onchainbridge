@@ -1325,7 +1325,7 @@ export default function OnChainBridge() {
 
       </div>
 
-      {/* AUTH MODAL */}}
+      {/* AUTH MODAL */}
       {authModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.8)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={() => setAuthModal(false)}>
         <div style={{width:"90%",maxWidth:420,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 40px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>🔐 Sign In to Bridge</div>
