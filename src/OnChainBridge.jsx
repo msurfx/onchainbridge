@@ -324,9 +324,10 @@ const ShareCard = ({d, mode, onClose, C}) => {
             ))}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:14,borderTop:`1px solid ${DARK.border}`}}>
-            <div style={{fontSize:11,color:DARK.dim}}>onchainbridge.io · Powered by Solana</div>
-            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ SOLANA</Bdg>
+            <div style={{fontSize:11,color:DARK.dim}}>app.onchainbridge.xyz</div>
+            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
           </div>
+          <div style={{marginTop:10,padding:"8px 12px",borderRadius:8,background:DARK.accentGlow,border:`1px solid ${DARK.borderStrong}`,fontSize:11,color:DARK.tAlign:"center"}}>Full analysis at <span style={{color:DARK.accent,fontWeight:700}}>app.onchainbridge.xyz</span></div>
         </div>
         <div style={{display:"flex",gap:10}}>
           <button onClick={dl} style={{padding:"10px 24px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇ Download PNG</button>
@@ -974,7 +975,7 @@ export default function OnChainBridge() {
               {[{id:"web2",label:"Web2 Analysis"},{id:"onchain",label:"Onchain Gaps"}].map(m => (
                 <button key={m.id} onClick={() => {setMode(m.id);setPhase("search");setD(null);setInput("");setMobileMenu(false);}}
                   style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"9px 10px",borderRadius:8,border:`1px solid ${mode===m.id?C.borderStrong:C.border}`,background:mode===m.id?C.accentGlow:"transparent",color:mode===m.id?C.accent:C.dim,fontSize:13,fontWeight:mode===m.id?700:400,cursor:"pointer",marginBottom:4,textAlign:"left"}}>
-                  {m.icon} {m.label}
+                  {m.label}
                 </button>
               ))}
             </div>
