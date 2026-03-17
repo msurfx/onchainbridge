@@ -253,53 +253,6 @@ const Met = ({label, value, sub, color, C, spark=[]}) => {
         </div>
         {spark.length>0 && <Spark data={spark} color={clr}/>}
       </div>
-      {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
-        <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
-          <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
-          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
-          <input autoFocus id="gate-email-input" placeholder="Work email"
-            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
-            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
-          <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
-            style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
-            Unlock Analysis
-          </button>
-          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
-        </div>
-      </div>}
-
-      {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
-        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
-          {!ratingSent ? (<>
-            <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>How useful was this?</div>
-            <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Rate your analysis</div>
-            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:22}}>
-              {[1,2,3,4,5].map(s => (
-                <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
-                  style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
-                  {String.fromCodePoint(0x2B50)}
-                </button>
-              ))}
-            </div>
-            <button onClick={() => {
-              if(rating>0){
-                emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
-                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
-                  process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
-                setRatingSent(true);
-                setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
-              } else { setRatingModal(false);setShareModal(true); }
-            }} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:rating?`linear-gradient(135deg,${C.accent},${C.purple})`:C.muted,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-              {rating?"Submit and Share":"Skip and Share"}
-            </button>
-          </>) : (<>
-            <div style={{fontSize:36,marginBottom:10}}>&#127881;</div>
-            <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
-            <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
-          </>)}
-        </div>
-      </div>}
-
     </div>
   );
 };
@@ -371,10 +324,9 @@ const ShareCard = ({d, mode, onClose, C}) => {
             ))}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:14,borderTop:`1px solid ${DARK.border}`}}>
-            <div style={{fontSize:11,color:DARK.dim}}>app.onchainbridge.xyz</div>
-            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
+            <div style={{fontSize:11,color:DARK.dim}}>onchainbridge.io · Powered by Solana</div>
+            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ SOLANA</Bdg>
           </div>
-          <div style={{marginTop:10,padding:"8px 12px",borderRadius:8,background:DARK.accentGlow,border:`1px solid ${DARK.borderStrong}`,fontSize:11,color:DARK.tAlign:"center"}}>Full analysis at <span style={{color:DARK.accent,fontWeight:700}}>app.onchainbridge.xyz</span></div>
         </div>
         <div style={{display:"flex",gap:10}}>
           <button onClick={dl} style={{padding:"10px 24px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇ Download PNG</button>
@@ -382,53 +334,6 @@ const ShareCard = ({d, mode, onClose, C}) => {
         </div>
         <div style={{fontSize:12,color:C.dim}}>Share on X with #OnChainBridge</div>
       </div>
-      {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
-        <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
-          <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
-          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
-          <input autoFocus id="gate-email-input" placeholder="Work email"
-            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
-            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
-          <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
-            style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
-            Unlock Analysis
-          </button>
-          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
-        </div>
-      </div>}
-
-      {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
-        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
-          {!ratingSent ? (<>
-            <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>How useful was this?</div>
-            <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Rate your analysis</div>
-            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:22}}>
-              {[1,2,3,4,5].map(s => (
-                <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
-                  style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
-                  {String.fromCodePoint(0x2B50)}
-                </button>
-              ))}
-            </div>
-            <button onClick={() => {
-              if(rating>0){
-                emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
-                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
-                  process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
-                setRatingSent(true);
-                setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
-              } else { setRatingModal(false);setShareModal(true); }
-            }} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:rating?`linear-gradient(135deg,${C.accent},${C.purple})`:C.muted,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-              {rating?"Submit and Share":"Skip and Share"}
-            </button>
-          </>) : (<>
-            <div style={{fontSize:36,marginBottom:10}}>&#127881;</div>
-            <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
-            <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
-          </>)}
-        </div>
-      </div>}
-
     </div>
   );
 };
@@ -1090,7 +995,7 @@ export default function OnChainBridge() {
               {[{id:"web2",label:"Web2 Analysis"},{id:"onchain",label:"Onchain Gaps"}].map(m => (
                 <button key={m.id} onClick={() => {setMode(m.id);setPhase("search");setD(null);setInput("");setMobileMenu(false);}}
                   style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"9px 10px",borderRadius:8,border:`1px solid ${mode===m.id?C.borderStrong:C.border}`,background:mode===m.id?C.accentGlow:"transparent",color:mode===m.id?C.accent:C.dim,fontSize:13,fontWeight:mode===m.id?700:400,cursor:"pointer",marginBottom:4,textAlign:"left"}}>
-                  {m.label}
+                  {m.icon} {m.label}
                 </button>
               ))}
             </div>
@@ -1459,7 +1364,7 @@ export default function OnChainBridge() {
           <button key={id} onClick={() => switchTab(id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:9,gap:2}}>
             <span style={{fontSize:16}}>{SECTOR_META[id]?.icon}</span>
             <span style={{fontWeight:tab===id?700:400}}>{SECTOR_META[id]?.label?.slice(0,7)}</span>
-          </on>
+          </button>
         ))}
         <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:C.accent,cursor:"pointer",fontSize:9,gap:2}}><span style={{fontSize:16}}>𝕏</span><span>Share</span></button>
       </div>}
@@ -1575,18 +1480,17 @@ export default function OnChainBridge() {
       {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
         <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
-          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
+          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown.</div>
           <input autoFocus id="gate-email-input" placeholder="Work email"
             style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,color:C.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
-            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
+            onKeyDown={e=>{ if(e.key==="Enter") submitEmailGate(e.target.value); }}/>
           <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
             style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
             Unlock Analysis
           </button>
-          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
+          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required.</div>
         </div>
       </div>}
-
       {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
         <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
           {!ratingSent ? (<>
@@ -1596,7 +1500,7 @@ export default function OnChainBridge() {
               {[1,2,3,4,5].map(s => (
                 <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
                   style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
-                  {String.fromCodePoint(0x2B50)}
+                  &#11088;
                 </button>
               ))}
             </div>
@@ -1618,7 +1522,6 @@ export default function OnChainBridge() {
           </>)}
         </div>
       </div>}
-
     </div>
   );
 }
