@@ -758,7 +758,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{d.depin?.summary}</div></div>
           {d.depin?.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
@@ -822,7 +822,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d?.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{sd.summary}</div></div>
           {sd.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
@@ -1436,7 +1436,6 @@ export default function OnChainBridge() {
             <span>{id==="overview"?"Home":id==="financial"?"Finance":id==="collaborations"?"Collabs":id==="openclaw"?"Agents":"Policy"}</span>
           </button>
         ))}
-        <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:C.accent,cursor:"pointer",fontSize:9,gap:2}}><span style={{fontSize:16}}>𝕏</span><span>Share</span></button>
       </div>}
 
       </div>
