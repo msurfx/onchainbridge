@@ -319,13 +319,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
     : [{label:"Savings/yr",value:d.financial?.projectedSavings,color:C.accent},
        {label:"Payment Save",value:d.payments?.savingAnnual,color:C.purple},
        {label:"Agent Save",value:d.openclaw?.totalAgentSaving,color:"#d46faa"}];
-  const dl = async () => {
-    try {
-      const {default:h2c} = await import('html2canvas');
-      const cv = await h2c(ref.current,{backgroundColor:LIGHT.bg,scale:2,useCORS:true});
-      const a = document.createElement('a'); a.download=`${d.company}-onchainbridge.png`; a.href=cv.toDataURL(); a.click();
-    } catch(_) { alert("Run: npm install html2canvas"); }
-  };
+
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,flexDirection:"column",gap:14}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
