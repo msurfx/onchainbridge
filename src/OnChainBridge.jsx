@@ -208,6 +208,38 @@ const PROTOS = {
   "Orca":{url:"https://orca.so"},"Raydium":{url:"https://raydium.io"},
   "Pyth":{url:"https://pyth.network"},"Chainlink":{url:"https://chain.link"},
   "X Money":{url:"https://x.com/i/money"},
+  "Realms":{url:"https://app.realms.today"},
+  "Parcl":{url:"https://parcl.co"},
+  "Credix":{url:"https://credix.finance"},
+  "Goldfinch":{url:"https://goldfinch.finance"},
+  "Maple":{url:"https://maple.finance"},
+  "Centrifuge":{url:"https://centrifuge.io"},
+  "Civic":{url:"https://civic.com"},
+  "Worldcoin":{url:"https://worldcoin.org"},
+  "Polygon ID":{url:"https://polygonid.com"},
+  "Nexus Mutual":{url:"https://nexusmutual.io"},
+  "Etherisc":{url:"https://etherisc.com"},
+  "Arago":{url:"https://arago.co"},
+  "Toucan":{url:"https://toucan.earth"},
+  "KlimaDAO":{url:"https://klimadao.finance"},
+  "Moss":{url:"https://moss.earth"},
+  "Loyalty":{url:"https://loyalty.app"},
+  "Starbucks Odyssey":{url:"https://odyssey.starbucks.com"},
+  "Hang":{url:"https://hang.xyz"},
+  "Credentialing":{url:"https://ceramic.network"},
+  "Ceramic":{url:"https://ceramic.network"},
+  "Arweave":{url:"https://arweave.org"},
+  "Bundlr":{url:"https://bundlr.network"},
+  "Streamflow":{url:"https://streamflow.finance"},
+  "Parcel":{url:"https://parcelx.io"},
+  "Saber":{url:"https://saber.so"},
+  "Meteora":{url:"https://meteora.ag"},
+  "Lifinity":{url:"https://lifinity.io"},
+  "Friktion":{url:"https://friktion.fi"},
+  "Solend":{url:"https://solend.fi"},
+  "Hubble":{url:"https://hubbleprotocol.io"},
+  "Fireblocks":{url:"https://fireblocks.com"},
+  "Turnkey":{url:"https://turnkey.com"},
 };
 
 // ─── UI Components ────────────────────────────────────────────────────
@@ -302,7 +334,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
               <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${DARK.accent},${DARK.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",boxShadow:`0 0 14px ${DARK.accent}60`}}>◆</div>
               <div><div style={{fontSize:14,fontWeight:800,color:DARK.text}}>OnChainBridge<span style={{color:DARK.accent}}>.io</span></div><div style={{fontSize:10,color:DARK.dim}}>WEB2 → ONCHAIN PROTOCOL</div></div>
             </div>
-            <Bdg color={mode==="onchain"?DARK.purple:DARK.accent} C={DARK}>{mode==="onchain"?"🔗 ONCHAIN":"🌉 WEB2"}</Bdg>
+            <Bdg color={mode==="onchain"?DARK.purple:DARK.accent} C={DARK}>{mode==="onchain"?"🔗 ONCHAIN":"WEB2"}</Bdg>
           </div>
           <div style={{marginBottom:16}}><div style={{fontSize:26,fontWeight:800,color:DARK.text}}>{d.company}</div><div style={{fontSize:13,color:DARK.dim,marginTop:3}}>{d.description}</div></div>
           <div style={{marginBottom:16,padding:"12px 16px",borderRadius:10,background:DARK.accentGlow,border:`1px solid ${DARK.borderStrong}`}}>
@@ -325,8 +357,8 @@ const ShareCard = ({d, mode, onClose, C}) => {
             ))}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:14,borderTop:`1px solid ${DARK.border}`}}>
-            <div style={{fontSize:11,color:DARK.dim}}>onchainbridge.io · Powered by Solana</div>
-            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ SOLANA</Bdg>
+            <div style={{fontSize:11,color:DARK.dim}}>app.onchainbridge.xyz</div>
+            <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
           </div>
         </div>
         <div style={{display:"flex",gap:10}}>
@@ -776,15 +808,15 @@ export default function OnChainBridge() {
 
   const rLazy = (id, sd) => {
     switch(id) {
-      case "treasury": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Idle Capital" value={sd.idleCapital} color={C.orange} C={C}/><Met label="Current Yield" value={sd.currentYield} color={C.red} C={C}/><Met label="Onchain Yield" value={sd.onchainYield} color={C.accent} C={C}/><Met label="Annual Gain" value={sd.annualGain} color={C.accent} C={C}/></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{p.name}</span><Bdg color={C.accent} C={C}>{p.apy}</Bdg></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
+      case "treasury": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Idle Capital" value={sd.idleCapital} color={C.orange} C={C}/><Met label="Current Yield" value={sd.currentYield} color={C.red} C={C}/><Met label="Onchain Yield" value={sd.onchainYield} color={C.accent} C={C}/><Met label="Annual Gain" value={sd.annualGain} color={C.accent} C={C}/></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><PLink name={p.name} C={C}/><Bdg color={C.accent} C={C}>{p.apy}</Bdg></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
       case "supplychain": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Complexity" value={sd.complexity} color={C.orange} C={C}/><Met label="Nodes" value={sd.nodes} color={C.purple} C={C}/><Met label="Fraud Cut" value={sd.fraudReduction} color={C.accent} C={C}/></div>{sd.benefits?.map((b,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{b.area}</span><Bdg color={C.accent} C={C}>{b.saving}</Bdg></div><div style={{fontSize:13,color:C.dim,marginBottom:6}}>{b.description}</div><PLink name={b.protocol} C={C}/></div></Crd>))}</div>);
-      case "governance": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Current Cost" value={sd.currentCost} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/><Met label="Transparency" value={sd.transparencyGain} color={C.purple} C={C}/></div>{sd.tools?.map((t,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>{t.name}</div><div style={{fontSize:13,color:C.accent,marginBottom:4}}>{t.function}</div><div style={{fontSize:13,color:C.dim}}>{t.description}</div></div></Crd>))}</div>);
+      case "governance": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Current Cost" value={sd.currentCost} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/><Met label="Transparency" value={sd.transparencyGain} color={C.purple} C={C}/></div>{sd.tools?.map((t,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{marginBottom:6}}><PLink name={t.name} C={C}/></div><div style={{fontSize:13,color:C.accent,marginBottom:4}}>{t.function}</div><div style={{fontSize:13,color:C.dim}}>{t.description}</div></div></Crd>))}</div>);
       case "payments": return rPayments(sd);
       case "data": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><Met label="Total Annual" value={sd.totalAnnualValue} color={C.purple} C={C}/>{sd.monetisableData?.map((dd,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{dd.dataType}</span><Bdg color={C.purple} C={C}>{dd.value}</Bdg></div><div style={{fontSize:13,color:C.dim,marginBottom:4}}>{dd.description}</div><div style={{fontSize:12,color:C.accent}}>Oracle: {dd.oracleNetwork}</div></div></Crd>))}</div>);
-      case "identity": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10}}><Met label="KYC Cost" value={sd.currentKycCost} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{p.name}</span><Bdg color={C.accentSoft} C={C}>{p.type}</Bdg></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{sd.credentialTypes?.map((c,i) => <Bdg key={i} color={C.purple} C={C}>{c}</Bdg>)}</div></div>);
-      case "insurance": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10}}><Met label="Premiums" value={sd.currentPremiums} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/></div>{sd.parametricOptions?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{p.type}</span><Bdg color={C.accent} C={C}>{p.saving}</Bdg></div><div style={{fontSize:13,color:C.dim,marginBottom:5}}>{p.description}</div><PLink name={p.protocol} C={C}/></div></Crd>))}</div>);
-      case "carbon": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Footprint" value={sd.estimatedFootprint} color={C.orange} C={C}/><Met label="Traditional" value={sd.offsetCostTraditional} color={C.red} C={C}/><Met label="Onchain" value={sd.offsetCostOnchain} color={C.accent} C={C}/><Met label="Saving" value={sd.saving} color={C.accent} C={C}/></div><div style={{padding:14,borderRadius:10,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,fontSize:13,color:C.dim}}>ESG Impact: <span style={{color:C.accent,fontWeight:700}}>{sd.esgScoreImpact}</span></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>{p.name}</div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
-      case "loyalty": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Program Size" value={sd.programSize} color={C.yellow} C={C}/><Met label="Current" value={sd.currentRedemption} color={C.red} C={C}/><Met label="Onchain" value={sd.onchainRedemption} color={C.accent} C={C}/><Met label="Lift" value={sd.engagementLift} color={C.accent} C={C}/></div><div style={{padding:14,borderRadius:10,background:`${C.yellow}10`,border:`1px solid ${C.yellow}25`,fontSize:13,color:C.dim}}>{sd.interoperability}</div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>{p.name}</div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
+      case "identity": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10}}><Met label="KYC Cost" value={sd.currentKycCost} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><PLink name={p.name} C={C}/><Bdg color={C.accentSoft} C={C}>{p.type}</Bdg></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{sd.credentialTypes?.map((c,i) => <Bdg key={i} color={C.purple} C={C}>{c}</Bdg>)}</div></div>);
+      case "insurance": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10}}><Met label="Premiums" value={sd.currentPremiums} color={C.red} C={C}/><Met label="Saving" value={sd.onchainSaving} color={C.accent} C={C}/></div>{sd.parametricOptions?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:16}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{p.type}</span><Bdg color={C.accent} C={C}>{p.saving}</Bdg></div><div style={{fontSize:13,color:C.dim,marginBottom:8}}>{p.description}</div><PLink name={p.protocol} C={C}/></div></Crd>))}</div>);
+      case "carbon": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Footprint" value={sd.estimatedFootprint} color={C.orange} C={C}/><Met label="Traditional" value={sd.offsetCostTraditional} color={C.red} C={C}/><Met label="Onchain" value={sd.offsetCostOnchain} color={C.accent} C={C}/><Met label="Saving" value={sd.saving} color={C.accent} C={C}/></div><div style={{padding:14,borderRadius:10,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,fontSize:13,color:C.dim}}>ESG Impact: <span style={{color:C.accent,fontWeight:700}}>{sd.esgScoreImpact}</span></div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{marginBottom:6}}><PLink name={p.name} C={C}/></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
+      case "loyalty": return (<div style={{display:"flex",flexDirection:"column",gap:10}}><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><Met label="Program Size" value={sd.programSize} color={C.yellow} C={C}/><Met label="Current" value={sd.currentRedemption} color={C.red} C={C}/><Met label="Onchain" value={sd.onchainRedemption} color={C.accent} C={C}/><Met label="Lift" value={sd.engagementLift} color={C.accent} C={C}/></div><div style={{padding:14,borderRadius:10,background:`${C.yellow}10`,border:`1px solid ${C.yellow}25`,fontSize:13,color:C.dim}}>{sd.interoperability}</div>{sd.protocols?.map((p,i) => (<Crd key={i} C={C}><div style={{padding:14}}><div style={{marginBottom:6}}><PLink name={p.name} C={C}/></div><div style={{fontSize:13,color:C.dim}}>{p.description}</div></div></Crd>))}</div>);
       case "depin": return (
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d?.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{sd.summary}</div></div>
@@ -1257,7 +1289,34 @@ export default function OnChainBridge() {
                 </div>
               </div>
 
-              {mode==="web2" && d.recommendedSectors && <div style={{padding:"14px 18px",borderRadius:12,background:C.surface,border:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+              {/* Get More Info */}
+              <div style={{padding:"16px 20px",borderRadius:12,background:C.surface,border:`1px solid ${C.borderStrong}`,marginBottom:0}}>
+                <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>Get more info on {d.company}</div>
+                <div style={{fontSize:12,color:C.dim,marginBottom:12,lineHeight:1.5}}>Enter your email and OpenClaw will send you a personalised breakdown based on this analysis.</div>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  <input id="moreinfo-input" placeholder="Work email" style={{flex:1,minWidth:160,padding:"9px 12px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:13,outline:"none",fontFamily:"var(--display)"}}/>
+                  <button onClick={() => {
+                    const v=document.getElementById("moreinfo-input").value;
+                    if(v){
+                      emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,{
+                        to_email:"partnerships@onchainbridge.xyz",
+                        user_email:v,contact_name:v,
+                        company:d.company,
+                        protocol:"OpenClaw Info Request",
+                        sector:"Overview",
+                        value:d.financial?.projectedSavings||"TBD",
+                        analysis_url:window.location.href
+                      },process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
+                      document.getElementById("moreinfo-input").value="";
+                      alert("Got it! OpenClaw will send your "+d.company+" breakdown shortly.");
+                    }
+                  }} style={{padding:"9px 18px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
+                    Get Info 🦞
+                  </button>
+                </div>
+              </div>
+
+            {mode==="web2" && d.recommendedSectors && <div style={{padding:"14px 18px",borderRadius:12,background:C.surface,border:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
                 <span style={{fontSize:13,fontWeight:700,color:C.text}}>AI Recommended:</span>
                 {d.recommendedSectors.map((s,i) => <Bdg key={i} color={i===0?C.accent:i===1?C.purple:"#d46faa"} C={C}>{SECTOR_META[s]?.icon} {SECTOR_META[s]?.label}</Bdg>)}
               </div>}
