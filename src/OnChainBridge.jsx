@@ -321,8 +321,8 @@ const ShareCard = ({d, mode, onClose, C}) => {
        {label:"Agent Save",value:d.openclaw?.totalAgentSaving,color:"#d46faa"}];
 
   return (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,flexDirection:"column",gap:14}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,flexDirection:"column",gap:14,overflowY:"auto",padding:"20px 0"}} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{display:"flex",flexDirection:"column",gap:12,alignItems:"center",width:"100%",maxWidth:540,padding:"0 12px"}}>
         <div ref={ref} style={{width:isMobile?"92vw":520,borderRadius:16,background:LIGHT.bg,border:`1px solid ${LIGHT.borderStrong}`,padding:28,fontFamily:"'DM Sans',sans-serif",boxShadow:`0 0 60px ${LIGHT.accent}20`}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -332,7 +332,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
             <Bdg color={mode==="onchain"?LIGHT.purple:LIGHT.accent} C={LIGHT}>{mode==="onchain"?"🔗 ONCHAIN":"WEB2"}</Bdg>
           </div>
           <div style={{marginBottom:16}}><div style={{fontSize:26,fontWeight:800,color:LIGHT.text}}>{d.company}</div><div style={{fontSize:13,color:LIGHT.dim,marginTop:3}}>{d.description}</div></div>
-          <div style={{marginBottom:16,padding:"12px 16px",borderRadius:10,background:DARK.accentGlow,border:`1px solid ${DARK.borderStrong}`}}>
+          <div style={{marginBottom:16,padding:"12px 16px",borderRadius:10,background:LIGHT.accentGlow,border:`1px solid ${LIGHT.borderStrong}`}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:11,color:LIGHT.dim,fontFamily:"monospace"}}>ONCHAIN {mode==="onchain"?"COVERAGE":"POTENTIAL"}</span><span style={{fontSize:15,fontWeight:800,color:LIGHT.accent,fontFamily:"monospace"}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</span></div>
             <PBar v={mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential} color={LIGHT.accent} C={LIGHT} h={5}/>
           </div>
