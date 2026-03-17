@@ -279,6 +279,7 @@ const MLdr = ({C}) => (
 
 // ─── Share Card ───────────────────────────────────────────────────────
 const ShareCard = ({d, mode, onClose, C}) => {
+  const isMobile = window.innerWidth < 600;
   const ref = useRef(null);
   const top3 = mode==="onchain"
     ? (d.gaps||[]).slice(0,3).map(g=>({label:g.sector,value:g.estimatedAnnualValue,color:C.accent}))
@@ -295,7 +296,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,flexDirection:"column",gap:14}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
-        <div ref={ref} style={{width:520,borderRadius:16,background:DARK.bg,border:`1px solid ${DARK.borderStrong}`,padding:28,fontFamily:"'DM Sans',sans-serif",boxShadow:`0 0 60px ${DARK.accent}20`}}>
+        <div ref={ref} style={{width:isMobile?"92vw":520,borderRadius:16,background:DARK.bg,border:`1px solid ${DARK.borderStrong}`,padding:28,fontFamily:"'DM Sans',sans-serif",boxShadow:`0 0 60px ${DARK.accent}20`}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
               <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${DARK.accent},${DARK.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",boxShadow:`0 0 14px ${DARK.accent}60`}}>◆</div>
@@ -792,7 +793,7 @@ export default function OnChainBridge() {
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
-              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.acceGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
             </div>
           </div></Crd>))}
         </div>
@@ -999,7 +1000,17 @@ export default function OnChainBridge() {
                 </button>
               ))}
             </div>
-            {/* Recent searches */}
+                    {/* Book a call */}
+        <div style={{width:"100%",maxWidth:580,marginTop:32,padding:24,borderRadius:14,background:C.surface,border:`1px solid ${C.borderStrong}`}}>
+          <div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:4}}>Book a call or get more info</div>
+          <div yle={{fontSize:13,color:C.dim,marginBottom:16,lineHeight:1.5}}>Leave your email and we will reach out within 24h.</div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            <input id="book-call-input" placeholder="Work email" style={{flex:1,minWidth:200,padding:"11px 14px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:14,outline:"none",fontFamily:"var(--display)"}}/>
+            <button onClick={() => { const v=document.getElementById("book-call-input").value; if(v){emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,{to_email:"partnerships@onchainbridge.xyz",user_email:v,contact_name:v,company:"Prospect",protocol:"Book a Call",sector:"Landing",value:"Inbound",analysis_url:window.location.href},process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});document.getElementById("book-call-input").value="";alert("Got it! We will be in touch.");}}} style={{padding:"11px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>Book a Call</button>
+          </div>
+        </div>
+
+{/* Recent searches */}
             {searchHistory.length > 0 && <div style={{padding:"6px 12px 4px",borderTop:`1px solid ${C.border}`}}>
               <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 2px 6px",textTransform:"uppercase"}}>Recent</div>
               {searchHistory.map((entry,i) => {
@@ -1296,7 +1307,7 @@ export default function OnChainBridge() {
                   {d.collaborations?.possible?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:`${C.purple}08`,border:`1px solid ${C.border}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.fit}% fit</div></div><button onClick={() => tryBridge(c)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:11,fontWeight:700}}>Bridge</button></div>)}
                 </div></Crd>
                 <Crd accent C={C}><div style={{padding:18}}><STtl icon="🦞" title="OpenClaw" badge={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/>
-                  {d.openclaw?.agents?.slice(0,4).map((a,i) => <div key={i} style={{padding:"9px 12px",background:C.bg,borderRadius:8,marginBottom:6}}><div style={{display:"flex",justifyContent:"space-between",gap:6,flexWrap:"wrap"}}><span style={{fontSize:13,fontWeight:700,color:C.text,flex:1,minWidth:0}}>{a.name}</span><Bdg color={"#d46faa"} C={C} s={{fontSize:11,flexShrink:0}}>{a.monthlySaving}/mo</Bdg></div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role}</div></div>)}
+                  {d.openclaw?.agents?.slice(0,4).map((a,i) => <div key={i} style={{padding:"9px 12px",background:C.bg,borderRadius:8,marginBottom:6}}><div style={{display:"flex",justifyContent:"space-between",gap:6,flexWrap:"wrap"}}><span style={{fontSize:13,fontWeight:700,color:C.text,flex:1,minWidth:0}}>{a.name}</span><span style={{fontSize:12,fontWeight:700,color:"#d46faa",fontFamily:"var(--mono)",flexShrink:0,whiteSpace:"nowrap"}}>{a.monthlySaving}/mo</span></div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role}</div></div>)}
                 </div></Crd>
               </div>
 
@@ -1361,9 +1372,8 @@ export default function OnChainBridge() {
       {/* MOBILE BOTTOM NAV */}
       {phase==="dashboard" && d && <div className="ocb-mobile-nav" style={{background:C.surface,borderTop:`1px solid ${C.borderStrong}`}}>
         {["overview","financial","collaborations","openclaw","policy"].map(id => (
-          <button key={id} onClick={() => switchTab(id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:9,gap:2}}>
-            <span style={{fontSize:16}}>{SECTOR_META[id]?.icon}</span>
-            <span style={{fontWeight:tab===id?700:400}}>{SECTOR_META[id]?.label?.slice(0,7)}</span>
+          <button key={id} onClick={() => switchTab(id)} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"10px 2px",border:"none",borderTop:`2px solid ${tab===id?C.accent:"transparent"}`,background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:10,fontWeight:tab===id?700:500,fontFamily:"var(--display)",transition:"all .15s"}}>
+            <span>{id==="overview"?"Home":id==="financial"?"Finance":id==="collaborations"?"Collabs":id==="openclaw"?"Agents":"Policy"}</span>
           </button>
         ))}
         <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:C.accent,cursor:"pointer",fontSize:9,gap:2}}><span style={{fontSize:16}}>𝕏</span><span>Share</span></button>
