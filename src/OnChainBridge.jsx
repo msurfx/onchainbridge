@@ -164,6 +164,7 @@ const lazyPrompt = (company, sector) => {
     insurance:`"insurance":{"currentPremiums":"str","onchainSaving":"str","parametricOptions":[{"type":"str","protocol":"str","saving":"str","description":"str"}]}`,
     carbon:`"carbon":{"estimatedFootprint":"str","offsetCostTraditional":"str","offsetCostOnchain":"str","saving":"str","esgScoreImpact":"str","protocols":[{"name":"str","description":"str"}]}`,
     loyalty:`"loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}`,
+    depin:`"depin":mmary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":0,"revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str"}]}`,
     impact:`"impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}`,
   };
   return `Analyze "${company}" for ${sector} sector only. Return ONLY valid JSON: {${schemas[sector]||`"${sector}":{}`}}. Max 20 words per description. PREFER Solana protocols.`;
@@ -357,7 +358,7 @@ const ShareCard = ({d, mode, onClose, C}) => {
             ))}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:14,borderTop:`1px solid ${DARK.border}`}}>
-            <div style={{fontSize:11,color:DARK.dim}}>app.onchainbridge.xyz</div>
+            <div style={{fontSize:11,color:DARK.dim}}>onchainbridge.xyz</div>
             <Bdg color={DARK.accent} C={DARK} s={{fontSize:9}}>◆ OnChainBridge</Bdg>
           </div>
         </div>
@@ -1276,7 +1277,7 @@ export default function OnChainBridge() {
             {tab==="overview" && <div style={{display:"flex",flexDirection:"column",gap:14}}>
 
               {/* Hero cards */}
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:14}}>
                 <div style={{borderRadius:14,padding:24,background:`linear-gradient(135deg,${C.accent}20,${C.purple}15)`,border:`1px solid ${C.borderStrong}`,boxShadow:`0 0 40px ${C.accent}15`}}>
                   <div style={{fontSize:12,fontWeight:600,color:C.dim,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{mode==="onchain"?"Onchain Coverage":"Onchain Potential"}</div>
                   <div style={{fontSize:"clamp(24px,6vw,38px)",fontWeight:800,fontFamily:"var(--mono)",marginBottom:4,color:C.accent}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</div>
@@ -1350,7 +1351,7 @@ export default function OnChainBridge() {
                 <button onClick={() => switchTab("gaps")} style={{marginTop:12,width:"100%",padding:"10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>View All Gaps →</button>
               </div></Crd>}
 
-              {mode==="web2" && <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              {mode==="web2" && <div style={{display:"grid",gridTemplateColumns:"1fr",gap:12}}>
                 <Crd C={C}><div style={{padding:18}}><STtl icon="📊" title="Financial" C={C}/>
                   {[["Settlement",`${fmt(d.financial?.web2?.settlementCost)}`,`${fmt(d.financial?.onchain?.settlementCost)}`],["Tx Fees",`${fmt(d.financial?.web2?.transactionFees)}`,`${fmt(d.financial?.onchain?.transactionFees)}`]].map(([l,w,o],i) => (<div key={i} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:C.dim,marginBottom:5,fontFamily:"var(--mono)"}}><span>{l}</span><span><span style={{color:C.red}}>{w}</span> → <span style={{color:C.accent}}>{o}</span></span></div><PBar v={75} color={C.accent} C={C}/></div>))}
                 </div></Crd>
@@ -1360,7 +1361,7 @@ export default function OnChainBridge() {
                 </div></Crd>
               </div>}
 
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:12}}>
                 <Crd C={C}><div style={{padding:18}}><STtl icon="🤝" title="Collaborations" C={C}/>
                   {d.collaborations?.active?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.value}</div></div><Bdg color={C.accent} C={C}>LIVE</Bdg></div>)}
                   {d.collaborations?.possible?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:`${C.purple}08`,border:`1px solid ${C.border}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.fit}% fit</div></div><button onClick={() => tryBridge(c)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:11,fontWeight:700}}>Bridge</button></div>)}
