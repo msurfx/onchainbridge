@@ -1,4 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { PhantomWalletAdapter, SolflareWalletAdapter, BackpackWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import "@solana/wallet-adapter-react-ui/styles.css";
 import emailjs from "@emailjs/browser";
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -338,8 +343,8 @@ const ShareCard = ({d, mode, onClose, C}) => {
   );
 };
 
-/* ═══ MAIN ═══ */
-export default function OnChainBridge() {
+/* ═══ WALLET WRAPPER ═══ */
+function OnChainBridgeApp() {
   const [dark, setDark] = useState(false);
   const C = dark ? DARK : LIGHT;
 
@@ -418,7 +423,7 @@ export default function OnChainBridge() {
   const disconnectWallet = async () => { try{if(window.solana?.isPhantom)await window.solana.disconnect();}catch(_){} setWalletConnected(false); setWalletAddress(null); };
 
   const activateGap = async (gap, idx) => {
-    if (!walletConnected) { await connectWallet(); return; }
+    if (!walletConnected) { setWalletModal(true); return; }
     setGapActivating(p => ({...p,[idx]:true}));
     await new Promise(r => setTimeout(r,800));
     setBridgeModal({name:gap.protocol,value:gap.estimatedAnnualValue,commission:gap.bridgeFee||"2.5%"});
@@ -820,9 +825,7 @@ export default function OnChainBridge() {
           .ocb-company-info{display:none!important}
           .ocb-hide-mobile{display:none!important}
           .ocb-burger{display:flex!important}
-          .hero-search-box{flex-direction:column!important;padding:10px!important}
-          .hero-search-box input{font-size:15px!important;padding:4px 0!important}
-          .hero-search-box button{width:100%!important;border-radius:8px!important;padding:12px!important}
+
         }
         .ocb-burger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;cursor:pointer;flex-shrink:0;flex-direction:column;gap:4px;padding:8px;border:1px solid rgba(50,128,148,0.3);background:transparent}
         .ocb-burger span{display:block;width:16px;height:2px;background:#7090a8;border-radius:1px}
@@ -831,6 +834,7 @@ export default function OnChainBridge() {
           .ocb-search input{font-size:13px!important}
           .ocb-verify-btn{padding:8px 10px!important;font-size:11px!important}
         }
+        @media(min-width:769px){.ocb-theme-fab{display:none!important}}
         .ocb-mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:${C?.surface||"#243245"};border-top:1px solid rgba(0,212,200,0.2);z-index:100;padding:8px 4px;gap:2px}
       `}</style>
 
@@ -909,15 +913,9 @@ export default function OnChainBridge() {
 
         {/* Footer */}
         <div style={{padding:"10px",borderTop:`1px solid ${C.border}`}}>
-          {walletConnected
-            ? <button onClick={disconnectWallet} style={{width:"100%",padding:collapsed?"9px":"9px 10px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:6,justifyContent:collapsed?"center":"flex-start"}}>
-                <span style={{width:6,height:6,borderRadius:"50%",background:C.accent,display:"inline-block",boxShadow:`0 0 6px ${C.accent}`}}/>
-                {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}`}
-              </button>
-            : <button onClick={connectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
-                <span>Connect</span>
-              </button>
-          }
+          <div style={{marginBottom:8}}>
+            <WalletMultiButton style={{width:"100%",fontSize:12,height:36,borderRadius:8,justifyContent:collapsed?"center":"flex-start"}}/>
+          </div>
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
             {!collapsed && <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
               <button onClick={() => setDark(v=>!v)} title="Toggle theme"
@@ -993,9 +991,7 @@ export default function OnChainBridge() {
                 ? <button onClick={disconnectWallet} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8}}>
                     ● {walletAddress?.slice(0,6)}...{walletAddress?.slice(-4)}
                   </button>
-                : <button onClick={() => {setMobileMenu(false);setTimeout(()=>setWalletModal(true),150);}} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8}}>
-                    Connect Wallet
-                  </button>
+                : <div style={{marginBottom:8}}><WalletMultiButton style={{width:"100%",fontSize:12,height:36,borderRadius:8}}/></div>
               }
               <button onClick={() => setDark(v=>!v)} style={{width:"100%",padding:"9px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer"}}>
                 {dark?"☀️ Light mode":"🌙 Dark mode"}
@@ -1110,36 +1106,32 @@ export default function OnChainBridge() {
               </div>
             </div>
 
-            {/* Theme + mode toggles */}
+            {/* Mode toggle only */}
             <div style={{display:"flex",gap:8,marginBottom:24,alignItems:"center"}}>
               <div style={{display:"flex",borderRadius:10,border:`1px solid ${C.border}`,overflow:"hidden",background:C.surface}}>
                 {[{id:"web2",label:"Web2"},{id:"onchain",label:"Onchain"}].map(m => (
                   <button key={m.id} onClick={() => {setMode(m.id);setD(null);setInput("");}}
-                    style={{padding:"8px 16px",border:"none",background:mode===m.id?`linear-gradient(135deg,${C.accent},${C.purple})`:"transparent",color:mode===m.id?"#fff":C.dim,fontSize:13,fontWeight:mode===m.id?700:400,cursor:"pointer",transition:"all .15s"}}>
+                    style={{padding:"8px 20px",border:"none",background:mode===m.id?`linear-gradient(135deg,${C.accent},${C.purple})`:"transparent",color:mode===m.id?"#fff":C.dim,fontSize:13,fontWeight:mode===m.id?700:400,cursor:"pointer",transition:"all .15s"}}>
                     {m.label}
                   </button>
                 ))}
               </div>
-              <button onClick={() => setDark(v=>!v)}
-                style={{padding:"8px 12px",borderRadius:10,border:`1px solid ${C.border}`,background:C.surface,color:C.dim,fontSize:12,cursor:"pointer"}}>
-                {dark?"☀️":"🌙"}
-              </button>
             </div>
 
             {/* BIG search bar — the hero */}
-            <div style={{width:"100%",maxWidth:640,marginBottom:24}}>
-              <div className="hero-search-box" style={{display:"flex",gap:0,background:C.surface,borderRadius:14,border:`1.5px solid ${C.borderStrong}`,padding:"6px 6px 6px 20px",alignItems:"center",boxShadow:`0 0 30px ${C.accent}12`,transition:"all .2s"}}
-                onFocus={e=>e.currentTarget.style.borderColor=C.accent}
-                onBlur={e=>e.currentTarget.style.borderColor=C.borderStrong}>
+            <div style={{width:"100%",maxWidth:580,marginBottom:24}}>
+              <div style={{background:C.surface,borderRadius:14,border:`1.5px solid ${C.borderStrong}`,padding:"14px 20px",boxShadow:`0 0 30px ${C.accent}10`,marginBottom:10,transition:"border-color .2s"}}
+                onFocusCapture={e=>e.currentTarget.style.borderColor=C.accent}
+                onBlurCapture={e=>e.currentTarget.style.borderColor=C.borderStrong}>
                 <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchCompany()}
                   placeholder={mode==="onchain"?"Search any protocol or onchain company...":"Search any company — Nike, HSBC, Spotify..."}
-                  style={{flex:1,background:"transparent",border:"none",outline:"none",color:C.text,fontSize:16,padding:"8px 0",fontFamily:"var(--display)"}}
+                  style={{width:"100%",background:"transparent",border:"none",outline:"none",color:C.text,fontSize:16,fontFamily:"var(--display)"}}
                   autoFocus/>
-                <button onClick={() => searchCompany()} disabled={phase==="loading"}
-                  style={{padding:"11px 20px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap",boxShadow:`0 0 16px ${C.accent}35`}}>
-                  {phase==="loading"?"...":mode==="onchain"?"Scan →":"Analyse →"}
-                </button>
               </div>
+              <button onClick={() => searchCompany()} disabled={phase==="loading"}
+                style={{width:"100%",padding:"14px",borderRadius:12,border:"none",background:phase==="loading"?C.muted:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:15,cursor:phase==="loading"?"wait":"pointer",boxShadow:`0 0 20px ${C.accent}30`}}>
+                {phase==="loading"?"Analysing...":mode==="onchain"?"Scan for gaps →":"Analyse company →"}
+              </button>
             </div>
 
             {/* Example pills */}
@@ -1437,5 +1429,25 @@ export default function OnChainBridge() {
         </div>
       </div>}
     </div>
+  );
+}
+
+/* ═══ MAIN WITH WALLET PROVIDERS ═══ */
+export default function OnChainBridge() {
+  const network = WalletAdapterNetwork.Mainnet;
+  const endpoint = "https://api.mainnet-beta.solana.com";
+  const wallets = useMemo(() => [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ], []);
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <OnChainBridgeApp/>
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 }
