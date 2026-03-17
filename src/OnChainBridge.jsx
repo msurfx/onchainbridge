@@ -253,6 +253,53 @@ const Met = ({label, value, sub, color, C, spark=[]}) => {
         </div>
         {spark.length>0 && <Spark data={spark} color={clr}/>}
       </div>
+      {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
+        <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
+          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
+          <input autoFocus id="gate-email-input" placeholder="Work email"
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
+          <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
+            style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
+            Unlock Analysis
+          </button>
+          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
+        </div>
+      </div>}
+
+      {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
+        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
+          {!ratingSent ? (<>
+            <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>How useful was this?</div>
+            <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Rate your analysis</div>
+            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:22}}>
+              {[1,2,3,4,5].map(s => (
+                <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
+                  style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
+                  {String.fromCodePoint(0x2B50)}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => {
+              if(rating>0){
+                emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
+                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
+                  process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
+                setRatingSent(true);
+                setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
+              } else { setRatingModal(false);setShareModal(true); }
+            }} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:rating?`linear-gradient(135deg,${C.accent},${C.purple})`:C.muted,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>
+              {rating?"Submit and Share":"Skip and Share"}
+            </button>
+          </>) : (<>
+            <div style={{fontSize:36,marginBottom:10}}>&#127881;</div>
+            <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
+            <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
+          </>)}
+        </div>
+      </div>}
+
     </div>
   );
 };
@@ -335,6 +382,53 @@ const ShareCard = ({d, mode, onClose, C}) => {
         </div>
         <div style={{fontSize:12,color:C.dim}}>Share on X with #OnChainBridge</div>
       </div>
+      {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
+        <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
+          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
+          <input autoFocus id="gate-email-input" placeholder="Work email"
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
+          <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
+            style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
+            Unlock Analysis
+          </button>
+          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
+        </div>
+      </div>}
+
+      {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
+        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
+          {!ratingSent ? (<>
+            <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>How useful was this?</div>
+            <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Rate your analysis</div>
+            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:22}}>
+              {[1,2,3,4,5].map(s => (
+                <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
+                  style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
+                  {String.fromCodePoint(0x2B50)}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => {
+              if(rating>0){
+                emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
+                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
+                  process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
+                setRatingSent(true);
+                setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
+              } else { setRatingModal(false);setShareModal(true); }
+            }} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:rating?`linear-gradient(135deg,${C.accent},${C.purple})`:C.muted,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>
+              {rating?"Submit and Share":"Skip and Share"}
+            </button>
+          </>) : (<>
+            <div style={{fontSize:36,marginBottom:10}}>&#127881;</div>
+            <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
+            <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
+          </>)}
+        </div>
+      </div>}
+
     </div>
   );
 };
@@ -376,6 +470,13 @@ export default function OnChainBridge() {
   const [leadForm, setLeadForm] = useState({name:'',company:'',email:''});
   const [leadSent, setLeadSent] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
+  const [gatedEmail, setGatedEmail] = useState(() => { try { return localStorage.getItem("ocb_email")||""; } catch(_) { return ""; } });
+  const [emailGateModal, setEmailGateModal] = useState(false);
+  const [pendingTab, setPendingTab] = useState(null);
+  const [ratingModal, setRatingModal] = useState(false);
+  const [ratingHover, setRatingHover] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [ratingSent, setRatingSent] = useState(false);
 
   useEffect(() => {
     // Set favicon
@@ -812,6 +913,20 @@ export default function OnChainBridge() {
     return rLazy(id, sd);
   };
 
+  const switchTab = (id) => {
+    if (id !== "overview" && !gatedEmail) { setPendingTab(id); setEmailGateModal(true); return; }
+    setTab(id);
+  };
+  const submitEmailGate = (email) => {
+    if (!email) return;
+    try { localStorage.setItem("ocb_email", email); } catch(_) {}
+    setGatedEmail(email);
+    setEmailGateModal(false);
+    if (pendingTab) { setTab(pendingTab); setPendingTab(null); }
+    emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE, process.env.REACT_APP_EMAILJS_TEMPLATE,
+      {to_email:"partnerships@onchainbridge.xyz",user_email:email,contact_name:email,company:"Unknown",protocol:"OnChainBridge",sector:"Email Gate",value:"New user",analysis_url:window.location.href},
+      process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
+  };
   const examples = mode==="onchain" ? EX_ONCHAIN : EX_WEB2;
 
   // ─── RENDER ──────────────────────────────────────────────────────────
@@ -911,7 +1026,7 @@ export default function OnChainBridge() {
                 {gTabs.map(t => {
                   const active = tab===t.id;
                   return (
-                    <button key={t.id} onClick={() => setTab(t.id)}
+                    <button key={t.id} onClick={() => switchTab(t.id)}
                       style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:collapsed?"10px 14px":"8px 14px",border:"none",background:active?C.accentGlow:"transparent",color:active?C.accent:"#a8c8dc",cursor:"pointer",fontSize:13,fontWeight:active?700:500,transition:"all .15s",borderLeft:`2px solid ${active?C.accent:"transparent"}`,textAlign:"left"}}
                       onMouseEnter={e=>{if(!active){e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.color=C.textSub;}}}
                       onMouseLeave={e=>{if(!active){e.currentTarget.style.background="transparent";e.currentTarget.style.color=C.dim;}}}>
@@ -1003,7 +1118,7 @@ export default function OnChainBridge() {
             {tabs.length > 0 && phase === "dashboard" && <div style={{padding:"6px 0",borderTop:`1px solid ${C.border}`}}>
               <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 14px 4px",textTransform:"uppercase"}}>Sectors</div>
               {tabs.map(t => (
-                <button key={t.id} onClick={() => {setTab(t.id);setMobileMenu(false);}}
+                <button key={t.id} onClick={() => {switchTab(t.id);setMobileMenu(false);}}
                   style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:"9px 14px",border:"none",background:tab===t.id?C.accentGlow:"transparent",color:tab===t.id?C.accent:C.dim,cursor:"pointer",fontSize:13,fontWeight:tab===t.id?700:400,borderLeft:`2px solid ${tab===t.id?C.accent:"transparent"}`,textAlign:"left"}}>
                   <span style={{fontSize:15}}>{t.icon}</span>
                   <span style={{flex:1}}>{t.label}</span>
@@ -1051,7 +1166,7 @@ export default function OnChainBridge() {
                 ? <><Bdg color={C.accent} C={C}>{d.onchainProfile?.coverageScore}% Coverage</Bdg><Bdg color={C.red} C={C}>{d.gaps?.length} Gaps</Bdg></>
                 : <><Bdg color={C.purple} C={C}>{d.ticker?.onchainPotential}% Fit</Bdg><Bdg color={d.policy?.overallReadiness==="High"?C.accent:d.policy?.overallReadiness==="Med"?C.yellow:C.red} C={C}>⚖️ {d.policy?.overallReadiness}</Bdg></>
               }
-              <button onClick={() => setShareModal(true)} style={{padding:"7px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>𝕏 Share</button>
+              <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{padding:"7px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>𝕏 Share</button>
             </div>
           ) : (
             <div style={{display:"flex",gap:6,marginLeft:8,flexWrap:"wrap"}}>
@@ -1238,7 +1353,7 @@ export default function OnChainBridge() {
                 <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{d.onchainProfile.activeSectors?.map((s,i) => <Bdg key={i} color={C.accent} C={C} s={{fontSize:11}}>✓ {SECTOR_META[s]?.label||s}</Bdg>)}</div>
               </div>}
 
-              {d.policy && <button onClick={() => setTab("policy")} style={{padding:"12px 18px",borderRadius:12,background:C.surface,border:`1px solid ${d.policy.overallReadiness==="High"?C.accent:d.policy.overallReadiness==="Med"?C.yellow:C.red}35`,display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",color:"inherit",width:"100%",textAlign:"left",transition:"all .15s"}}
+              {d.policy && <button onClick={() => switchTab("policy")} style={{padding:"12px 18px",borderRadius:12,background:C.surface,border:`1px solid ${d.policy.overallReadiness==="High"?C.accent:d.policy.overallReadiness==="Med"?C.yellow:C.red}35`,display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",color:"inherit",width:"100%",textAlign:"left",transition:"all .15s"}}
                 onMouseEnter={e=>e.currentTarget.style.boxShadow=`0 0 20px ${C.accent}10`}
                 onMouseLeave={e=>e.currentTarget.style.boxShadow=""}>
                 <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:18}}>⚖️</span><div><div style={{fontSize:13,fontWeight:700,color:C.text}}>{d.policy.jurisdiction} — {d.policy.overallReadiness} Regulatory Readiness</div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{d.policy.summary?.slice(0,90)}...</div></div></div>
@@ -1256,8 +1371,8 @@ export default function OnChainBridge() {
 
               {mode==="onchain" && d.gaps && <Crd accent C={C}><div style={{padding:20}}>
                 <STtl icon="🎯" title="Top Gaps" badge={`${d.gaps.length} found`} color={C.red} C={C}/>
-                {d.gaps.slice(0,3).map((gap,i) => (<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}><div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{gap.protocol}</div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{gap.sector} · {gap.difficulty}</div></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:15,fontWeight:700,color:C.accent,fontFamily:"var(--mono)"}}>{gap.estimatedAnnualValue}</span><button onClick={() => setTab("gaps")} style={{padding:"6px 14px",borderRadius:7,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer"}}>Activate</button></div></div>))}
-                <button onClick={() => setTab("gaps")} style={{marginTop:12,width:"100%",padding:"10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>View All Gaps →</button>
+                {d.gaps.slice(0,3).map((gap,i) => (<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}><div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{gap.protocol}</div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{gap.sector} · {gap.difficulty}</div></div><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:15,fontWeight:700,color:C.accent,fontFamily:"var(--mono)"}}>{gap.estimatedAnnualValue}</span><button onClick={() => switchTab("gaps")} style={{padding:"6px 14px",borderRadius:7,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer"}}>Activate</button></div></div>))}
+                <button onClick={() => switchTab("gaps")} style={{marginTop:12,width:"100%",padding:"10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>View All Gaps →</button>
               </div></Crd>}
 
               {mode==="web2" && <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
@@ -1285,7 +1400,7 @@ export default function OnChainBridge() {
                 {d.existingActivity.map((a,i) => (<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`}}><div><div style={{fontSize:14,fontWeight:600,color:C.text}}>{a.protocol}</div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role} · {a.sector}</div></div><div style={{display:"flex",gap:8,alignItems:"center"}}><span style={{fontSize:13,color:C.accent,fontFamily:"var(--mono)"}}>{a.estimatedValue}</span><Bdg color={a.status==="Active"?C.accent:a.status==="Partial"?C.yellow:C.muted} C={C}>{a.status}</Bdg></div></div>))}
               </div></Crd>}
 
-              {mode==="web2" && d.recommendedSectors?.map((secId,idx) => {
+              {mode==="web2" && [...(d.recommendedSectors||[]), ...Object.keys(lazyData).filter(s => !(d.recommendedSectors||[]).includes(s))].map((secId,idx) => {
                 const meta = SECTOR_META[secId];
                 const sKey = secId==="data"?"dataOracles":secId;
                 const sData = d[sKey];
@@ -1341,11 +1456,12 @@ export default function OnChainBridge() {
       {/* MOBILE BOTTOM NAV */}
       {phase==="dashboard" && d && <div className="ocb-mobile-nav" style={{background:C.surface,borderTop:`1px solid ${C.borderStrong}`}}>
         {["overview","financial","collaborations","openclaw","policy"].map(id => (
-          <button key={id} onClick={() => setTab(id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:9,gap:2}}>
+          <button key={id} onClick={() => switchTab(id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:tab===id?C.accent:C.muted,cursor:"pointer",fontSize:9,gap:2}}>
             <span style={{fontSize:16}}>{SECTOR_META[id]?.icon}</span>
             <span style={{fontWeight:tab===id?700:400}}>{SECTOR_META[id]?.label?.slice(0,7)}</span>
-          </button>
+          </on>
         ))}
+        <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"6px 2px",border:"none",background:"transparent",color:C.accent,cursor:"pointer",fontSize:9,gap:2}}><span style={{fontSize:16}}>𝕏</span><span>Share</span></button>
       </div>}
 
       </div>
@@ -1456,6 +1572,53 @@ export default function OnChainBridge() {
           </>)}
         </div>
       </div>}
+      {emailGateModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setEmailGateModal(false)}>
+        <div style={{width:"90%",maxWidth:400,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>Unlock Full Analysis</div>
+          <div style={{fontSize:13,color:C.dim,marginBottom:20,lineHeight:1.5}}>Enter your work email to access the full breakdown — free, no spam.</div>
+          <input autoFocus id="gate-email-input" placeholder="Work email"
+            style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.bg,coloC.text,fontSize:14,marginBottom:14,outline:"none",fontFamily:"var(--display)"}}
+            onKeyDown={e=>{if(e.key==="Enter")submitEmailGate(e.target.value);}}/>
+          <button onClick={() => submitEmailGate(document.getElementById("gate-email-input").value)}
+            style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
+            Unlock Analysis
+          </button>
+          <div style={{fontSize:11,color:C.muted,textAlign:"center",marginTop:10}}>No signup required. One click access.</div>
+        </div>
+      </div>}
+
+      {ratingModal && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => {setRatingModal(false);setShareModal(true);}}>
+        <div style={{width:"90%",maxWidth:380,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}20`,textAlign:"center"}} onClick={e=>e.stopPropagation()}>
+          {!ratingSent ? (<>
+            <div style={{fontSize:17,fontWeight:800,marginBottom:6,color:C.text}}>How useful was this?</div>
+            <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Rate your analysis</div>
+            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:22}}>
+              {[1,2,3,4,5].map(s => (
+                <button key={s} onClick={() => setRating(s)} onMouseEnter={() => setRatingHover(s)} onMouseLeave={() => setRatingHover(0)}
+                  style={{fontSize:34,background:"none",border:"none",cursor:"pointer",opacity:(ratingHover||rating)>=s?1:0.25,transition:"all .1s",transform:(ratingHover||rating)>=s?"scale(1.2)":"scale(1)"}}>
+                  {String.fromCodePoint(0x2B50)}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => {
+              if(rating>0){
+                emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
+                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
+                  process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
+                setRatingSent(true);
+                setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
+              } else { setRatingModal(false);setShareModal(true); }
+            }} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:rating?`linear-gradient(135deg,${C.accent},${C.purple})`:C.muted,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>
+              {rating?"Submit and Share":"Skip and Share"}
+            </button>
+          </>) : (<>
+            <div style={{fontSize:36,marginBottom:10}}>&#127881;</div>
+            <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
+            <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
+          </>)}
+        </div>
+      </div>}
+
     </div>
   );
 }
