@@ -204,7 +204,7 @@ const PROTOS = {
   "Helium":{url:"https://helium.com"},"Hivemapper":{url:"https://hivemapper.com"},
   "Render":{url:"https://rendernetwork.com"},"Ondo":{url:"https://ondo.finance"},
   "Tensor":{url:"https://tensor.trade"},"Squads":{url:"https://squads.so"},
-  "Realms":{url:"https://app.realms.today"},"Drift":{url:"https://drift.trade"},
+  "Drift":{url:"https://drift.trade"},
   "Orca":{url:"https://orca.so"},"Raydium":{url:"https://raydium.io"},
   "Pyth":{url:"https://pyth.network"},"Chainlink":{url:"https://chain.link"},
   "X Money":{url:"https://x.com/i/money"},
