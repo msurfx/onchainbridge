@@ -1290,6 +1290,7 @@ export default function OnChainBridge() {
                 <div style={{borderRadius:14,padding:24,background:`linear-gradient(135deg,${C.accent}20,${C.purple}15)`,border:`1px solid ${C.borderStrong}`,boxShadow:`0 0 40px ${C.accent}15`}}>
                   <div style={{fontSize:12,fontWeight:600,color:C.dim,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{mode==="onchain"?"Onchain Coverage":"Onchain Potential"}</div>
                   <div style={{fontSize:"clamp(24px,6vw,38px)",fontWeight:800,fontFamily:"var(--mono)",marginBottom:4,color:C.accent}}>{mode==="onchain"?d.onchainProfile?.coverageScore:d.ticker?.onchainPotential}%</div>
+                  <div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:4}}>{d.company}</div>
                   <div style={{fontSize:13,color:C.textSub}}>{d.description}</div>
                 </div>
                 <div style={{borderRadius:14,padding:24,background:C.surface,border:`1px solid ${C.border}`}}>
