@@ -363,7 +363,20 @@ const ShareCard = ({d, mode, onClose, C}) => {
           </div>
         </div>
         <div style={{display:"flex",gap:10}}>
-          <button onClick={dl} style={{padding:"10px 24px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇ Download PNG</button>
+          <button onClick={async () => {
+            try {
+              const {default:h2c} = await import("html2canvas");
+              const cv = await h2c(ref.current,{backgroundColor:LIGHT.bg,scale:2,useCORS:true});
+              cv.toBlob(async (blob) => {
+                try {
+                  await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+                  alert("Copied! Paste directly into X or anywhere.");
+                } catch(_) {
+                  const a=document.createElement("a");a.download=`${d.company}-onchainbridge.png`;a.href=cv.tataURL();a.click();
+                }
+              });
+            } catch(_) { alert("Run: npm install html2canvas"); }
+          }} style={{padding:"10px 24px",borderRadius:10,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>Copy Image</button>
           <button onClick={() => {
             var co = d.company || "";
             var sc = mode==="onchain" ? (d.onchainProfile ? d.onchainProfile.coverageScore : "") : (d.ticker ? d.ticker.onchainPotential : "");
