@@ -758,7 +758,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{d.depin?.summary}</div></div>
           {d.depin?.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><PLink name={o.network} C={C}/><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
@@ -822,7 +822,7 @@ export default function OnChainBridge() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>📡 DePIN — <span style={{color:C.accent}}>{d?.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>{sd.summary}</div></div>
           {sd.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><div style={{fontSize:16,fontWeight:700,color:C.text}}>{o.network}</div><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><PLink name={o.network} C={C}/><div style={{display:"flex",gap:6,marginTop:4}}><Bdg color={C.accent} C={C}>{o.type}</Bdg><PLink name={o.railPartner} C={C}/></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
@@ -1033,17 +1033,7 @@ export default function OnChainBridge() {
                 </button>
               ))}
             </div>
-                    {/* Book a call */}
-        <div style={{width:"100%",maxWidth:580,marginTop:32,padding:24,borderRadius:14,background:C.surface,border:`1px solid ${C.borderStrong}`}}>
-          <div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:4}}>Book a call or get more info</div>
-          <div yle={{fontSize:13,color:C.dim,marginBottom:16,lineHeight:1.5}}>Leave your email and we will reach out within 24h.</div>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            <input id="book-call-input" placeholder="Work email" style={{flex:1,minWidth:200,padding:"11px 14px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:14,outline:"none",fontFamily:"var(--display)"}}/>
-            <button onClick={() => { const v=document.getElementById("book-call-input").value; if(v){emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,{to_email:"partnerships@onchainbridge.xyz",user_email:v,contact_name:v,company:"Prospect",protocol:"Book a Call",sector:"Landing",value:"Inbound",analysis_url:window.location.href},process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});document.getElementById("book-call-input").value="";alert("Got it! We will be in touch.");}}} style={{padding:"11px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>Book a Call</button>
-          </div>
-        </div>
-
-{/* Recent searches */}
+            {/* Recent searches */}
             {searchHistory.length > 0 && <div style={{padding:"6px 12px 4px",borderTop:`1px solid ${C.border}`}}>
               <div style={{fontSize:10,fontWeight:700,color:C.muted,letterSpacing:1.5,padding:"8px 2px 6px",textTransform:"uppercase"}}>Recent</div>
               {searchHistory.map((entry,i) => {
