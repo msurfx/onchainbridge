@@ -183,6 +183,8 @@ THEN for each recommended sector:
 - loyalty: "loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}
 - impact: "impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}
 
+REALITY CONSTRAINTS: Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only. DePIN $50-500/month per hotspot. RWA tokenisable assets only not market cap. Yield APY use real rates Marinade 8% Kamino 10% Jito 7%. OpenClaw savings 20-40% of relevant ops costs. projectedSavings never exceed 5% of annual revenue. All figures must be defensible to a CFO.
+
 SOLANA PRIORITY: Prefer Solana-native protocols (Jupiter, Marinade, Jito, Kamino, Helio, Sphere, Solana Pay, Helium, Tensor, Squads, Realms, Ondo). Only suggest other chains when genuinely stronger.
 X MONEY INTEGRATION: Include X Money as collaboration for consumer-facing companies.
 OpenClaw agents MUST include Treasury, DePIN Ops, Bridge Execution, Compliance.`;
@@ -1380,6 +1382,7 @@ export default function OnChainBridge() {
                 </div>
               </div>
 
+            <div style={{padding:"10px 16px",borderRadius:8,background:`${C.yellow}10`,border:`1px solid ${C.yellow}25`,fontSize:12,color:C.dim}}>⚠️ Figures are AI estimates based on public data and are indicative only. Not financial advice.</div>
             {mode==="web2" && d.recommendedSectors && <div style={{padding:"14px 18px",borderRadius:12,background:C.surface,border:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
                 <span style={{fontSize:13,fontWeight:700,color:C.text}}>AI Recommended:</span>
                 {d.recommendedSectors.map((s,i) => <Bdg key={i} color={i===0?C.accent:i===1?C.purple:"#d46faa"} C={C}>{SECTOR_META[s]?.icon} {SECTOR_META[s]?.label}</Bdg>)}
