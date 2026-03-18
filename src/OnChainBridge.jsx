@@ -153,21 +153,6 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
   return res.content?.filter(b=>b.type==="text").map(b=>b.text).join("") || "";
 };
 
-const fetchCompanyFinancials = async (name) => {
-  try {
-    const text = await apiCallWithSearch(
-      'Find the REAL current financial data for ' + name + '. Return ONLY valid JSON, no markdown: ' +
-      '{"marketCap":"exact figure e.g. $76.2B","revenue":"annual revenue e.g. $51.4B","employees":"headcount e.g. 79,000","ticker":"stock ticker e.g. NKE","exchange":"e.g. NYSE","price":"current stock price e.g. $53.47","source":"yahoo/google/official"}'
-      , 400);
-    const clean = text.replace(/```json|```/g,'').trim();
-    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
-    if (s >= 0 && e > s) {
-      const fin = JSON.parse(clean.substring(s, e+1));
-      if (fin.revenue) { fin.source = 'web_search'; return fin; }
-    }
-  } catch(_) {}
-  return { source: null };
-};
 
 const fetchLiveData = async () => {
   const out = { yields: {}, prices: {}, helium: {} };
@@ -197,7 +182,7 @@ const fetchLiveData = async () => {
   return out;
 };
 
-const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
+const corePrompt = (company, address, liveData={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
 IMPORTANT: Before generating figures, use your knowledge of ${company} to use accurate real-world revenue, market cap, employee count and headquarters. Do not invent figures.STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
@@ -636,8 +621,7 @@ export default function OnChainBridge() {
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
       const liveData = await fetchLiveData();
-      const financials = {};
-      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,financials), 8000);
+      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
