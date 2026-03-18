@@ -154,6 +154,22 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
 };
 
 
+const fetchCompanyFinancials = async (name) => {
+  const urls = [
+    'http://localhost:3333/?name=' + encodeURIComponent(name),
+    '/api/financials?name=' + encodeURIComponent(name),
+  ];
+  for (const u of urls) {
+    try {
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 25000);
+      const r = await fetch(u, {signal: ctrl.signal});
+      const data = await r.json();
+      if (data && data.source) return data;
+    } catch(_) {}
+  }
+  return { source: null };
+};
+
 const fetchLiveData = async () => {
   const out = { yields: {}, prices: {}, helium: {} };
   try {
@@ -182,9 +198,9 @@ const fetchLiveData = async () => {
   return out;
 };
 
-const corePrompt = (company, address, liveData={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
+const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
-IMPORTANT: Before generating figures, use your knowledge of ${company} to use accurate real-world revenue, market cap, employee count and headquarters. Do not invent figures.STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
+${fin.source ? `REAL VERIFIED DATA for ${company} — use these exact figures, do not override: Market Cap: ${fin.marketCap||'unknown'}, Revenue: ${fin.revenue||'unknown'}, Employees: ${fin.ployees||'unknown'}, Price: ${fin.price||'unknown'}, Ticker: ${fin.ticker||'unknown'}. Base all savings calculations on these real figures. ` : 'Use your best knowledge of ' + company + ' real revenue and scale. Do not invent figures.'}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
@@ -622,7 +638,9 @@ export default function OnChainBridge() {
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
       const liveData = await fetchLiveData();
-      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData), 8000);
+      const fin = await fetchCompanyFinancials(name);
+      console.log('Financials:', fin.source, fin.revenue);
+      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,fin), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
