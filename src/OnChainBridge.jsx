@@ -153,6 +153,45 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
   return res.content?.filter(b=>b.type==="text").map(b=>b.text).join("") || "";
 };
 
+const fetchCompanyFinancials = async (name) => {
+  const out = { marketCap: null, revenue: null, employees: null, ticker: null, price: null, currency: 'USD', source: null };
+  try {
+    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 4000);
+    const sr = await fetch('https://query1.finance.yahoo.com/v1/finance/search?q=' + encodeURIComponent(name) + '&quotesCount=1&newsCount=0&enableFuzzyQuery=false', {signal: ctrl.signal});
+    const sj = await sr.json();
+    const quote = sj.quotes && sj.quotes[0];
+    if (quote && quote.symbol) {
+      out.ticker = quote.symbol;
+      const ctrl2 = new AbortController(); setTimeout(() => ctrl2.abort(), 4000);
+      const qr = await fetch('https://query1.finance.yahoo.com/v10/finance/quoteSummary/' + quote.symbol + '?modules=summaryDetail,financialData,defaultKeyStatistics,assetProfile', {signal: ctrl2.signal});
+      const qj = await qr.json();
+      const res = qj.quoteSummary && qj.quoteSummary.result && qj.quoteSummary.result[0];
+      if (res) {
+        const sd = res.summaryDetail || {};
+        const fd = res.financialData || {};
+        const ks = res.defaultKeyStatistics || {};
+        const ap = res.assetProfile || {};
+        out.marketCap = sd.marketCap && sd.marketCap.raw;
+        out.revenue = fd.totalRevenue && fd.totalRevenue.raw;
+        out.employees = ap.fullTimeEmployees;
+        out.price = sd.previousClose && sd.previousClose.raw;
+        out.currency = sd.currency || 'USD';
+        out.source = 'yahoo';
+      }
+    }
+  } catch(_) {}
+  if (!out.source) {
+    try {
+      const ctrl3 = new AbortController(); setTimeout(() => ctrl3.abort(), 4000);
+      const chr = await fetch('https://api.company-information.service.gov.uk/search/companies?q=' + encodeURIComponent(name) + '&items_per_page=1', {signal: ctrl3.signal});
+      const chj = await chr.json();
+      const co = chj.items && chj.items[0];
+      if (co) { out.chNumber = co.company_number; out.chStatus = co.company_status; out.source = 'companies_house'; }
+    } catch(_) {}
+  }
+  return out;
+};
+
 const fetchLiveData = async () => {
   const out = { yields: {}, prices: {}, helium: {} };
   try {
@@ -181,9 +220,9 @@ const fetchLiveData = async () => {
   return out;
 };
 
-const corePrompt = (company, address, liveData={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
+const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
-STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
+${fin.source ? `REAL COMPANY DATA (use these exact figures, do not override):\n- Market Cap: ${fin.marketCap ? '$'+(fin.marketCap/1e9).toFixed(1)+'B' : 'unknown'}\n- Annual Revenue: ${fin.revenue ? '$'+(fin.revenue/1e9).toFixed(1)+'B' : 'unknown'}\n- Employees: ${fin.employees ? fin.employees.toLocaleString() : 'unknown'}\n- Stock Price: ${fin.price ? '$'+fin.price : 'unknown'}\n- Ticker: ${fin.ticker || 'unknown'}\n- Data Source: ${fin.source}\n` : ''}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
@@ -619,8 +658,8 @@ export default function OnChainBridge() {
     let si=0; setLoadMsg(steps[0]);
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
-      const liveData = await fetchLiveData();
-      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData), 8000);
+      const [liveData, financials] = await Promise.all([fetchLiveData(), fetchCompanyFinancials(name)]);
+      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,financials), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
