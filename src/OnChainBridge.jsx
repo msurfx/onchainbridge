@@ -199,7 +199,7 @@ const fetchLiveData = async () => {
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
-${fin.source ? `REAL COMPANY DATA (use these exact figures, do not override):\n- Market Cap: ${fin.marketCap ? '$'+(fin.marketCap/1e9).toFixed(1)+'B' : 'unknown'}\n- Annual Revenue: ${fin.revenue ? '$'+(fin.revenue/1e9).toFixed(1)+'B' : 'unknown'}\n- Employees: ${fin.employees ? fin.employees.toLocaleString() : 'unknown'}\n- Stock Price: ${fin.price ? '$'+fin.price : 'unknown'}\n- Ticker: ${fin.ticker || 'unknown'}\n- Data Source: ${fin.source}\n` : ''}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
+${fin.source ? `REAL COMPANY DATA (use these exact figures, do not override): Market Cap: ${fin.marketCap||'unknown'}, Annual Revenue: ${fin.revenue||'unknown'}, Employees: ${fin.employees||'unknown'}, Stock Price: ${fin.price||'unknown'}, Ticker: ${fin.ticker||'unknown'}. ` : ''}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
