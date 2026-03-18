@@ -199,7 +199,7 @@ Return ONLY valid JSON. No markdown. Descriptions max 20 words.
 
 THEN for each recommended sector:
 - yield: "yield":[{"name":"str","type":"DeFi/LP/Staking/Bridge","apy":number,"risk":"Low/Med/High","protocol":"str","description":"str"}]
-- depin: "depin":{"summary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":number,"revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str"}]}
+- depin: "depin":{"summary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":number,"revenuePerUnit":"str","revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str","calculationBasis":"str"}]}
 - rwa: "rwa":{"totalTokenisable":"str","primaryProtocol":"str","tokenisableAssets":[{"asset":"str","estimatedValue":"str","protocol":"str","liquidityUnlock":"str","description":"str"}]}
 - employee: "employee":{"benefits":[{"name":"str","impact":"High/Med","yieldTag":true/false,"description":"str"}],"reputationWeb2":0-100,"reputationOnchain":0-100,"sustainableGrowth":"str","reputationYield":[{"stream":"str","value":"str"}]}
 - treasury: "treasury":{"idleCapital":"str","currentYield":"str","onchainYield":"str","annualGain":"str","protocols":[{"name":"str","apy":"str","risk":"str","description":"str"}]}
@@ -212,7 +212,23 @@ THEN for each recommended sector:
 - loyalty: "loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}
 - impact: "impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}
 
-REALITY CONSTRAINTS: Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only. DePIN $50-500/month per hotspot. RWA tokenisable assets only not market cap. ${(liveData.yields && liveData.yields.marinade) ? `Yield APY LIVE: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Yield APY use real rates Marinade 8% Kamino 10% Jito 7%.'} OpenClaw savings 20-40% of relevant ops costs. projectedSavings never exceed 5% of annual revenue. All figures must be defensible to a CFO.
+REALITY CONSTRAINTS — ALL FIGURES MUSBE DEFENSIBLE TO A CFO AND VERIFIABLE:
+- projectedSavings: never exceed 5% of annual revenue. For Nike ~$46B that means max ~$2.3B total.
+- Financial: settlement and tx fee savings max 80% reduction. Never invent costs not typical for the sector.
+- Payments: savings only on cross-border volume, max 80% fee reduction. settlementTime onchain max "10 seconds".
+- Treasury: yield 4-12% APY only on idle cash portion (typically 5-15% of revenue). annualGain = idleCapital x APY.
+- DePIN: max $150/month per unit average. max 20% of physical locations viable. totalMonthlyRevenue = locations x revenuePerUnit. Never exceed $5M/month total for any company.
+- RWA: tokenisable assets only — real estate, inventoryIP, equipment. Never use market cap. estimatedValue must be subset of balance sheet assets.
+- Yield: ${(liveData.yields && liveData.yields.marinade) ? `LIVE APY: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Use real rates: Marinade 8% Kamino 10% Jito 7%.'} Max 15% APY for any product.
+- OpenClaw: agent savings 20-40% of relevant ops costs only. monthlySaving must be realistic vs company size.
+- Supply Chain: fraudReduction max 30% of logistics cost. savings must relate to actual supply chain spend.
+- Carbon: offset savings max 40% vs traditional. esgScoreImpact must be modest e.g. "+2-5 ESG score points".
+- Loyalty: engagementLift max 40% realistic increase. Never use multipliers like 340%.
+- Identity: KYC savings max 60% of current compliance spend.
+- Insurance: parametric savings max 30% of current premiums.
+- Governance: onchainSaving max 50% of current governance overhead.
+- Collaborations: active collaborations must be real existing partnerships. possible fit scores max 95%.
+- ALL monthly figures: must sum correctly. ALL annual figures = monthly x 12. Show workings in calculationBasis where possible.
 
 SOLANA PRIORITY: Prefer Solana-native protocols (Jupiter, Marinade, Jito, Kamino, Helio, Sphere, Solana Pay, Helium, Tensor, Squads, Realms, Ondo). Only suggest other chains when genuinely stronger.
 X MONEY INTEGRATION: Include X Money as collaboration for consumer-facing companies.
@@ -242,7 +258,7 @@ const lazyPrompt = (company, sector) => {
     insurance:`"insurance":{"currentPremiums":"str","onchainSaving":"str","parametricOptions":[{"type":"str","protocol":"str","saving":"str","description":"str"}]}`,
     carbon:`"carbon":{"estimatedFootprint":"str","offsetCostTraditional":"str","offsetCostOnchain":"str","saving":"str","esgScoreImpact":"str","protocols":[{"name":"str","description":"str"}]}`,
     loyalty:`"loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}`,
-    depin:`"depin":mmary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":0,"revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str"}]}`,
+    depin:`"depin":mmary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":0,"revenuePerUnit":"str","revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str","calculationBasis":"str"}]}`,
     impact:`"impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}`,
   };
   return `Analyze "${company}" for ${sector} sector only. Return ONLY valid JSON: {${schemas[sector]||`"${sector}":{}`}}. Max 20 words per description. PREFER Solana protocols.`;
@@ -859,6 +875,7 @@ export default function OnChainBridge() {
           {d.depin?.opportunities?.map((o,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:20}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><div><PLink name={o.network} C={C}/><div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}><Bdg color={C.accent} C={C}>{o.type}</Bdg>{o.locations>0&&<Bdg color={C.purple} C={C}>{o.locations} locations</Bdg>}<Bdg color={C.dim} C={C}>{o.railPartner}</Bdg></div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{o.revenueMonthly}</div><div style={{fontSize:12,color:C.dim}}>per month</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
+            {o.calculationBasis&&<div style={{fontSize:11,color:C.dim,marginBottom:10,padding:"6px 10px",borderRadius:6,background:C.surface,border:`1px solid ${C.border}`}}>📐 {o.calculationBasis}</div>}
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
               <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
