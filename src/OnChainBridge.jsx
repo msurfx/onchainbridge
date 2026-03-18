@@ -199,7 +199,7 @@ const fetchLiveData = async () => {
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
-${fin.source ? `REAL COMPANY DATA (use these exact figures, do not override): Market Cap: ${fin.marketCap||'unknown'}, Annual Revenue: ${fin.revenue||'unknown'}, Employees: ${fin.employees||'unknown'}, Stock Price: ${fin.price||'unknown'}, Ticker: ${fin.ticker||'unknown'}. ` : ''}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
+IMPORTANT: Before generating figures, use your knowledge of ${company} to use accurate real-world revenue, market cap, employee count and headquarters. Do not invent figures.STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
@@ -636,7 +636,7 @@ export default function OnChainBridge() {
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
       const liveData = await fetchLiveData();
-      const financials = await fetchCompanyFinancials(name);
+      const financials = {};
       const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,financials), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
