@@ -212,22 +212,7 @@ THEN for each recommended sector:
 - loyalty: "loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}
 - impact: "impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}
 
-REALITY CONSTRAINTS — ALL FIGURES MUSBE DEFENSIBLE TO A CFO AND VERIFIABLE:
-- projectedSavings: never exceed 5% of annual revenue. For Nike ~$46B that means max ~$2.3B total.
-- Financial: settlement and tx fee savings max 80% reduction. Never invent costs not typical for the sector.
-- Payments: savings only on cross-border volume, max 80% fee reduction. settlementTime onchain max "10 seconds".
-- Treasury: yield 4-12% APY only on idle cash portion (typically 5-15% of revenue). annualGain = idleCapital x APY.
-- DePIN: max $150/month per unit average. max 20% of physical locations viable. totalMonthlyRevenue = locations x revenuePerUnit. Never exceed $5M/month total for any company.
-- RWA: tokenisable assets only — real estate, inventoryIP, equipment. Never use market cap. estimatedValue must be subset of balance sheet assets.
-- Yield: ${(liveData.yields && liveData.yields.marinade) ? `LIVE APY: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Use real rates: Marinade 8% Kamino 10% Jito 7%.'} Max 15% APY for any product.
-- OpenClaw: agent savings 20-40% of relevant ops costs only. monthlySaving must be realistic vs company size.
-- Supply Chain: fraudReduction max 30% of logistics cost. savings must relate to actual supply chain spend.
-- Carbon: offset savings max 40% vs traditional. esgScoreImpact must be modest e.g. "+2-5 ESG score points".
-- Loyalty: engagementLift max 40% realistic increase. Never use multipliers like 340%.
-- Identity: KYC savings max 60% of current compliance spend.
-- Insurance: parametric savings max 30% of current premiums.
-- Governance: onchainSaving max 50% of current governance overhead.
-- Collaborations: active collaborations must be real existing partnerships. possible fit scores max 95%.
+REALITY CONSTRAINTS (CFO-defensible figures only): projectedSavings max 5% of revenue. Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only (5-15% of revenue). DePIN max $150/mo per unit, max 20% locations viable, total max $5M/mo, revenueMonthly = locations x revenuePerUnit. RWA tokenisable assets only not market cap. ${(liveData.yields && liveData.yields.marinade) ? `Yield APY LIVE: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Yield APY: Marinade 8% Kamino 10% Jito 7%.'} Max 15% APY. OpenClaw savings 20-40% of ops costs. Supply chain fraud max 30% of logistics spend. Loyalty engagementLift max 40%. Carbon savings max 40%. All annual = monthly x 12.
 - ALL monthly figures: must sum correctly. ALL annual figures = monthly x 12. Show workings in calculationBasis where possible.
 
 SOLANA PRIORITY: Prefer Solana-native protocols (Jupiter, Marinade, Jito, Kamino, Helio, Sphere, Solana Pay, Helium, Tensor, Squads, Realms, Ondo). Only suggest other chains when genuinely stronger.
