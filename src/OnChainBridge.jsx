@@ -537,7 +537,7 @@ export default function OnChainBridge() {
     const target = name||input; if (!target.trim()) return;
     setPhase("loading"); setError(null); setLoadMsg("Verifying company...");
     try {
-      const text = await apiCallWithSearch(`Find "${target}" company. Return ONLY JSON array: [{"name":"str","address":"str","website":"str","sector":"str","revenue":"str"}]. Max 3.`);
+      const text = await apiCallWithSearch(`Find "${target}" company. Return ONLY JSON array: [{"name":"str","address":"str","website":"str","sector":"str","revenue":"str","description":"one sentence about what the company does"}]. Max 3.`);
       const clean = text.replace(/```json|```/g,"").trim();
       const s=clean.indexOf("["), e=clean.lastIndexOf("]");
       if (s>=0&&e>s) { try{const p=JSON.parse(clean.substring(s,e+1));if(Array.isArray(p)&&p.length>0){setVerifyOpts(p);setPhase("verify");return;}}catch(_){} }
