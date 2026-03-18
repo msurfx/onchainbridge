@@ -1198,7 +1198,7 @@ export default function OnChainBridge() {
           </div>
 
 
-          {d && phase==="dashboard" && <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>Share</button>}
+          {d && phase==="dashboard" && <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>𝕏 Share</button>}
           {d ? (
             <div className="ocb-company-info" style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
               <div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{d.company}</div><div style={{fontSize:11,color:C.dim}}>{d.description?.slice(0,45)}</div></div>
@@ -1207,7 +1207,6 @@ export default function OnChainBridge() {
                 ? <><Bdg color={C.accent} C={C}>{d.onchainProfile?.coverageScore}% Coverage</Bdg><Bdg color={C.red} C={C}>{d.gaps?.length} Gaps</Bdg></>
                 : <><Bdg color={C.purple} C={C}>{d.ticker?.onchainPotential}% Fit</Bdg><Bdg color={d.policy?.overallReadiness==="High"?C.accent:d.policy?.overallReadiness==="Med"?C.yellow:C.red} C={C}>⚖️ {d.policy?.overallReadiness}</Bdg></>
               }
-              <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{padding:"7px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>𝕏 Share</button>
             </div>
           ) : (
             <div style={{display:"flex",gap:6,marginLeft:8,flexWrap:"wrap"}}>
