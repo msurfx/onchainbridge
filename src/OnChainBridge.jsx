@@ -635,7 +635,8 @@ export default function OnChainBridge() {
     let si=0; setLoadMsg(steps[0]);
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
-      const [liveData, financials] = await Promise.all([fetchLiveData(), fetchCompanyFinancials(name)]);
+      const liveData = await fetchLiveData();
+      const financials = await fetchCompanyFinancials(name);
       const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,financials), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
