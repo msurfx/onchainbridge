@@ -154,41 +154,19 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
 };
 
 const fetchCompanyFinancials = async (name) => {
-  const out = { marketCap: null, revenue: null, employees: null, ticker: null, price: null, currency: 'USD', source: null };
   try {
-    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 4000);
-    const sr = await fetch('https://query1.finance.yahoo.com/v1/finance/search?q=' + encodeURIComponent(name) + '&quotesCount=1&newsCount=0&enableFuzzyQuery=false', {signal: ctrl.signal});
-    const sj = await sr.json();
-    const quote = sj.quotes && sj.quotes[0];
-    if (quote && quote.symbol) {
-      out.ticker = quote.symbol;
-      const ctrl2 = new AbortController(); setTimeout(() => ctrl2.abort(), 4000);
-      const qr = await fetch('https://query1.finance.yahoo.com/v10/finance/quoteSummary/' + quote.symbol + '?modules=summaryDetail,financialData,defaultKeyStatistics,assetProfile', {signal: ctrl2.signal});
-      const qj = await qr.json();
-      const res = qj.quoteSummary && qj.quoteSummary.result && qj.quoteSummary.result[0];
-      if (res) {
-        const sd = res.summaryDetail || {};
-        const fd = res.financialData || {};
-        const ap = res.assetProfile || {};
-        out.marketCap = sd.marketCap && sd.marketCap.raw;
-        out.revenue = fd.totalRevenue && fd.totalRevenue.raw;
-        out.employees = ap.fullTimeEmployees;
-        out.price = sd.previousClose && sd.previousClose.raw;
-        out.currency = sd.currency || 'USD';
-        out.source = 'yahoo';
-      }
+    const text = await apiCallWithSearch(
+      'Find the REAL current financial data for ' + name + '. Return ONLY valid JSON, no markdown: ' +
+      '{"marketCap":"exact figure e.g. $76.2B","revenue":"annual revenue e.g. $51.4B","employees":"headcount e.g. 79,000","ticker":"stock ticker e.g. NKE","exchange":"e.g. NYSE","price":"current stock price e.g. $53.47","source":"yahoo/google/official"}'
+      , 400);
+    const clean = text.replace(/```json|```/g,'').trim();
+    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+    if (s >= 0 && e > s) {
+      const fin = JSON.parse(clean.substring(s, e+1));
+      if (fin.revenue) { fin.source = 'web_search'; return fin; }
     }
   } catch(_) {}
-  if (!out.source) {
-    try {
-      const ctrl3 = new AbortController(); setTimeout(() => ctrl3.abort(), 4000);
-      const chr = await fetch('https://api.company-information.service.gov.uk/search/companies?q=' + encodeURIComponent(name) + '&items_per_page=1', {signal: ctrl3.signal});
-      const chj = await chr.json();
-      const co = chj.items && chj.items[0];
-      if (co) { out.chNumber = co.company_number; out.chStatus = co.company_status; out.source = 'companies_house'; }
-    } catch(_) {}
-  }
-  return out;
+  return { source: null };
 };
 
 const fetchLiveData = async () => {
