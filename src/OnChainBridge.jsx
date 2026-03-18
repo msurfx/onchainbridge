@@ -153,7 +153,33 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
   return res.content?.filter(b=>b.type==="text").map(b=>b.text).join("") || "";
 };
 
-const corePrompt = (company, address) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
+const fetchLiveData = async () => {
+  const out = { yields: {}, prices: {}, helium: {} };
+  try {
+    const dlRes = await fetch('https://yields.llama.fi/pools');
+    const dlJson = await dlRes.json();
+    const t = { marinade: null, kamino: null, jito: null };
+    for (const pool of dlJson.data || []) {
+      const proj = (pool.project || '').toLowerCase();
+      const chain = (pool.chain || '').toLowerCase();
+      if (chain !== 'solana') continue;
+      if (proj.includes('marinade') && !t.marinade) t.marinade = pool.apy?.toFixed(1);
+      if (proj.includes('kamino') && !t.kamino)    t.kamino  = pool.apy?.toFixed(1);
+      if (proj.includes('jito')    && !t.jito)     t.jito    = pool.apy?.toFixed(1);
+      if (t.marinade && t.kamino && t.jito) break;
+    }
+    out.yields = t;
+  } catch(_) {}
+  try {
+    const cgRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana,usd-coin&vs_currencies=usd');
+    const cgJson = await cgRes.json();
+    out.prices = { sol: cgJson.solana?.usd, usdc: cgJson['usd-coin']?.usd };
+  } catch(_) {}
+  // Helium v1 API deprecated — skipped
+  return out;
+};
+
+const corePrompt = (company, address, liveData={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
 STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
@@ -591,7 +617,8 @@ export default function OnChainBridge() {
     let si=0; setLoadMsg(steps[0]);
     const iv = setInterval(() => { si=(si+1)%steps.length; setLoadMsg(steps[si]); }, 2000);
     try {
-      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address), 8000);
+      const liveData = await fetchLiveData();
+      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData), 8000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
@@ -1170,7 +1197,7 @@ export default function OnChainBridge() {
             </button>
           </div>
 
-          {d && phase==="dashboard" && <button onClick={() => {setRating(0);setRatingSent(false);setRatingModal(true);}} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>𝕏 Share</button>}
+
           {d ? (
             <div className="ocb-company-info" style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
               <div><div style={{fontSize:14,fontWeight:700,color:C.text}}>{d.company}</div><div style={{fontSize:11,color:C.dim}}>{d.description?.slice(0,45)}</div></div>
