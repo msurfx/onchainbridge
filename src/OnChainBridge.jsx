@@ -156,7 +156,8 @@ const apiCallWithSearch = async (prompt, tokens=1000) => {
 const fetchLiveData = async () => {
   const out = { yields: {}, prices: {}, helium: {} };
   try {
-    const dlRes = await fetch('https://yields.llama.fi/pools');
+    const dlCtrl = new AbortController(); setTimeout(() => dlCtrl.abort(), 4000);
+    const dlRes = await fetch('https://yields.llama.fi/pools', {signal: dlCtrl.signal});
     const dlJson = await dlRes.json();
     const t = { marinade: null, kamino: null, jito: null };
     for (const pool of dlJson.data || []) {
@@ -171,7 +172,8 @@ const fetchLiveData = async () => {
     out.yields = t;
   } catch(_) {}
   try {
-    const cgRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana,usd-coin&vs_currencies=usd');
+    const cgCtrl = new AbortController(); setTimeout(() => cgCtrl.abort(), 3000);
+    const cgRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana,usd-coin&vs_currencies=usd', {signal: cgCtrl.signal});
     const cgJson = await cgRes.json();
     out.prices = { sol: cgJson.solana?.usd, usdc: cgJson['usd-coin']?.usd };
   } catch(_) {}
@@ -209,7 +211,7 @@ THEN for each recommended sector:
 - loyalty: "loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}
 - impact: "impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}
 
-REALITY CONSTRAINTS: Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only. DePIN $50-500/month per hotspot. RWA tokenisable assets only not market cap. Yield APY use real rates Marinade 8% Kamino 10% Jito 7%. OpenClaw savings 20-40% of relevant ops costs. projectedSavings never exceed 5% of annual revenue. All figures must be defensible to a CFO.
+REALITY CONSTRAINTS: Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only. DePIN $50-500/month per hotspot. RWA tokenisable assets only not market cap. ${liveData.yields && liveData.yields.marinade ? `Yield APY LIVE: Marinade ${liveData.yields.marinade}% Kamino ${liveData.yields.kamino||'10'}% Jito ${liveData.yields.jito||'7'}%. SOL $${liveData.prices&&liveData.prices.sol||'--'}.` : 'Yield APY use real rates Marinade 8% Kamino 10% Jito 7%.'} OpenClaw savings 20-40% of relevant ops costs. projectedSavings never exceed 5% of annual revenue. All figures must be defensible to a CFO.
 
 SOLANA PRIORITY: Prefer Solana-native protocols (Jupiter, Marinade, Jito, Kamino, Helio, Sphere, Solana Pay, Helium, Tensor, Squads, Realms, Ondo). Only suggest other chains when genuinely stronger.
 X MONEY INTEGRATION: Include X Money as collaboration for consumer-facing companies.
