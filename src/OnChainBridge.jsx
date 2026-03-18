@@ -169,7 +169,6 @@ const fetchCompanyFinancials = async (name) => {
       if (res) {
         const sd = res.summaryDetail || {};
         const fd = res.financialData || {};
-        const ks = res.defaultKeyStatistics || {};
         const ap = res.assetProfile || {};
         out.marketCap = sd.marketCap && sd.marketCap.raw;
         out.revenue = fd.totalRevenue && fd.totalRevenue.raw;
