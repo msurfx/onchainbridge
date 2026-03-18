@@ -43,6 +43,30 @@ const SECTOR_META = {
   gaps:{icon:"🎯",label:"Gaps"},
 };
 
+const SECTOR_DEFS = {
+  overview:"A complete snapshot of the company's onchain opportunity — potential score, projected savings, recommended sectors, and key metrics across all 16 areas.",
+  financial:"Analysis of current Web2 financial costs versus onchain equivalents — settlement costs, transaction fees, compliance spend, and audit costs. Shows exact dollar savings from migrating to Solana.",
+  payments:"Cross-border payment volumes, current fee structures, and savings available via Solana-native payment rails like Helio, Sphere, and Solana Pay. Includes settlement time comparison.",
+  collaborations:"Active and potential protocol partnerships with estimated annual value and bridge commission for each connection.",
+  openclaw:"Autonomous AI agents deployed via WhatsApp, Telegram, or Slack. Handles treasury management, DePIN operas, bridge execution, and compliance — no internal crypto team required.",
+  policy:"Regulatory landscape analysis — jurisdiction, readiness, permitted activities, current restrictions, and recommended compliance actions.",
+  yield:"DeFi yield opportunities matched to the company's treasury profile — staking, liquidity provision, and lending protocols on Solana with APY and risk ratings.",
+  depin:"Decentralised Physical Infrastructure — how the company's physical assets can generate onchain revenue via networks like Helium, Hivemapper, and Render.",
+  rwa:"Real World Asset tokenisation — which company assets can be tokenised on Solana to unlock liquidity, with estimated values and protocol recommendations.",
+  employee:"Onchain employee benefits, reputation scoring, and yield opportunities for staff. Covers token-based benefits and credents.",
+  treasury:"Idle capital analysis — current cash yield versus what Solana DeFi protocols like Marinade, Kamino, and Jito could generate.",
+  supplychain:"Supply chain complexity — fraud reduction potential and areas where onchain verification and smart contracts reduce cost and risk.",
+  governance:"How onchain tools like Realms and Squads reduce overhead, increase transparency, and automate voting and proposal management.",
+  data:"What proprietary data the company holds that could be licensed via onchain oracle networks like Pyth and Chainlink.",
+  identity:"KYC cost reduction via onchain identity protocols — current compliance spend versus decentralised identity solutions.",
+  insurance:"Parametric insurance — current premium costs versus onchain alternatives that pay out automatically based on onchain data triggers.",
+  carbon:"Carbon footprint and ESG opportunity — onchain carbon credits versus traditional offset costs, and ESG score improvement.",
+  loyalty:"sing loyalty points on Solana increases interoperability, engagement, and redemption rates.",
+  impact:"How the company's onchain transition creates measurable benefit for stakeholders, with UN SDG alignment.",
+  rails:"The end-to-end onboarding journey — verification, managed wallet, fiat rails, OpenClaw agents, and going live on Solana.",
+  gaps:"Identified gaps in an existing onchain protocol's coverage with estimated annual value and activation difficulty.",
+};
+
 const NAV_GROUPS = [
   {label:"CORE", items:["overview","financial","payments"]},
   {label:"PROTOCOL", items:["collaborations","openclaw","policy"]},
@@ -427,6 +451,8 @@ export default function OnChainBridge() {
   const [leadForm, setLeadForm] = useState({name:'',company:'',email:''});
   const [leadSent, setLeadSent] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
+  const [sectorPopup, setSectorPopup] = useState(null);
+  const [sectorsGuide, setSectorsGuide] = useState(false);
   const [gatedEmail, setGatedEmail] = useState(() => { try { return localStorage.getItem("ocb_email")||""; } catch(_) { return ""; } });
   const [emailGateModal, setEmailGateModal] = useState(false);
   const [pendingTab, setPendingTab] = useState(null);
@@ -987,10 +1013,11 @@ export default function OnChainBridge() {
                       style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:collapsed?"10px 14px":"8px 14px",border:"none",background:active?C.accentGlow:"transparent",color:active?C.accent:"#a8c8dc",cursor:"pointer",fontSize:13,fontWeight:active?700:500,transition:"all .15s",borderLeft:`2px solid ${active?C.accent:"transparent"}`,textAlign:"left"}}
                       onMouseEnter={e=>{if(!active){e.currentTarget.style.background=C.accentGlow;e.currentTarget.style.color=C.textSub;}}}
                       onMouseLeave={e=>{if(!active){e.currentTarget.style.background="transparent";e.currentTarget.style.color=C.dim;}}}>
-                      <span style={{fontSize:15,flexShrink:0}}>{t.icon}</span>
+                        <span style={{fontSize:15,flexShrink:0,cursor:"help"}} onClick={e=>{e.stopPropagation();setSectorPopup(t.id);}}>{t.icon}</span>
                       {!collapsed && <>
                         <span style={{flex:1}}>{t.label}</span>
                         {t.lazy&&!lazyData[t.id]&&<span style={{fontSize:9,color:C.muted}}>⬇</span>}
+                        {t.lazy&&lazyData[t.id]&&<span style={{fontSize:9,color:C.accent}}>✓</span>}
                         {t.id==="gaps"&&d?.gaps?.length>0&&<span style={{background:C.red,color:"#fff",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:700}}>{d.gaps.length}</span>}
                       </>}
                     </button>
@@ -1001,6 +1028,7 @@ export default function OnChainBridge() {
           }) : (
             !collapsed && <div style={{padding:"16px 14px"}}>{["Overview","Financial","Payments","Collabs","OpenClaw","Policy"].map((l,i) => (<div key={i} style={{padding:"8px 10px",color:C.muted,fontSize:13,marginBottom:2}}>◻ {l}</div>))}</div>
           )}
+        {!collapsed && tabs.length>0 && <div style={{padding:"4px 14px 8px",fontSize:10,color:C.muted,fontFamily:"var(--mono)"}}>{Object.keys(lazyData).length} of {tabs.filter(t=>t.lazy).length} extra sectors loaded</div>}
         </nav>
 
         {/* Footer */}
@@ -1599,6 +1627,35 @@ export default function OnChainBridge() {
             <div style={{fontSize:16,fontWeight:700,color:C.accent}}>Thanks for the feedback!</div>
             <div style={{fontSize:13,color:C.dim,marginTop:6}}>Opening share card...</div>
           </>)}
+        </div>
+      </div>}
+      {sectorPopup && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setSectorPopup(null)}>
+        <div style={{width:"90%",maxWidth:420,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 40px ${C.accent}20`}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+            <span style={{fontSize:28}}>{SECTOR_META[sectorPopup]?.icon}</span>
+            <div style={{fontSize:18,fontWeight:800,color:C.text}}>{SECTOR_META[sectorPopup]?.label}</div>
+          </div>
+          <div style={{fontSize:14,color:C.textSub,lineHeight:1.7,marginBottom:20}}>{SECTOR_DEFS[sectorPopup]}</div>
+          <button onClick={() => setSectorPopup(null)} style={{width:"100%",padding:"11px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Got it</button>
+        </div>
+      </div>}
+      {sectorsGuide && <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:3000}} onClick={() => setSectorsGuide(false)}>
+        <div style={{width:"90%",maxWidth:600,maxHeight:"80vh",borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,overflow:"hidden",boxShadow:`0 0 40px ${C.accent}20`,display:"flex",flexDirection:"column"}} onClick={e=>e.stopPropagation()}>
+          <div style={{padding:"20px 24px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:17,fontWeight:800,color:C.text}}>📖 16 Sector Guide</div>
+            <button onClick={() => setSectorsGuide(false)} style={{border:"none",background:"transparent",color:C.dim,fontSize:18,cursor:"pointer"}}>✕</button>
+          </div>
+          <div style={{overflowY:"auto",padding:"16px 24px"}}>
+            {Object.entries(SECTOR_DEFS).map(([id, def]) => (
+          <div key={id} style={{padding:"14px 0",borderBottom:`1px solid ${C.border}`}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+                  <span style={{fontSize:18}}>{SECTOR_META[id]?.icon}</span>
+                  <span style={{fontSize:14,fontWeight:700,color:C.text}}>{SECTOR_META[id]?.label||id}</span>
+                </div>
+                <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,paddingLeft:28}}>{def}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>}
     </div>
