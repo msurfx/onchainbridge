@@ -646,7 +646,7 @@ export default function OnChainBridge() {
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
       const core = mode==="onchain" ? ["financial","payments","collaborations","openclaw","policy","gaps"] : [...FIXED_SECTORS,...rec];
       setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setPhase("dashboard"); saveHistory(name, parsed);
-      fetch("/api/tweet", {
+      false && fetch("/api/tweet", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
@@ -1692,7 +1692,7 @@ export default function OnChainBridge() {
             <button onClick={() => {
               if(rating>0){
                 emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE,process.env.REACT_APP_EMAILJS_TEMPLATE,
-                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"Star Rating",sector:rating+" stars",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
+                  {to_email:"partnerships@onchainbridge.xyz",user_email:gatedEmail||"anonymous",contact_name:gatedEmail||"User",company:d?.company||"Unknown",protocol:"OnChainBridge Feedback",sector:"User Rating",value:d?.financial?.projectedSavings||"",analysis_url:window.location.href},
                   process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
                 setRatingSent(true);
                 setTimeout(()=>{setRatingModal(false);setShareModal(true);},1200);
