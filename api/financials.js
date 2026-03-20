@@ -19,8 +19,7 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 600,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: "Find the most recent financial data for " + name + ". Return ONLY valid JSON no markdown: " + schema }]
+        messages: [{ role: "user", content: "Return the most recent known financial data for " + name + " as a public company. Return ONLY valid JSON, no markdown, no explanation: " + schema }]
       })
     });
     const data = await r.json();
