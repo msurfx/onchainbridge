@@ -216,8 +216,7 @@ const apiCallGemini = async (prompt, tokens=10000) => {
       }
     } catch(_) {}
   }
-  console.log('Gemini unavailable, falling back to Claude');
-  return apiCall(prompt, tokens);
+  throw new Error('Analysis temporarily unavailable — please try again in a minute.');
 };
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
