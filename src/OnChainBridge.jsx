@@ -212,6 +212,7 @@ const apiCallGemini = async (prompt, tokens=10000) => {
       });
       const res = await r.json();
       if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
+        console.log('✅ GEMINI used - credits saved');
         return res.candidates[0].content.parts[0].text;
       }
     } catch(_) {}
