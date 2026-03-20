@@ -133,25 +133,9 @@ const repairJSON = (str) => {
   }
 };
 
-const apiCall = async (prompt, tokens=4000) => {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST",
-    headers:{"Content-Type":"application/json","x-api-key":process.env.REACT_APP_ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:tokens,messages:[{role:"user",content:prompt}]}),
-  });
-  const res = await r.json();
-  return res.content?.map(b=>b.text||"").join("") || "";
-};
 
-const apiCallWithSearch = async (prompt, tokens=1000) => {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST",
-    headers:{"Content-Type":"application/json","x-api-key":process.env.REACT_APP_ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:tokens,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]}),
-  });
-  const res = await r.json();
-  return res.content?.filter(b=>b.type==="text").map(b=>b.text).join("") || "";
-};
+
+
 
 
 const fetchCompanyFinancials = async (name) => {
