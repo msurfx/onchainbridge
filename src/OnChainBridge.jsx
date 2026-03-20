@@ -199,25 +199,28 @@ const fetchLiveData = async () => {
 };
 
 const apiCallGemini = async (prompt, tokens=10000) => {
-  const key = process.env.REACT_APP_GEMINI_API_KEY;
+  const key = process.env.REACT_APP_GROQ_API_KEY;
   if (key) {
     try {
-      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key, {
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key},
         body: JSON.stringify({
-          contents: [{parts: [{text: prompt}]}],
-          generationConfig: {maxOutputTokens: tokens, temperature: 0.7}
+          model: 'llama-3.3-70b-versatile',
+          messages: [{role: 'user', content: prompt}],
+          max_tokens: tokens,
+          temperature: 0.7
         })
       });
       const res = await r.json();
-      if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
-        console.log('✅ GEMINI used - credits saved');
-        return res.candidates[0].content.parts[0].text;
+      if (res.choices?.[0]?.message?.content) {
+        console.log('GROQ used - free tier');
+        return res.choices[0].message.content;
       }
-    } catch(_) {}
+      console.log('Groq error:', JSON.stringify(res).slice(0,200));
+    } catch(e) { console.log('Groq error:', e.message); }
   }
-  throw new Error('Analysis temporarily unavailable — please try again in a minute.');
+  throw new Error('Analysis temporarily unavailable - please try again in a minute.');
 };
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
