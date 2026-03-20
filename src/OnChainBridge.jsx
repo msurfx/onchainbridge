@@ -198,6 +198,28 @@ const fetchLiveData = async () => {
   return out;
 };
 
+const apiCallGemini = async (prompt, tokens=10000) => {
+  const key = process.env.REACT_APP_GEMINI_API_KEY;
+  if (key) {
+    try {
+      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          contents: [{parts: [{text: prompt}]}],
+          generationConfig: {maxOutputTokens: tokens, temperature: 0.7}
+        })
+      });
+      const res = await r.json();
+      if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
+        return res.candidates[0].content.parts[0].text;
+      }
+    } catch(_) {}
+  }
+  console.log('Gemini unavailable, falling back to Claude');
+  return apiCall(prompt, tokens);
+};
+
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
 ${fin.source ? `REAL VERIFIED FINANCIAL DATA for ${company} sourced from ${fin.source||'web'}. USE THESE AS CALCULATION INPUTS FOR EVERY SECTOR — DO NOT INVENT OR OVERRIDE: Revenue: ${fin.revenue||'unknown'}, Market Cap: ${fin.marketCap||'unknown'}, Gross Profit: ${fin.grossProfit||'unknown'}, Operating Expenses: ${fin.operatingExpenses||'unknown'}, Cash: ${fin.caAndEquivalents||'unknown'}, Fixed Assets: ${fin.fixedAssets||'unknown'}, Inventory: ${fin.inventory||'unknown'}, COGS: ${fin.cogs||'unknown'}, Employees: ${fin.employees||'unknown'}, Physical Locations: ${fin.physicalLocations||'unknown'}, International Revenue %: ${fin.crossBorderRevenueEstimate||'unknown'}, Industry: ${fin.industry||'unknown'}. CALCULATIONS: Treasury annualGain = cashAndEquivalents x APY differential. RWA real estate = fixedAssets x 0.25, inventory = inventory x 0.10. DePIN viableLocations = physicalLocations x 0.20, total = sum of opportunities max $5M/mo. OpenClaw totalSaving = operatingExpenses x 0.25 split across 4 agents. Payments crossBorderVolume = revenue x crossBorderRevenueEstimate, savings max 80%. Supply chain fraudReduction = cogs x 0.03. projectedSavings max 5% of revenue. Show calculationBasis for every figure.` : `Use best knowledge of ${company} financials. Show calculationBasis for every figure.`}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
@@ -640,7 +662,7 @@ export default function OnChainBridge() {
       const liveData = await fetchLiveData();
       const fin = await fetchCompanyFinancials(name);
       console.log('Financials:', fin.source, fin.revenue);
-      const text = await apiCall(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,fin), 8000);
+      const text = await apiCallGemini(mode==="onchain"?onchainCorePrompt(name,address):corePrompt(name,address,liveData,fin), 10000);
       console.log("RAW:", text.slice(0,200));
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
