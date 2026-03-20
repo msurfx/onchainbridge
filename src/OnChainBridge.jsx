@@ -610,7 +610,7 @@ export default function OnChainBridge() {
     const target = name||input; if (!target.trim()) return;
     setPhase("loading"); setError(null); setLoadMsg("Verifying company...");
     try {
-      const text = await apiCallWithSearch(`Find "${target}" company. Return ONLY JSON array: [{"name":"str","address":"str","website":"str","sector":"str","revenue":"str","description":"one sentence about what the company does"}]. Max 3.`);
+      const text = await apiCallGemini(`Find "${target}" company. Return ONLY valid JSON array, no markdown: [{"name":"str","address":"str","website":"str","sector":"str","revenue":"str","description":"one sentence about what the company does"}]. Max 3 results.`, 500);
       const clean = text.replace(/```json|```/g,"").trim();
       const s=clean.indexOf("["), e=clean.lastIndexOf("]");
       if (s>=0&&e>s) { try{const p=JSON.parse(clean.substring(s,e+1));if(Array.isArray(p)&&p.length>0){setVerifyOpts(p);setPhase("verify");return;}}catch(_){} }
@@ -690,7 +690,7 @@ export default function OnChainBridge() {
     if (lazyData[sector]||lazyLoading[sector]) return;
     setLazyLoading(p => ({...p,[sector]:true}));
     try {
-      const text = await apiCall(lazyPrompt(d?.company||input, sector), 2000);
+      const text = await apiCallGemini(lazyPrompt(d?.company||input, sector), 2000);
       const parsed = repairJSON(text);
       const key = sector==="data"?"dataOracles":sector;
       setLazyData(p => ({...p,[sector]:parsed[key]||parsed[sector]||parsed}));
