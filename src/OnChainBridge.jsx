@@ -215,7 +215,7 @@ Return ONLY valid JSON. No markdown. Descriptions max 20 words.
 "policy":{"jurisdiction":"str","overallReadiness":"Low/Med/High","summary":"str","permitted":[{"activity":"str","notes":"str"}],"restricted":[{"activity":"str","barrier":"str","timeline":"str"}],"recommended":[{"action":"str","priority":"High/Med/Low","description":"str"}],"complianceProtocols":[{"name":"str","description":"str"}]}}
 
 THEN for each recommended sector:
-- yield: "yield":[{"name":"str","type":"DeFi/LP/Staking/Bridge","apy":number,"risk":"Low/Med/High","protocol":"str","description":"str"}]
+- yield: "yield":[{"name":"str","type":"DeFi/LP/Staking/Bridge","apy":number,"risk":"Low/Med/High","protocol":"str","description":"str"}] CRITICAL: protocol MUST be a real Solana protocol name: Marinade, Kamino, Jito, Orca, Raydium, Solend, marginfi — NEVER use "Solana" as protocol name
 - depin: "depin":{"summary":"str","totalMonthlyRevenue":"str","physicalAssets":"str","opportunities":[{"network":"str","type":"str","locations":number,"revenuePerUnit":"str","revenueMonthly":"str","setupCost":"str","description":"str","railPartner":"str","calculationBasis":"str"}]}
 - rwa: "rwa":{"totalTokenisable":"str","primaryProtocol":"str","tokenisableAssets":[{"asset":"str","estimatedValue":"str","protocol":"str","liquidityUnlock":"str","description":"str"}]}
 - employee: "employee":{"benefits":[{"name":"str","impact":"High/Med","yieldTag":true/false,"description":"str"}],"reputationWeb2":0-100,"reputationOnchain":0-100,"sustainableGrowth":"str","reputationYield":[{"stream":"str","value":"str"}]}
