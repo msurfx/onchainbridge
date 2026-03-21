@@ -337,6 +337,12 @@ const PROTOS = {
   "Solend":{url:"https://solend.fi"},
   "Hubble":{url:"https://hubbleprotocol.io"},
   "Fireblocks":{url:"https://fireblocks.com"},
+  "OriginTrail":{url:"https://origintrail.io"},
+  "Morpheus Network":{url:"https://morpheus.network"},
+  "DIMO":{url:"https://dimo.zone"},
+  "Etherisc":{url:"https://etherisc.com"},
+  "Hang":{url:"https://hang.xyz"},
+  "Civic":{url:"https://civic.com"},
   "Turnkey":{url:"https://turnkey.com"},
 };
 
