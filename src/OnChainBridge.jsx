@@ -233,6 +233,7 @@ REALITY CONSTRAINTS (CFO-defensible figures only): projectedSavings max 5% of re
 - ALL monthly figures: must sum correctly. ALL annual figures = monthly x 12. Show workings in calculationBasis where possible.
 
 SOLANA PRIORITY: Prefer Solana-native protocols (Jupiter, Marinade, Jito, Kamino, Helio, Sphere, Solana Pay, Helium, Tensor, Squads, Realms, Ondo). Only suggest other chains when genuinely stronger.
+CRITICAL PROTOCOL NAMING: ALWAYS use the exact real protocol name — never use generic terms like "Solana", "Blockchain", "DeFi Protocol", "Solana Supply Chain Protocol" or any invented name. Every protocol field must be a real named product: Yield=Marinade/Kamino/Jito/Orca, DePIN=Helium/Hivemapper/Render/DIMO, Payments=Helio/Sphere/Solana Pay, RWA=Ondo/Centrifuge/Credix, Supply Chain=OriginTrail/Morpheus Network, Governance=Realms/Squads, Identity=Cic/Worldcoin, Insurance=Etherisc/Nexus Mutual, Carbon=Toucan/KlimaDAO, Loyalty=Hang/Starbucks Odyssey, Data=Pyth/Chainlink.
 X MONEY INTEGRATION: Include X Money as collaboration for consumer-facing companies.
 OpenClaw agents MUST include Treasury, DePIN Ops, Bridge Execution, Compliance.`;
 
