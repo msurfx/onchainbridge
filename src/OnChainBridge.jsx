@@ -341,7 +341,10 @@ const PROTOS = {
 
 // ─── UI Components ────────────────────────────────────────────────────
 const PLink = ({name, C}) => {
-  const p = PROTOS[name] || Object.entries(PROTOS).find(([k]) => name?.toLowerCase().includes(k.toLowerCase()))?.[1];
+  const n = name?.toLowerCase() || '';
+  const p = PROTOS[name] ||
+    Object.entries(PROTOS).find(([k]) => n.includes(k.toLowerCase()))?.[1] ||
+    Object.entries(PROTOS).find(([k]) => k.toLowerCase().includes(n))?.[1];
   if (!p) return <span style={{color:C.accent,fontSize:13}}>{name}</span>;
   return <a href={p.url} target="_blank" rel="noopener noreferrer"
     style={{display:"inline-flex",alignItems:"center",gap:5,color:C.accent,fontSize:13,textDecoration:"none",padding:"3px 10px",borderRadius:6,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,transition:"all .15s"}}
