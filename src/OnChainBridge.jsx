@@ -183,27 +183,19 @@ const fetchLiveData = async () => {
 };
 
 const apiCallGemini = async (prompt, tokens=10000) => {
-  const key = process.env.REACT_APP_GROQ_API_KEY;
-  if (key) {
-    try {
-      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key},
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [{role: 'user', content: prompt}],
-          max_tokens: tokens,
-          temperature: 0.7
-        })
-      });
-      const res = await r.json();
-      if (res.choices?.[0]?.message?.content) {
-        console.log('GROQ used - free tier');
-        return res.choices[0].message.content;
-      }
-      console.log('Groq error:', JSON.stringify(res).slice(0,200));
-    } catch(e) { console.log('Groq error:', e.message); }
-  }
+  try {
+    const r = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ prompt })
+    });
+    const data = await r.json();
+    if (data.text) {
+      console.log('GROQ used - free tier');
+      return data.text;
+    }
+    console.log('Groq error:', JSON.stringify(data).slice(0,200));
+  } catch(e) { console.log('Groq error:', e.message); }
   throw new Error('Analysis temporarily unavailable - please try again in a minute.');
 };
 
@@ -1045,7 +1037,7 @@ export default function OnChainBridge() {
       {/* SIDEBAR */}
       <aside className="ocb-sidebar" style={{width:collapsed?62:220,flexShrink:0,background:C.sidebar,borderRight:`1px solid ${C.border}`,display:"flex",flexDirection:"column",position:"sticky",top:0,height:"100vh",overflow:"hidden",transition:"width .25s ease",zIndex:50}}>
         {/* Logo */}
-        <div style={{padding:"16px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10}}>
+        <div onClick={()=>{setPhase("search");setD(null);setInput("");setTab("overview");}} style={{padding:"16px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:9,background:`linear-gradient(135deg,${C.accent},${C.purple})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900,color:"#fff",flexShrink:0,boxShadow:`0 0 16px ${C.accent}40`}}>◆</div>
           {!collapsed && <div><div style={{fontSize:14,fontWeight:800,color:C.text}}>OnChain<span style={{color:C.accent}}>Bridge</span></div><div style={{fontSize:10,color:C.muted,fontFamily:"var(--mono)"}}>v5</div></div>}
         </div>
