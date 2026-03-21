@@ -206,7 +206,7 @@ STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + yo
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
 
-{"company":"${company}","sector":"str","description":"1 line","location":"str","employees":number,"revenue":"str","website":"str",
+{"company":"full official company name e.g. Nike Inc. not just Nike","sector":"str","description":"2 sentence description of what the company does including key business areas and scale","location":"str","employees":number,"revenue":"str","website":"str",
 "ticker":{"marketCap":"str","currentEfficiency":0-100,"onchainPotential":0-100},"recommendedSectors":["s1","s2","s3"],
 "financial":{"web2":{"settlementCost":number,"transactionFees":number,"complianceCost":"str","auditCost":"str","revenueLeak":"str"},"onchain":{"settlementCost":number,"transactionFees":number,"complianceSaving":"str","auditSaving":"str","newRevenueStreams":"str"},"projectedSavings":"str","revenueGrowth":"str","sparkData":[8 nums 0-100]},
 "payments":{"crossBorderVolume":"str","currentFees":"str","onchainFees":"str","savingAnnual":"str","settlementTime":{"current":"str","onchain":"str"},"protocols":[{"name":"str","description":"str"}]},
