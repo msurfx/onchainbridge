@@ -336,10 +336,7 @@ const PROTOS = {
   "Friktion":{url:"https://friktion.fi"},
   "Solend":{url:"https://solend.fi"},
   "Hubble":{url:"https://hubbleprotocol.io"},
-  "Fireblocks":{url:"https://fireblocks.com"},"OriginTrail":{url:"https://origintrail.io"},"Morpheus Network":{url:"https://morpheus.network"},"DIMO":{url:"https://dimo.zone"},"Render":{url:"https://rendernetwork.com"},"Hivemapper":{url:"https://hivemapper.com"},"IoTeX":{url:"https://iotex.io"},"Maple":{url:"https://maple.finance"},"Parcl":{url:"https://parcl.co"},"Homebase":{url:"https://homebase.finance"},"BAXUS":{url:"https://baxus.co"},"Beam":{url:"https://onbeam.com"},"Meso":{url:"https://meso.network"},"Huma":{url:"https://huma.finance"},"TipLink":{url:"https://tiplink.io"},"Sanctum":{url:"https://sanctum.so"},"Loopscale":{url:"https://loopscale.com"},"BlazeStake":{url:"https://stake.solblaze.org"},"Armada":{url:"https://armada.ac"},"SendAI":{url:"https://sendai.fun"},
-  "OriginTrail":{url:"https://origintrail.io"},
-  "Morpheus Network":{url:"https://morpheus.network"},
-  "DIMO":{url:"https://dimo.zone"},
+  "Fireblocks":{url:"https://fireblocks.com"},"OriginTrail":{url:"https://origintrail.io"},"Morpheus Network":{url:"https://morpheus.network"},"DIMO":{url:"https://dimo.zone"},"IoTeX":{url:"https://iotex.io"},"Homebase":{url:"https://homebase.finance"},"BAXUS":{url:"https://baxus.co"},"Beam":{url:"https://onbeam.com"},"Meso":{url:"https://meso.network"},"Huma":{url:"https://huma.finance"},"TipLink":{url:"https://tiplink.io"},"Sanctum":{url:"https://sanctum.so"},"Loopscale":{url:"https://loopscale.com"},"BlazeStake":{url:"https://stake.solblaze.org"},"Armada":{url:"https://armada.ac"},"SendAI":{url:"https://sendai.fun"},
   "Turnkey":{url:"https://turnkey.com"},
 };
 
