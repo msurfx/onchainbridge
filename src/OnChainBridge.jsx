@@ -590,9 +590,9 @@ export default function OnChainBridge() {
     const target = name||input; if (!target.trim()) return;
     setPhase("loading"); setError(null); setLoadMsg("Verifying company...");
     try {
-      // Try Companies House / SEC EDGAR first
+      // Try Companies House only for company numbers
       const isCompanyNumber = /^\d{6,8}$/.test(target.trim());
-      if (isCompanyNumber || target.trim().length > 2) {
+      if (isCompanyNumber) {
         try {
           const chRes = await fetch(`/api/companies?query=${encodeURIComponent(target.trim())}`);
           const chData = await chRes.json();
