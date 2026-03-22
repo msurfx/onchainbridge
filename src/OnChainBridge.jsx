@@ -645,7 +645,12 @@ export default function OnChainBridge() {
   };
 
   const confirmCompany = (opt) => {
-    setVerified(opt); runAnalysis(opt.name, opt.address);
+    setVerified(opt);
+    // For Companies House results, clean the name for better financials lookup
+    const lookupName = opt.source === "companies_house" || opt.source === "sec_edgar"
+      ? opt.name.replace(/LIMITED|LTD|PLC|INC|CORP|LLC/gi, "").trim()
+      : opt.name;
+    runAnalysis(lookupName, opt.address);
   };
 
   const runAnalysis = useCallback(async (name, address) => {
