@@ -590,6 +590,20 @@ export default function OnChainBridge() {
     const target = name||input; if (!target.trim()) return;
     setPhase("loading"); setError(null); setLoadMsg("Verifying company...");
     try {
+      // Try Companies House / SEC EDGAR first
+      const isCompanyNumber = /^\d{6,8}$/.test(target.trim());
+      if (isCompanyNumber || target.trim().length > 2) {
+        try {
+          const chRes = await fetch(`/api/companies?query=${encodeURIComponent(target.trim())}`);
+          const chData = await chRes.json();
+          if (chData.results && chData.results.length > 0) {
+            setVerifyOpts(chData.results);
+            setPhase("verify");
+            return;
+          }
+        } catch(_) {}
+      }
+      // Fallback to Groq verify
       const text = await apiCallGemini(`Find "${target}" company. Return ONLY valid JSON array, no markdown: [{"name":"str","address":"str","website":"str","sector":"str","revenue":"str","description":"one sentence about what the company does"}]. Max 3 results.`, 500);
       const clean = text.replace(/```json|```/g,"").trim();
       const s=clean.indexOf("["), e=clean.lastIndexOf("]");
