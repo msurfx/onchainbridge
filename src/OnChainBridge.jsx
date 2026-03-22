@@ -479,8 +479,8 @@ const ShareCard = ({d, mode, onClose, C}) => {
             var ag = d.openclaw ? d.openclaw.totalAgentSaving : "";
             var secs = (d.recommendedSectors || []).join(",");
             var ogUrl = "https://app.onchainbridge.xyz/api/og?company="+encodeURIComponent(co)+"&score="+sc+"&savings="+encodeURIComponent(sv)+"&payment="+encodeURIComponent(pm)+"&agents="+encodeURIComponent(ag)+"&mode="+mode+"&sectors="+encodeURIComponent(secs);
-            var txt = encodeURIComponent(co + " - " + sc + "% onchain\n" + sv + " opportunity\n\n" + ogUrl + "\n\n#OnChainBridge #Solana");
-            window.open("https://twitter.com/intent/tweet?text=" + txt, "_blank");
+            var txt = encodeURIComponent(co + " - " + sc + "% onchain\n" + sv + " opportunity\n\n" + ogUrl + "\n\n#OnChainBridge #Solana @onchainbridgexy");
+            window.open("https://x.com/intent/tweet?text=" + txt, "_blank");
           }} style={{padding:"10px 20px",borderRadius:10,border:"none",background:"#000",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>𝕏 Post</button>
           <button onClick={onClose} style={{padding:"10px 20px",borderRadius:10,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>Close</button>
         </div>
