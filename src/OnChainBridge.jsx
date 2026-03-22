@@ -1143,6 +1143,7 @@ export default function OnChainBridge() {
                 Connect
               </button>
           }
+          {!collapsed && <a href="https://x.com/onchainbridgexy" target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,textDecoration:"none",marginBottom:4,transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.color=C.accent;e.currentTarget.style.borderColor=C.borderStrong;}} onMouseLeave={e=>{e.currentTarget.style.color=C.dim;e.currentTarget.style.borderColor=C.border;}}>𝕏 @onchainbridgexy</a>}
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
             {!collapsed && <div style={{display:"flex",alignItems:"center",gap:6,flex:1}}>
               <button onClick={() => setDark(v=>!v)} title="Toggle theme"
