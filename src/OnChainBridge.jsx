@@ -1647,11 +1647,11 @@ export default function OnChainBridge() {
           <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
           {[
-            {id:"phantom",  name:"Phantom",        desc:"Solana · Most popular",  color:"#ab9ff2", logo:"https://raw.githubusercontent.com/phantom-labs/phantom-brand/main/phantom-icon-purple.png"},
-            {id:"solflare", name:"Solflare",        desc:"Solana · Non-custodial", color:"#fc7227", logo:"https://raw.githubusercontent.com/solflare-wallet/solflare-brand/main/logo/solflare-icon.png"},
-            {id:"backpack", name:"Backpack",        desc:"Solana · xNFT wallet",   color:"#e33e3f", logo:"https://raw.githubusercontent.com/coral-xyz/backpack/master/assets/backpack_logo.png"},
+            {id:"phantom",  name:"Phantom",        desc:"Solana · Most popular",  color:"#ab9ff2", logo:"https://avatars.githubusercontent.com/u/78782331"},
+            {id:"solflare", name:"Solflare",        desc:"Solana · Non-custodial", color:"#fc7227", logo:"https://avatars.githubusercontent.com/u/83522826"},
+            {id:"backpack", name:"Backpack",        desc:"Solana · xNFT wallet",   color:"#e33e3f", logo:"https://avatars.githubusercontent.com/u/99653122"},
             {id:"metamask", name:"MetaMask",        desc:"Ethereum · EVM chains",  color:"#f6851b", logo:"https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"},
-            {id:"coinbase", name:"Coinbase Wallet", desc:"Multi-chain",            color:"#0052ff", logo:"https://www.coinbase.com/assets/press/coinbase-mark-1200x1200.png"},
+            {id:"coinbase", name:"Coinbase Wallet", desc:"Multi-chain",            color:"#0052ff", logo:"https://avatars.githubusercontent.com/u/1885080"},
           ].map(w => (
             <button key={w.id} onClick={() => connectSpecific(w.id)}
               style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"13px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:6,transition:"all .15s",textAlign:"left"}}
