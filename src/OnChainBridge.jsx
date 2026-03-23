@@ -1647,16 +1647,11 @@ export default function OnChainBridge() {
           <div style={{fontSize:16,fontWeight:800,marginBottom:4,color:C.text}}>Connect Wallet</div>
           <div style={{fontSize:13,color:C.dim,marginBottom:20}}>Choose your wallet to continue</div>
           {[
-            {id:"phantom",name:"Phantom",desc:"Solana · Most popular",color:"#ab9ff2",
-              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23ab9ff2'/%3E%3Cpath d='M110.6 64c0 25.7-20.8 46.6-46.6 46.6S17.4 89.7 17.4 64 38.3 17.4 64 17.4 110.6 38.3 110.6 64z' fill='%23fff'/%3E%3Cpath d='M85 51.3H43.5c-2.2 0-3.5 2.4-2.3 4.3l20.6 31.2c.7 1 1.8 1.6 3 1.6h20.2c1.8 0 3.3-1.5 3.3-3.3V54.6c0-1.8-1.5-3.3-3.3-3.3z' fill='%234e44ce'/%3E%3C/svg%3E"},
-            {id:"solflare",name:"Solflare",desc:"Solana · Non-custodial",color:"#fc7227",
-              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23fc7227'/%3E%3Cpath d='M64 20l30 52H34L64 20z' fill='%23fff'/%3E%3Cpath d='M64 108l-30-52h60L64 108z' fill='%23fff' opacity='.7'/%3E%3C/svg%3E"},
-            {id:"backpack",name:"Backpack",desc:"Solana · xNFT wallet",color:"#e33e3f",
-              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23e33e3f'/%3E%3Crect x='36' y='44' width='56' height='52' rx='10' fill='%23fff'/%3E%3Crect x='50' y='28' width='28' height='22' rx='8' fill='none' stroke='%23fff' stroke-width='6'/%3E%3Crect x='58' y='62' width='12' height='16' rx='3' fill='%23e33e3f'/%3E%3C/svg%3E"},
-            {id:"metamask",name:"MetaMask",desc:"Ethereum · EVM chains",color:"#f6851b",
-              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23f6851b'/%3E%3Cpolygon points='64,20 96,72 64,88 32,72' fill='%23fff' opacity='.9'/%3E%3Cpolygon points='64,88 96,72 64,108' fill='%23fff' opacity='.7'/%3E%3Cpolygon points='64,88 32,72 64,108' fill='%23fff' opacity='.5'/%3E%3C/svg%3E"},
-            {id:"coinbase",name:"Coinbase Wallet",desc:"Multi-chain",color:"#0052ff",
-              logo:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%230052ff'/%3E%3Ccircle cx='64' cy='64' r='32' fill='%23fff'/%3E%3Crect x='48' y='56' width='32' height='16' rx='4' fill='%230052ff'/%3E%3C/svg%3E"},
+            {id:"phantom",  name:"Phantom",        desc:"Solana · Most popular",  color:"#ab9ff2", logo:"https://raw.githubusercontent.com/phantom-labs/phantom-brand/main/phantom-icon-purple.png"},
+            {id:"solflare", name:"Solflare",        desc:"Solana · Non-custodial", color:"#fc7227", logo:"https://raw.githubusercontent.com/solflare-wallet/solflare-brand/main/logo/solflare-icon.png"},
+            {id:"backpack", name:"Backpack",        desc:"Solana · xNFT wallet",   color:"#e33e3f", logo:"https://raw.githubusercontent.com/coral-xyz/backpack/master/assets/backpack_logo.png"},
+            {id:"metamask", name:"MetaMask",        desc:"Ethereum · EVM chains",  color:"#f6851b", logo:"https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"},
+            {id:"coinbase", name:"Coinbase Wallet", desc:"Multi-chain",            color:"#0052ff", logo:"https://www.coinbase.com/assets/press/coinbase-mark-1200x1200.png"},
           ].map(w => (
             <button key={w.id} onClick={() => connectSpecific(w.id)}
               style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"13px 16px",borderRadius:12,border:`1px solid ${C.border}`,background:C.card,cursor:"pointer",marginBottom:6,transition:"all .15s",textAlign:"left"}}
