@@ -1351,7 +1351,7 @@ const fetchWalletData = async (address) => {
               <div style={{fontSize:15,color:C.dim,maxWidth:480,margin:"0 auto",lineHeight:1.6}}>
                 {mode==="onchain"
                   ? "Enter any protocol. Map existing activity and surface untapped opportunities."
-                  : "Free 16-sector analysis for any company. Results in 10 seconds."}
+                  : "Free 16-sector analysis for any company. Results In under a minute."}
               </div>
             </div>
 
@@ -1419,7 +1419,7 @@ const fetchWalletData = async (address) => {
 
             {/* Stats row */}
             <div style={{display:"flex",gap:32,marginTop:48,flexWrap:"wrap",justifyContent:"center"}}>
-              {[["16","Sectors analysed"],["$0","Cost to analyse"],["10s","Time to insight"]].map(([n,l]) => (
+              {[["16","Sectors analysed"],["$0","Cost to analyse"],["~30s","Time to insight"]].map(([n,l]) => (
                 <div key={n} style={{textAlign:"center"}}>
                   <div style={{fontSize:26,fontWeight:800,color:C.accent,fontFamily:"var(--mono)"}}>{n}</div>
                   <div style={{fontSize:12,color:C.dim,marginTop:3}}>{l}</div>
