@@ -196,7 +196,16 @@ const apiCallGemini = async (prompt, tokens=10000) => {
     }
     console.log('Groq error:', JSON.stringify(data).slice(0,200));
   } catch(e) { console.log('Groq error:', e.message); }
-  throw new Error('Analysis temporarily unavailable - please try again in a minute.');
+  // Auto retry once
+console.log('Retrying...');
+const r2 = await fetch('/api/analyze', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({ prompt })
+});
+const data2 = await r2.json();
+if (data2.text) return data2.text;
+throw new Error('Analysis temporarily unavailable - please try again in a minute.');
 };
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
