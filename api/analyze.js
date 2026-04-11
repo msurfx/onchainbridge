@@ -7,7 +7,14 @@ module.exports = async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "no prompt" });
 
-  // Try Groq first
+  const cleanJSON = (str) => {
+    str = str.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    const first = str.indexOf('{');
+    const last = str.lastIndexOf('}');
+    if (first >= 0 && last > first) str = str.substring(first, last + 1);
+    return str;
+  };
+
   const groqKey = process.env.REACT_APP_GROQ_API_KEY;
   if (groqKey) {
     try {
@@ -27,7 +34,7 @@ module.exports = async (req, res) => {
       const data = await r.json();
       if (data.choices?.[0]?.message?.content) {
         console.log('Groq success');
-        return res.json({ text: data.choices[0].message.content });
+        return res.json({ text: cleanJSON(data.choices[0].message.content) });
       }
       console.log('Groq failed, falling back to Haiku:', JSON.stringify(data).slice(0,200));
     } catch(err) {
@@ -35,7 +42,6 @@ module.exports = async (req, res) => {
     }
   }
 
-  // Fallback to Claude Haiku
   const anthropicKey = process.env.ANTHROPIC_KEY;
   if (!anthropicKey) return res.status(500).json({ error: "no fallback key" });
   try {
@@ -55,7 +61,7 @@ module.exports = async (req, res) => {
     const data = await r.json();
     if (data.content?.[0]?.text) {
       console.log('Haiku fallback success');
-      return res.json({ text: data.content[0].text });
+      return res.json({ text: cleanJSON(data.content[0].text) });
     }
     return res.status(500).json({ error: "both models failed", raw: JSON.stringify(data).slice(0,200) });
   } catch(err) {
