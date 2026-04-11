@@ -7,9 +7,6 @@ module.exports = async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "no prompt" });
 
-  const SYSTEM = "You are a JSON API. Return only valid compact JSON with no whitespace or newlines between fields. Never truncate your response. Keep all string values under 20 words.";
-  const sanitise = (str) => str.replace(/[\x00-\x1F\x7F]/g, ' ');
-
   // Try Groq first
   const groqKey = process.env.REACT_APP_GROQ_API_KEY;
   if (groqKey) {
@@ -22,10 +19,7 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
-          messages: [
-            { role: "system", content: SYSTEM },
-            { role: "user", content: prompt }
-          ],
+          messages: [{ role: "user", content: prompt }],
           max_tokens: 10000,
           temperature: 0.7
         })
@@ -33,7 +27,7 @@ module.exports = async (req, res) => {
       const data = await r.json();
       if (data.choices?.[0]?.message?.content) {
         console.log('Groq success');
-        return res.json({ text: sanitise(data.choices[0].message.content) });
+        return res.json({ text: data.choices[0].message.content });
       }
       console.log('Groq failed, falling back to Haiku:', JSON.stringify(data).slice(0,200));
     } catch(err) {
@@ -55,14 +49,13 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 10000,
-        system: SYSTEM,
         messages: [{ role: "user", content: prompt }]
       })
     });
     const data = await r.json();
     if (data.content?.[0]?.text) {
       console.log('Haiku fallback success');
-      return res.json({ text: sanitise(data.content[0].text) });
+      return res.json({ text: data.content[0].text });
     }
     return res.status(500).json({ error: "both models failed", raw: JSON.stringify(data).slice(0,200) });
   } catch(err) {
