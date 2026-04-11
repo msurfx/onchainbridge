@@ -527,6 +527,7 @@ export default function OnChainBridge() {
   const [leadForm, setLeadForm] = useState({name:'',company:'',email:''});
   const [leadSent, setLeadSent] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(null);
   const [sectorPopup, setSectorPopup] = useState(null);
   const [sectorsGuide, setSectorsGuide] = useState(false);
   const [gatedEmail, setGatedEmail] = useState(() => { try { return localStorage.getItem("ocb_email")||""; } catch(_) { return ""; } });
@@ -555,11 +556,28 @@ export default function OnChainBridge() {
 
   const connectWallet = () => setWalletModal(true);
 
+const fetchWalletData = async (address) => {
+    try {
+      const rpc = `https://solana-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_KEY}`;
+      const r = await fetch(rpc, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          jsonrpc:"2.0", id:1, method:"getBalance",
+          params:[address]
+        })
+      });
+      const data = await r.json();
+      const sol = (data.result?.value || 0) / 1e9;
+      setWalletBalance(sol.toFixed(3));
+    } catch(e) { console.log("Alchemy error:", e.message); }
+  };
+
   const connectSpecific = async (wallet) => {
     setWalletModal(false);
     try {
       if (wallet === "phantom") {
-        if (window.solana?.isPhantom) { const r=await window.solana.connect(); setWalletAddress(r.publicKey.toString()); setWalletConnected(true); }
+       if (window.solana?.isPhantom) { const r=await window.solana.connect(); const addr=r.publicKey.toString(); setWalletAddress(addr); setWalletConnected(true); fetchWalletData(addr); }
         else window.open("https://phantom.app","_blank");
       } else if (wallet === "solflare") {
         if (window.solflare?.isSolflare) { await window.solflare.connect(); setWalletAddress(window.solflare.publicKey.toString()); setWalletConnected(true); }
@@ -1137,7 +1155,7 @@ export default function OnChainBridge() {
           {walletConnected
             ? <button onClick={disconnectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:6,justifyContent:"center"}}>
                 <span style={{width:6,height:6,borderRadius:"50%",background:C.accent,display:"inline-block"}}/>
-                {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}`}
+                {!collapsed&&`${walletAddress?.slice(0,6)}...${walletAddress?.slice(-4)}${walletBalance?` · ◎${walletBalance}`:''}`}
               </button>
             : <button onClick={connectWallet} style={{width:"100%",padding:"9px 10px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:12,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
                 Connect
