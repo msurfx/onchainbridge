@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
     return str;
   };
 
+  // Try Groq first
   const groqKey = process.env.REACT_APP_GROQ_API_KEY;
   if (groqKey) {
     try {
@@ -36,32 +37,29 @@ module.exports = async (req, res) => {
         console.log('Groq success');
         return res.json({ text: cleanJSON(data.choices[0].message.content) });
       }
-      console.log('Groq failed, falling back to Haiku:', JSON.stringify(data).slice(0,200));
+      console.log('Groq failed, falling back to Gemini:', JSON.stringify(data).slice(0,200));
     } catch(err) {
-      console.log('Groq error, falling back to Haiku:', err.message);
+      console.log('Groq error, falling back to Gemini:', err.message);
     }
   }
 
-  const anthropicKey = process.env.ANTHROPIC_KEY;
-  if (!anthropicKey) return res.status(500).json({ error: "no fallback key" });
+  // Fallback to Gemini (free)
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (!geminiKey) return res.status(500).json({ error: "no fallback key" });
   try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": anthropicKey,
-        "anthropic-version": "2023-06-01"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 10000,
-        messages: [{ role: "user", content: prompt }]
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 8000, temperature: 0.7 }
       })
     });
     const data = await r.json();
-    if (data.content?.[0]?.text) {
-      console.log('Haiku fallback success');
-      return res.json({ text: cleanJSON(data.content[0].text) });
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) {
+      console.log('Gemini fallback success');
+      return res.json({ text: cleanJSON(text) });
     }
     return res.status(500).json({ error: "both models failed", raw: JSON.stringify(data).slice(0,200) });
   } catch(err) {
