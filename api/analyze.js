@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
           "Authorization": "Bearer " + groqKey
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
+          model: "llama-3.3-70b-versatile",
           messages: [{ role: "user", content: prompt }],
           max_tokens: 10000,
           temperature: 0.7
