@@ -374,15 +374,15 @@ const PBar = ({v=0, color, h=4, C}) => (
   </div>
 );
 
-const Met = ({label, value, sub, color, C, spark=[]}) => {
+const Met = ({label, value, sub, color, C, spark=[], updating=false}) => {
   const clr = color||C.accent;
   return (
     <div style={{padding:"14px 16px",background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,flex:1,minWidth:130}}>
       <div style={{fontSize:11,color:C.dim,textTransform:"uppercase",letterSpacing:1.2,marginBottom:6,fontFamily:"var(--mono)"}}>{label}</div>
       <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between"}}>
-        <div>
-          <div style={{fontSize:18,fontWeight:700,color:clr,fontFamily:"var(--mono)",lineHeight:1}}>{value||"—"}</div>
-          {sub && <div style={{fontSize:12,color:C.dim,marginTop:4}}>{sub}</div>}
+        <div style={{minHeight:28,minWidth:80}}>
+          <div style={{fontSize:18,fontWeight:700,color:clr,fontFamily:"var(--mono)",lineHeight:1,opacity:updating?0.3:1,transition:"opacity 0.3s"}}>{value||"—"}</div>
+          {sub && <div style={{fontSize:12,color:C.dim,marginTop:4,opacity:updating?0.3:1,transition:"opacity 0.3s"}}>{sub}</div>}
         </div>
         {spark.length>0 && <Spark data={spark} color={clr}/>}
       </div>
@@ -530,6 +530,8 @@ export default function OnChainBridge() {
   const [walletBalance, setWalletBalance] = useState(null);
   const [sectorPopup, setSectorPopup] = useState(null);
   const [sectorsGuide, setSectorsGuide] = useState(false);
+  const [updating, setUpdating] = useState(false);
+C.updating = updating;
   const [gatedEmail, setGatedEmail] = useState(() => { try { return localStorage.getItem("ocb_email")||""; } catch(_) { return ""; } });
   const [emailGateModal, setEmailGateModal] = useState(false);
   const [pendingTab, setPendingTab] = useState(null);
@@ -672,7 +674,7 @@ const fetchWalletData = async (address) => {
   };
 
   const runAnalysis = useCallback(async (name, address) => {
-    setPhase("loading"); setD(null); setLazyData({}); setLazyLoading({}); setTab("overview"); setTabs([]); setCoreSectors([]);
+    setPhase("loading"); setUpdating(true); setLazyData({}); setLazyLoading({}); setTab("overview"); setTabs([]); setCoreSectors([]);
     const steps = mode==="onchain"
       ? ["Scanning onchain activity...","Mapping protocols...","Identifying gaps...","Calculating opportunities...","Generating report..."]
       : ["Selecting sectors...","Scanning filings...","Analyzing payments...","Mapping collabs...","Generating report..."];
@@ -687,7 +689,7 @@ const fetchWalletData = async (address) => {
       const parsed = repairJSON(text);
       const rec = (parsed.recommendedSectors||[]).filter(s=>SELECTABLE_SECTORS.includes(s)).slice(0,3);
       const core = mode==="onchain" ? ["financial","payments","collaborations","openclaw","policy","gaps"] : [...FIXED_SECTORS,...rec];
-      setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setPhase("dashboard"); saveHistory(name, parsed);
+      setCoreSectors(core); setTabs(buildTabs(rec,mode)); setD(parsed); setUpdating(false); setPhase("dashboard"); saveHistory(name, parsed);
       false && fetch("/api/tweet", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
@@ -699,7 +701,7 @@ const fetchWalletData = async (address) => {
           mode,
         })
       }).catch(()=>{});
-    } catch(e) { console.error(e); setError("Analysis failed: "+e.message); setPhase("search"); }
+    } catch(e) { console.error(e); setError("Analysis failed: "+e.message); setUpdating(false); setPhase("search"); }
     finally { clearInterval(iv); }
   }, [mode]);
 
