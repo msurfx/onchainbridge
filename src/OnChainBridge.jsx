@@ -32,7 +32,7 @@ const SELECTABLE_SECTORS = ["yield","depin","rwa","employee","treasury","supplyc
 const SECTOR_META = {
   overview:{icon:"◆",label:"Overview"}, financial:{icon:"📊",label:"Financial"},
   payments:{icon:"💸",label:"Payments"}, collaborations:{icon:"🤝",label:"Collabs"},
-  openclaw:{icon:"🦞",label:"OpenClaw"}, policy:{icon:"⚖️",label:"Policy"},
+  openclaw:{icon:"✦",label:"Claude Agent"}, policy:{icon:"⚖️",label:"Policy"},
   yield:{icon:"💰",label:"Yield"}, depin:{icon:"📡",label:"DePIN"},
   rwa:{icon:"🏛️",label:"RWA"}, employee:{icon:"👥",label:"People"},
   treasury:{icon:"🏦",label:"Treasury"}, supplychain:{icon:"📦",label:"Supply Chain"},
@@ -63,7 +63,7 @@ const SECTOR_DEFS = {
   carbon:"Carbon footprint and ESG opportunity — onchain carbon credits versus traditional offset costs, and ESG score improvement.",
   loyalty:"sing loyalty points on Solana increases interoperability, engagement, and redemption rates.",
   impact:"How the company's onchain transition creates measurable benefit for stakeholders, with UN SDG alignment.",
-  rails:"The end-to-end onboarding journey — verification, managed wallet, fiat rails, OpenClaw agents, and going live on Solana.",
+  rails:"The end-to-end onboarding journey — verification, managed wallet, fiat rails, Claude agents, and going live on Solana.",
   gaps:"Identified gaps in an existing onchain protocol's coverage with estimated annual value and activation difficulty.",
 };
 
@@ -83,10 +83,10 @@ const SECTOR_EXPLAINERS = {
   carbon:{short:"Carbon credits onchain",what:"Carbon analysis compares the cost of traditional carbon offsets versus onchain carbon credits, which are cheaper, verifiable, and tradeable.",example:"Example: British Airways buys $50M in carbon credits annually. Traditional credits are often fraudulent. Onchain credits via Toucan Protocol on Solana are verified, traceable, and cost 40% less.",why:"ESG reporting requirements are increasing globally. Onchain carbon markets provide verifiable proof of offset that satisfies regulators and investors."},
   loyalty:{short:"Loyaltpoints as tokens",what:"Loyalty analysis shows how tokenising reward points on Solana increases redemption rates, enables trading between programmes, and reduces balance sheet liability.",example:"Example: Starbucks has $1.6B in unredeemed loyalty points as a liability. Tokenising on Solana allows customers to trade or use points across other brands — dramatically increasing redemption.",why:"Most loyalty programmes have under 30% redemption rates. Onchain loyalty tokens are interoperable and tradeable, making them far more valuable to customers."},
   impact:{short:"Using blockchain for good",what:"Impact analysis identifies how a company onchain transition creates measurable benefit for employees, communities, or stakeholders beyond just cost savings.",example:"Example: A global food company moves supplier payments onchain via Solana. Small farmers who previously waited 90 days forayment now receive instant settlement — transforming their cashflow.",why:"Impact measurement is increasingly required by investors and regulators. Onchain transactions create an immutable auditable record of social value."},
-  rails:{short:"How to get onchain",what:"Rails shows the complete step-by-step journey for a Web2 company to go fully onchain without needing an internal blockchain team.",example:"Example: A retail company with no crypto experience can be fully onchain in 4-6 weeks using OnChainBridge rails — managed wallets via Fireblocks, fiat conversion via Helio, and autonomous operations via OpenClaw.",why:"The technical complexity of going onchain is the biggest barrier for Web2 companies. Rails removes that barrier completely."},
+  rails:{short:"How to get onchain",what:"Rails shows the complete step-by-step journey for a Web2 company to go fully onchain without needing an internal blockchain team.",example:"Example: A retail company with no crypto experience can be fully onchain in 4-6 weeks using OnChainBridge rails — managed wallets via Fireblocks, fiat conversion via Helio, and autonomous operations via Claude agents.",why:"The technical complexity of going onchain is the biggest barrier for Web2 companies. Rails removes that barrier completely."},
   gaps:{short:"Missed opportunities",what:"Gap analysis identifies which onchain sectors an existing protocol is not yet active in and the estimated annual value of each untapopportunity.",example:"Example: A DeFi protocol active in lending but not in payments or identity has two significant gaps. Activating payments via Helio could add $2M in annual protocol revenue.",why:"Even well-established onchain protocols have blindspots. Gap analysis surfaces revenue opportunities that teams have missed or deprioritised."},
   collaborations:{short:"Protocol partnerships",what:"Collaborations analysis maps active and potential protocol partnerships — companies and protocols that could integrate directly, with estimated annual value and bridge details.",example:"Example: Nike and X Money integration enables social commerce payments for 500M X users, unlocking a direct consumer payment rail on Solana.",why:"Protocol partnerships are the fastest route to onchain revenue. Each active collaboration generates ongoing bridge fees and ecosystem value."},
-  openclaw:{short:"Autonomous AI agents",what:"OpenClaw deploys autonomous AI agents via WhatsApp, Telegram, or ack that handle treasury management, DePIN operations, bridge execution, and compliance — no internal crypto team required.",example:"Example: Nike deploys 4 OpenClaw agents. The Treasury agent automatically moves idle cash to Marinade for yield. The DePIN agent monitors Helium nodes. The Compliance agent files regulatory reports.",why:"Most Web2 companies cannot hire a full blockchain team. OpenClaw makes going onchain operationally feasible for any company regardless of technical capability."},
+  openclaw:{short:"Autonomous AI agents",what:"Claude agents deploy autonomous AI via WhatsApp, Telegram, or Slack that handle treasury management, DePIN operations, bridge execution, and compliance — no internal crypto team required.",example:"Example: Nike deploys 4 Claude agents. The Treasury agent automatically moves idle cash to Marinade for yield. The DePIN agent monitors Helium nodes. The Compliance agent files regulatory reports.",why:"Most Web2 companies cannot hire a full blockchain team. Claude agents make going onchain operationally feasible for any company regardless of technical capability."},
   policy:{short:"Regulatory landscape",what:"Policy analysis maps the regulatory environment for a company based on their jurisdiction — what is permitted, what is restricted, what compliance steps are needed, and which protocols meet regulatory requirements.",example:"Example: A UK-based financial company finds that tokenised money market funds are permitted under FCA guidelines, but must use a regulated custodian — Fireblocks qualifies, enabling cot RWA deployment.",why:"Regulatory clarity is the single biggest blocker for enterprise onchain adoption. Knowing exactly what is and is not permitted removes the compliance uncertainty that stops most companies from starting."},
 };
 
@@ -201,7 +201,7 @@ const apiCallGemini = async (prompt, tokens=10000) => {
 
 const corePrompt = (company, address, liveData={}, fin={}) => `Analyze "${company}" (${address}) for Web2→Onchain migration.
 
-${fin.source ? `REAL VERIFIED FINANCIAL DATA for ${company} sourced from ${fin.source||'web'}. USE THESE AS CALCULATION INPUTS FOR EVERY SECTOR — DO NOT INVENT OR OVERRIDE: Revenue: ${fin.revenue||'unknown'}, Market Cap: ${fin.marketCap||'unknown'}, Gross Profit: ${fin.grossProfit||'unknown'}, Operating Expenses: ${fin.operatingExpenses||'unknown'}, Cash: ${fin.caAndEquivalents||'unknown'}, Fixed Assets: ${fin.fixedAssets||'unknown'}, Inventory: ${fin.inventory||'unknown'}, COGS: ${fin.cogs||'unknown'}, Employees: ${fin.employees||'unknown'}, Physical Locations: ${fin.physicalLocations||'unknown'}, International Revenue %: ${fin.crossBorderRevenueEstimate||'unknown'}, Industry: ${fin.industry||'unknown'}. CALCULATIONS: Treasury annualGain = cashAndEquivalents x APY differential. RWA real estate = fixedAssets x 0.25, inventory = inventory x 0.10. DePIN viableLocations = physicalLocations x 0.20, total = sum of opportunities max $5M/mo. OpenClaw totalSaving = operatingExpenses x 0.25 split across 4 agents. Payments crossBorderVolume = revenue x crossBorderRevenueEstimate, savings max 80%. Supply chain fraudReduction = cogs x 0.03. projectedSavings max 5% of revenue. Show calculationBasis for every figure.` : `Use best knowledge of ${company} financials. Show calculationBasis for every figure.`}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
+${fin.source ? `REAL VERIFIED FINANCIAL DATA for ${company} sourced from ${fin.source||'web'}. USE THESE AS CALCULATION INPUTS FOR EVERY SECTOR — DO NOT INVENT OR OVERRIDE: Revenue: ${fin.revenue||'unknown'}, Market Cap: ${fin.marketCap||'unknown'}, Gross Profit: ${fin.grossProfit||'unknown'}, Operating Expenses: ${fin.operatingExpenses||'unknown'}, Cash: ${fin.caAndEquivalents||'unknown'}, Fixed Assets: ${fin.fixedAssets||'unknown'}, Inventory: ${fin.inventory||'unknown'}, COGS: ${fin.cogs||'unknown'}, Employees: ${fin.employees||'unknown'}, Physical Locations: ${fin.physicalLocations||'unknown'}, International Revenue %: ${fin.crossBorderRevenueEstimate||'unknown'}, Industry: ${fin.industry||'unknown'}. CALCULATIONS: Treasury annualGain = cashAndEquivalents x APY differential. RWA real estate = fixedAssets x 0.25, inventory = inventory x 0.10. DePIN viableLocations = physicalLocations x 0.20, total = sum of opportunities max $5M/mo. Claude agent totalSaving = operatingExpenses x 0.25 split across 4 agents. Payments crossBorderVolume = revenue x crossBorderRevenueEstimate, savings max 80%. Supply chain fraudReduction = cogs x 0.03. projectedSavings max 5% of revenue. Show calculationBasis for every figure.` : `Use best knowledge of ${company} financials. Show calculationBasis for every figure.`}STEP 1: Pick 3 MOST RELEVANT sectors from: yield,depin,rwa,employee,treasury,supplychain,governance,data,identity,insurance,carbon,loyalty,impact. Put in "recommendedSectors".
 STEP 2: Generate data for financial,payments,collaborations,openclaw,policy + your 3 picks.
 
 Return ONLY valid JSON. No markdown. Descriptions max 20 words.
@@ -229,13 +229,13 @@ THEN for each recommended sector:
 - loyalty: "loyalty":{"programSize":"str","currentRedemption":"str","onchainRedemption":"str","interoperability":"str","engagementLift":"str","protocols":[{"name":"str","description":"str"}]}
 - impact: "impact":{"headline":"str","totalBeneficiaryValue":"str","stakeholderGroup":"str","currentProblem":"str","onchainSolution":"str","redistributionMechanism":"str","beneficiaries":[{"group":"str","currentShare":"str","onchainShare":"str","annualGain":"str","description":"str"}],"protocols":[{"name":"str","role":"str","description":"str"}],"sdgAlignment":["str"]}
 
-REALITY CONSTRAINTS (CFO-defensible figures only): projectedSavings max 5% of revenue. Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only (5-15% of revenue). DePIN max $150/mo per unit, max 20% locations viable, total max $5M/mo. CRITICAL: totalMonthlyRevenue must equal the exact sum of all individual opportunity revenueMonthly values. Never invent a separate total. RWA tokenisable assets only not market cap. ${(liveData.yields && liveData.yields.marinade) ? `Yield APY LIVE: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Yield APY: Marinade 8% Kamino 10% Jito 7%.'} Max 15% APY. OpenClaw savings 20-40% of ops costs. Supply chain fraud max 30% of logistics spend. Loyalty engagementLift max 40%. Carbon savings max 40%. All annual = monthly x 12.
+REALITY CONSTRAINTS (CFO-defensible figures only): projectedSavings max 5% of revenue. Payment savings max 80% of cross-border fees only. Treasury yield 4-12% APY on idle cash only (5-15% of revenue). DePIN max $150/mo per unit, max 20% locations viable, total max $5M/mo. CRITICAL: totalMonthlyRevenue must equal the exact sum of all individual opportunity revenueMonthly values. Never invent a separate total. RWA tokenisable assets only not market cap. ${(liveData.yields && liveData.yields.marinade) ? `Yield APY LIVE: Marinade ${liveData.yields.marinade}% Kamino ${(liveData.yields.kamino||'10')}% Jito ${(liveData.yields.jito||'7')}%. SOL $${(liveData.prices && liveData.prices.sol)||'--'}.` : 'Yield APY: Marinade 8% Kamino 10% Jito 7%.'} Max 15% APY. Claude agent savings 20-40% of ops costs. Supply chain fraud max 30% of logistics spend. Loyalty engagementLift max 40%. Carbon savings max 40%. All annual = monthly x 12.
 - ALL monthly figures: must sum correctly. ALL annual figures = monthly x 12. Show workings in calculationBasis where possible.
 
 SOLANA PRIORITY: Prefer Solana-native protocols. Full protocol list by sector — DeFi/Yield: Marinade, Jito, Kamino, Orca, Raydium, Solend, marginfi, Loopscale, BlazeStake, Meteora, Sanctum. Payments: HelioSphere, Solana Pay, TipLink, Beam, Meso, Huma. RWA: Ondo, Maple, Credix, Parcl, Homebase, BAXUS. DePIN: Helium, Hivemapper, Render, DIMO, IoTeX, Geodnet. Governance: Realms, Squads, Armada. DEX: Jupiter, Drift, Orca. Identity: Civic, Streamflow. Only suggest other chains when genuinely stronger.
 CRITICAL PROTOCOL NAMING: ALWAYS use the exact real protocol name — never use generic terms like "Solana", "Blockchain", "DeFi Protocol", "Solana Supply Chain Protocol" or any invented name. Every protocol field must be a real named product: Yield=Marinade/Kamino/Jito/Orca, DePIN=Helium/Hivemapper/Render/DIMO, Payments=Helio/Sphere/Solana Pay, RWA=Ondo/Centrifuge/Credix, Supply Chain=OriginTrail/Morpheus Network, Governance=Realms/Squads, Identity=Cic/Worldcoin, Insurance=Etherisc/Nexus Mutual, Carbon=Toucan/KlimaDAO, Loyalty=Hang/Starbucks Odyssey, Data=Pyth/Chainlink.
 X MONEY INTEGRATION: Include X Money as collaboration for consumer-facing companies.
-OpenClaw agents MUST include Treasury, DePIN Ops, Bridge Execution, Compliance.`;
+Claude agents MUST include Treasury, DePIN Ops, Bridge Execution, Compliance.`;
 
 const onchainCorePrompt = (company, address) => `Analyze "${company}" (${address}) as EXISTING onchain protocol.
 CRITICAL: Identify correct blockchain — Tensor/Jupiter=Solana, Uniswap=Ethereum. Do NOT default to Ethereum. Set "primaryChain" correctly.
@@ -910,7 +910,7 @@ const fetchWalletData = async (address) => {
               </div>
               <div style={{display:"flex",gap:8,marginTop:14}}>
                 <button onClick={() => tryBridge(c)} style={{flex:1,padding:"11px",borderRadius:8,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,boxShadow:`0 0 20px ${C.accent}30`}}>Activate Bridge →</button>
-                <button onClick={() => openLead(c.type||"Collaboration",c.name,c.value)} style={{padding:"11px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+                <button onClick={() => openLead(c.type||"Collaboration",c.name,c.value)} style={{padding:"11px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up ✦</button>
               </div>
             </div></Crd>))}
           </div>
@@ -925,7 +925,7 @@ const fetchWalletData = async (address) => {
             {o.calculationBasis&&<div style={{fontSize:11,color:C.dim,marginBottom:10,padding:"6px 10px",borderRadius:6,background:C.surface,border:`1px solid ${C.border}`}}>📐 {o.calculationBasis}</div>}
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
-              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up ✦</button>
             </div>
           </div></Crd>))}
         </div>
@@ -946,9 +946,9 @@ const fetchWalletData = async (address) => {
       </div>);
       case "openclaw": return (
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
-          <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>🦞 OpenClaw Agents — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>Autonomous agents via WhatsApp/Telegram/Slack. No crypto team needed.</div><div style={{display:"flex",gap:10,marginTop:12}}><Met label="Total Saving" value={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/><Met label="Agents" value={d.openclaw?.agents?.length||0} color={C.accent} C={C}/></div></div>
+          <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:15,fontWeight:700,marginBottom:8,color:C.text}}>✦ Claude Agent Agents — <span style={{color:C.accent}}>{d.company}</span></div><div style={{fontSize:13,color:C.textSub,lineHeight:1.6}}>Autonomous agents via WhatsApp/Telegram/Slack. No crypto team needed.</div><div style={{display:"flex",gap:10,marginTop:12}}><Met label="Total Saving" value={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/><Met label="Agents" value={d.openclaw?.agents?.length||0} color={C.accent} C={C}/></div></div>
           {d.openclaw?.agents?.map((a,i) => (<Crd key={i} accent={i===0} C={C}><div style={{padding:18}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10,flexWrap:"wrap",gap:6}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:3}}>🦞 {a.name}</div><div style={{fontSize:13,color:C.accent}}>{a.role}</div></div><div style={{textAlign:"right",flexShrink:0}}><Bdg color={C.accent} C={C}>{a.monthlySaving}/mo</Bdg><div style={{fontSize:11,color:C.dim,marginTop:3}}>Cost: {a.monthlyCost}/mo</div></div></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10,flexWrap:"wrap",gap:6}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:700,color:C.text,marginBottom:3}}>✦ {a.name}</div><div style={{fontSize:13,color:C.accent}}>{a.role}</div></div><div style={{textAlign:"right",flexShrink:0}}><Bdg color={C.accent} C={C}>{a.monthlySaving}/mo</Bdg><div style={{fontSize:11,color:C.dim,marginTop:3}}>Cost: {a.monthlyCost}/mo</div></div></div>
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:10}}>{a.description}</div>
             <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{a.skills?.map((sk,j) => <Bdg key={j} color={C.purple} C={C} s={{fontSize:11}}>{sk}</Bdg>)}</div>
           </div></Crd>))}
@@ -989,7 +989,7 @@ const fetchWalletData = async (address) => {
             <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:12}}>{o.description}</div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={() => tryBridge({name:o.network,value:o.revenueMonthly,commission:"10-15%"})} style={{padding:"9px 20px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Deploy Bridge →</button>
-              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+              <button onClick={() => openLead("DePIN",o.network,o.revenueMonthly)} style={{padding:"9px 16px",borderRadius:8,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:13,fontWeight:600,cursor:"pointer"}}>Follow Up ✦</button>
             </div>
           </div></Crd>))}
         </div>
@@ -1147,7 +1147,7 @@ const fetchWalletData = async (address) => {
               </div>
             );
           }) : (
-            !collapsed && <div style={{padding:"16px 14px"}}>{["Overview","Financial","Payments","Collabs","OpenClaw","Policy"].map((l,i) => (<div key={i} style={{padding:"8px 10px",color:C.muted,fontSize:13,marginBottom:2}}>◻ {l}</div>))}</div>
+            !collapsed && <div style={{padding:"16px 14px"}}>{["Overview","Financial","Payments","Collabs","Claude Agent","Policy"].map((l,i) => (<div key={i} style={{padding:"8px 10px",color:C.muted,fontSize:13,marginBottom:2}}>◻ {l}</div>))}</div>
           )}
         {!collapsed && tabs.length>0 && <div style={{padding:"4px 14px 8px",fontSize:10,color:C.muted,fontFamily:"var(--mono)"}}>{Object.keys(lazyData).length} of {tabs.filter(t=>t.lazy).length} extra sectors loaded</div>}
         </nav>
@@ -1453,7 +1453,7 @@ const fetchWalletData = async (address) => {
               {/* Get More Info */}
               <div style={{padding:"16px 20px",borderRadius:12,background:C.surface,border:`1px solid ${C.borderStrong}`,marginBottom:0}}>
                 <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>Get more info on {d.company}</div>
-                <div style={{fontSize:12,color:C.dim,marginBottom:12,lineHeight:1.5}}>Enter your email and OpenClaw will send you a personalised breakdown based on this analysis.</div>
+                <div style={{fontSize:12,color:C.dim,marginBottom:12,lineHeight:1.5}}>Enter your email and Claude will send you a personalised breakdown based on this analysis.</div>
               <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                   <input id="moreinfo-input" placeholder="Work email" style={{flex:1,minWidth:160,padding:"9px 12px",borderRadius:8,border:`1px solid ${C.border}`,background:C.bg,color:C.text,fontSize:13,outline:"none",fontFamily:"var(--display)"}}/>
                   <button onClick={() => {
@@ -1463,16 +1463,16 @@ const fetchWalletData = async (address) => {
                         to_email:"partnerships@onchainbridge.xyz",
                         user_email:v,contact_name:v,
                         company:d.company,
-                        protocol:"OpenClaw Info Request",
+                        protocol:"Claude Agent Info Request",
                         sector:"Overview",
                         value:d.financial?.projectedSavings||"TBD",
                         analysis_url:window.location.href
                       },process.env.REACT_APP_EMAILJS_KEY).catch(()=>{});
                       document.getElementById("moreinfo-input").value="";
-                      alert("Got it! OpenClaw will send your "+d.company+" breakdown shortly.");
+                      alert("Got it! Claude will send your "+d.company+" breakdown shortly.");
                     }
                   }} style={{padding:"9px 18px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
-                    Get Info 🦞
+                    Get Info ✦
                   </button>
                 </div>
               </div>
@@ -1528,7 +1528,7 @@ const fetchWalletData = async (address) => {
                   {d.collaborations?.active?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.value}</div></div><Bdg color={C.accent} C={C}>LIVE</Bdg></div>)}
                   {d.collaborations?.possible?.slice(0,2).map((c,i) => <div key={i} style={{padding:"10px 12px",borderRadius:8,background:`${C.purple}08`,border:`1px solid ${C.border}`,marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:13,fontWeight:600,color:C.text}}>{c.name}</div><div style={{fontSize:11,color:C.dim,marginTop:2}}>{c.fit}% fit</div></div><button onClick={() => tryBridge(c)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:11,fontWeight:700}}>Bridge</button></div>)}
                 </div></Crd>
-                <Crd accent C={C}><div style={{padding:18}}><STtl icon="🦞" title="OpenClaw" badge={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/>
+                <Crd accent C={C}><div style={{padding:18}}><STtl icon="✦" title="Claude Agent" badge={d.openclaw?.totalAgentSaving} color={"#d46faa"} C={C}/>
                   {d.openclaw?.agents?.slice(0,4).map((a,i) => <div key={i} style={{padding:"9px 12px",background:C.bg,borderRadius:8,marginBottom:6}}><div style={{display:"flex",justifyContent:"space-between",gap:6,flexWrap:"wrap"}}><span style={{fontSize:13,fontWeight:700,color:C.text,flex:1,minWidth:0}}>{a.name}</span><span style={{fontSize:12,fontWeight:700,color:"#d46faa",fontFamily:"var(--mono)",flexShrink:0,whiteSpace:"nowrap"}}>{a.monthlySaving}/mo</span></div><div style={{fontSize:12,color:C.dim,marginTop:2}}>{a.role}</div></div>)}
                 </div></Crd>
               </div>
@@ -1551,7 +1551,7 @@ const fetchWalletData = async (address) => {
                         <div style={{fontSize:14,fontWeight:700,color:C.text,display:"flex",alignItems:"center",gap:8}}><span>{meta.icon}</span>{meta.label}</div>
                         <div style={{display:"flex",gap:8,alignItems:"center"}}>
                           <Bdg color={clr} C={C}>{secId==="depin"?sData.totalMonthlyRevenue+"/mo":secId==="rwa"?sData.totalTokenisable:secId==="yield"?`${Math.max(...(sData.map?.(y=>y.apy)||[0]))}% peak`:secId==="treasury"?sData.annualGain:secId==="carbon"?sData.saving:secId==="loyalty"?sData.engagementLift:secId==="impact"?sData.totalBeneficiaryValue:secId==="employee"?`${sData.reputationOnchain} trust`:sData.fraudReduction||sData.onchainSaving||null}</Bdg>
-                          <button onClick={e=>{e.stopPropagation();openLead(SECTOR_META[secId]?.label||secId, secId==="depin"?sData.opportunities?.[0]?.network:secId==="yield"?sData[0]?.protocol:secId==="rwa"?sData.primaryProtocol:"Protocol Partner", secId==="depin"?sData.totalMonthlyRevenue:secId==="rwa"?sData.totalTokenisable:secId==="yield"?`${Math.max(...(sData.map?.(y=>y.apy)||[0]))}% APY`:sData.annualGain||sData.onchainSaving||"TBD");}} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:11,fontWeight:600,cursor:"pointer"}}>Follow Up 🦞</button>
+                          <button onClick={e=>{e.stopPropagation();openLead(SECTOR_META[secId]?.label||secId, secId==="depin"?sData.opportunities?.[0]?.network:secId==="yield"?sData[0]?.protocol:secId==="rwa"?sData.primaryProtocol:"Protocol Partner", secId==="depin"?sData.totalMonthlyRevenue:secId==="rwa"?sData.totalTokenisable:secId==="yield"?`${Math.max(...(sData.map?.(y=>y.apy)||[0]))}% APY`:sData.annualGain||sData.onchainSaving||"TBD");}} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${C.borderStrong}`,background:C.accentGlow,color:C.accent,fontSize:11,fontWeight:600,cursor:"pointer"}}>Follow Up ✦</button>
                           <span style={{fontSize:12,color:C.dim}}>View →</span>
                         </div>
                       </div>
@@ -1581,8 +1581,8 @@ const fetchWalletData = async (address) => {
             {tab!=="overview" && tab!=="rails" && rSector(tab)}
 
             {tab==="rails" && <div style={{display:"flex",flexDirection:"column",gap:12}}>
-              <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:16,fontWeight:700,marginBottom:6,color:C.text}}>🛤️ Web2 → Onchain Onboarding</div><div style={{fontSize:13,color:C.textSub}}>No keys needed on your side. ChainBridge + OpenClaw handles everything.</div></div>
-              {[{s:1,t:"Company Verified",dd:"KYB/KYC — address and website confirmed.",c:C.accent},{s:2,t:"Managed Wallet",dd:"Solana via MPC custody (Fireblocks/Turnkey).",c:C.purple},{s:3,t:"Fiat Rails",dd:"Helio/Sphere/Stripe — Fiat → USDC/SOL.",c:C.purple},{s:4,t:"OpenClaw Agents",dd:"Treasury, DePIN, Bridge, Compliance deployed.",c:"#d46faa"},{s:5,t:"Operations Live",dd:"Smart contracts active. Dashboard connected.",c:C.yellow},{s:6,t:"Commission Active",dd:"Protocol facilitation fees + DePIN referrals + rails + SaaS.",c:C.accent}].map((step,i) => (
+              <div style={{padding:20,borderRadius:12,background:C.accentGlow,border:`1px solid ${C.borderStrong}`}}><div style={{fontSize:16,fontWeight:700,marginBottom:6,color:C.text}}>🛤️ Web2 → Onchain Onboarding</div><div style={{fontSize:13,color:C.textSub}}>No keys needed on your side. OnChainBridge + Claude agents handle everything.</div></div>
+              {[{s:1,t:"Company Verified",dd:"KYB/KYC — address and website confirmed.",c:C.accent},{s:2,t:"Managed Wallet",dd:"Solana via MPC custody (Fireblocks/Turnkey).",c:C.purple},{s:3,t:"Fiat Rails",dd:"Helio/Sphere/Stripe — Fiat → USDC/SOL.",c:C.purple},{s:4,t:"Claude Agents",dd:"Treasury, DePIN, Bridge, Compliance deployed.",c:"#d46faa"},{s:5,t:"Operations Live",dd:"Smart contracts active. Dashboard connected.",c:C.yellow},{s:6,t:"Commission Active",dd:"Protocol facilitation fees + DePIN referrals + rails + SaaS.",c:C.accent}].map((step,i) => (
                 <div key={i} style={{display:"flex",gap:16}}>
                   <div style={{width:40,height:40,borderRadius:10,background:`${step.c}15`,border:`1px solid ${step.c}35`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:800,color:step.c,fontFamily:"var(--mono)",flexShrink:0,boxShadow:`0 0 12px ${step.c}20`}}>{step.s}</div>
                   <div style={{flex:1,padding:16,borderRadius:10,background:C.surface,border:`1px solid ${C.border}`}}><div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:4}}>{step.t}</div><div style={{fontSize:13,color:C.dim}}>{step.dd}</div></div>
@@ -1694,7 +1694,7 @@ const fetchWalletData = async (address) => {
         <div style={{width:"90%",maxWidth:440,borderRadius:16,background:C.surface,border:`1px solid ${C.borderStrong}`,padding:28,boxShadow:`0 0 50px ${C.accent}25`}} onClick={e=>e.stopPropagation()}>
           {!leadSent ? (<>
             <div style={{fontSize:17,fontWeight:800,marginBottom:4,color:C.text}}>🚀 Follow Up on {leadModal.sector}</div>
-            <div style={{fontSize:13,color:C.dim,marginBottom:6,lineHeight:1.5}}>We will connect you with <span style={{color:C.accent,fontWeight:600}}>{leadModal.protocol}</span> and have an OpenClaw agent compose a personalised intro on your behalf.</div>
+            <div style={{fontSize:13,color:C.dim,marginBottom:6,lineHeight:1.5}}>We will connect you with <span style={{color:C.accent,fontWeight:600}}>{leadModal.protocol}</span> and have a Claude agent compose a personalised intro on your behalf.</div>
             <div style={{padding:"10px 14px",borderRadius:9,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,marginBottom:18,fontSize:13}}>
               <span style={{color:C.dim}}>Opportunity value: </span><span style={{color:C.accent,fontWeight:700,fontFamily:"var(--mono)"}}>{leadModal.value}</span>
             </div>
@@ -1703,16 +1703,16 @@ const fetchWalletData = async (address) => {
             <input value={leadForm.email} onChange={e=>setLeadForm(f=>({...f,email:e.target.value}))} placeholder="Work email *" style={{width:"100%",padding:"11px 14px",borderRadius:8,border:`1px solid ${leadForm.email?C.borderStrong:C.border}`,background:C.bg,color:C.text,fontSize:14,marginBottom:18,outline:"none"}}/>
             <div style={{display:"flex",gap:10}}>
               <button onClick={submitLead} disabled={!leadForm.email} style={{flex:1,padding:"12px",borderRadius:8,border:"none",background:`linear-gradient(135deg,${C.accent},${C.purple})`,color:"#fff",fontSize:14,fontWeight:700,cursor:leadForm.email?"pointer":"not-allowed",opacity:leadForm.email?1:0.5,boxShadow:`0 0 20px ${C.accent}35`}}>
-                🦞 Send via OpenClaw →
+                ✦ Send via Claude →
               </button>
               <button onClick={() => setLeadModal(null)} style={{padding:"12px 18px",borderRadius:8,border:`1px solid ${C.border}`,background:"transparent",color:C.dim,fontSize:13,cursor:"pointer"}}>Cancel</button>
             </div>
-            <div style={{fontSize:11,color:C.muted,marginTop:12,textAlign:"center"}}>OpenClaw will draft a personalised intro email to {leadModal.protocol} and cc you within minutes.</div>
+            <div style={{fontSize:11,color:C.muted,marginTop:12,textAlign:"center"}}>Claude will draft a personalised intro email to {leadModal.protocol} and cc you within minutes.</div>
           </>) : (<>
             <div style={{textAlign:"center",padding:"20px 0"}}>
-              <div style={{fontSize:36,marginBottom:14}}>🦞</div>
+              <div style={{fontSize:36,marginBottom:14}}>✦</div>
               <div style={{fontSize:18,fontWeight:800,color:C.accent,marginBottom:8}}>Lead Sent!</div>
-              <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:20}}>OpenClaw is composing your personalised introduction to <strong style={{color:C.accent}}>{leadModal.protocol}</strong>. You will receive a copy at <strong>{leadForm.email}</strong> within minutes.</div>
+              <div style={{fontSize:13,color:C.textSub,lineHeight:1.6,marginBottom:20}}>Claude Agent is composing your personalised introduction to <strong style={{color:C.accent}}>{leadModal.protocol}</strong>. You will receive a copy at <strong>{leadForm.email}</strong> within minutes.</div>
               <div style={{padding:"12px 16px",borderRadius:10,background:C.accentGlow,border:`1px solid ${C.borderStrong}`,fontSize:13,color:C.textSub,marginBottom:20}}>
                 <div style={{marginBottom:4}}>📡 Sector: <span style={{color:C.accent}}>{leadModal.sector}</span></div>
                 <div style={{marginBottom:4}}>🔗 Protocol: <span style={{color:C.accent}}>{leadModal.protocol}</span></div>
