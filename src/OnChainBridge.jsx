@@ -1318,9 +1318,17 @@ const fetchWalletData = async (address) => {
                   onMouseEnter={e=>{e.currentTarget.style.borderColor=C.borderStrong;e.currentTarget.style.boxShadow=`0 0 20px ${C.accent}15`;}}
                   onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.boxShadow="";}}>
                   <div style={{fontSize:16,fontWeight:700,marginBottom:6}}>{opt.name}</div>
-                  <div style={{fontSize:13,color:C.dim,marginBottom:3}}>📍 {opt.address}</div>
-                  {opt.website&&<div style={{fontSize:13,color:C.accent,marginBottom:6}}>🌐 {opt.website}</div>}
-                  <div style={{display:"flex",gap:6,marginTop:8}}>{opt.sector&&<Bdg color={C.purple} C={C}>{opt.sector}</Bdg>}{opt.revenue&&<Bdg color={C.yellow} C={C}>{opt.revenue}</Bdg>}</div>
+                  {opt.address==="Unverified"
+                    ? <>
+                        <div style={{display:"inline-block",fontSize:11,fontWeight:600,color:C.dim,background:`${C.dim}18`,borderRadius:6,padding:"2px 8px",marginBottom:8}}>Unconfirmed</div>
+                        <div style={{fontSize:13,color:C.dim,marginTop:4}}>We'll look up full details during analysis</div>
+                      </>
+                    : <>
+                        <div style={{fontSize:13,color:C.dim,marginBottom:3}}>📍 {opt.address}</div>
+                        {opt.website&&<div style={{fontSize:13,color:C.accent,marginBottom:6}}>🌐 {opt.website}</div>}
+                        <div style={{display:"flex",gap:6,marginTop:8}}>{opt.sector&&<Bdg color={C.purple} C={C}>{opt.sector}</Bdg>}{opt.revenue&&<Bdg color={C.yellow} C={C}>{opt.revenue}</Bdg>}</div>
+                      </>
+                  }
                   <div style={{marginTop:10,fontSize:13,color:C.accent,fontWeight:600}}>Confirm & Analyze →</div>
                 </button>
               ))}
