@@ -628,8 +628,8 @@ const fetchWalletData = async (address) => {
       const clean = text.replace(/```json|```/g,"").trim();
       const s=clean.indexOf("["), e=clean.lastIndexOf("]");
       if (s>=0&&e>s) { try{const p=JSON.parse(clean.substring(s,e+1));if(Array.isArray(p)&&p.length>0){setVerifyOpts(p);setPhase("verify");return;}}catch(_){} }
-      setVerified({name:target,address:"Unverified"}); runAnalysis(target,"Unverified");
-    } catch(_) { setVerified({name:target,address:"Unverified"}); runAnalysis(target,"Unverified"); }
+      setVerifyOpts([{name:target, address:"Unverified", website:"", sector:"", revenue:"", description:"Proceed with analysis for "+target}]); setPhase("verify");
+    } catch(_) { setVerifyOpts([{name:target, address:"Unverified", website:"", sector:"", revenue:"", description:"Proceed with analysis for "+target}]); setPhase("verify"); }
   }, [input]); // eslint-disable-line
 
   const saveHistory = (name, data) => {
